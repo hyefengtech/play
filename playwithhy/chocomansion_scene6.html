@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      월드플레이 - 이나와 초콜릿맨션 : sweet halloween | 인터랙티브 스토리텔링 몰입경험콘텐츠 플랫폼
+    </title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap"
+      rel="stylesheet"
+    />
+    <script src="script.js"></script>
+  </head>
+  <body>
+    <div id="game-title">
+      <h1>몽타주 3의 수수께끼</h1>
+    </div>
+    <br />
+    <br />
+    <div class="game-scene">
+      <video src="witch.MP4" style="width: 500px; height:500px" controls></video>
+      <p>
+        Sunday Monday Tuesday Wednesday Thursday<br /><br />
+       Thursday Friday Saturday<br><br>
+        Sunday comes again!
+        <br /><br />
+      </p>
+      <br />
+      <br />
+    </div>
+
+    <div class="action">
+      <button
+        type="button"
+        class="btn btn-primary"
+        name="button"
+        onclick="go();"
+      >
+        범인을 알아냈다
+      </button>
+      <button
+      type="button"
+      class="btn btn-primary"
+      name="button"
+      onclick="go2();"
+    >
+      다른 몽타주의 수수께끼부터 해결하자
+    </button>
+    </div>
+
+    <script>
+      function go() {
+        window.location.href = "chocomansion_scene6ar.html";
+      }
+      function go2() {
+        window.location.href = "chocomansion_scene3.html";
+      }
+    </script>
+  </body>
+</html>

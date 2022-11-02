@@ -1,0 +1,173 @@
+<!--- AR카메라를 통해 성종실록에 숨겨진 비밀을 찾아낸다-->
+<!-- AR 카메라로 pdf파일에서 비밀을 찾아내면 다음으로 넘어가는 버튼을 통해 정답입력 칸이 나온다-->
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0" /> -->
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+    />
+    <title>
+      월드플레이 - 이나와 초콜릿맨션 : sweet halloween | 인터랙티브 스토리텔링 몰입경험콘텐츠 플랫폼
+    </title>
+
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1c2407b26c61958baa93967b5412487cd94b290b/dist/aframe-master.min.js"></script>
+    <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/cfe5f316/dist/aframe-extras.js"></script>
+    <script>
+      AFRAME.registerComponent("markerhandler", {
+        init: function () {
+          this.el.sceneEl.addEventListener("markerFound", () => {
+            // 비활성화된 버튼이 증강현실 객체를 찾으면 활성화로 변경
+            document.getElementById("btn-primary").disabled = false;
+            document.getElementById("btn-primary").style.background =
+              "linear-gradient(#e4ae4bbe, #775407aa), linear-gradient(to right, #503803be, #925802aa)";
+          });
+        },
+      });
+    </script>
+
+    <style>
+      .action button {
+        display: flex;
+        justify-content: center;
+        align-items: left;
+        font-size: 14px;
+        border: 0.5px solid transparent;
+        background-image: linear-gradient(#e4ae4bbe, #775407aa),
+          linear-gradient(to right, #503803be, #925802aa);
+        background-origin: border-box;
+        margin: 20px;
+        border-radius: 0.5em;
+        padding: 0.6em 0.3em; /* 원하는 여백 설정, 상하단 여백으로 높이를 조절 */
+        font-family: inherit;
+        width: 15%;
+        color: rgb(60, 60, 61);
+        z-index: 10;
+      }
+
+      button:focus {
+        outline: 0 !important;
+      }
+
+      button:active {
+        box-shadow: 0 5px #666;
+        transform: translateY(4px);
+      }
+      .action {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 5em;
+        display: flex;
+        justify-content: center;
+        align-items: left;
+        z-index: 10;
+      }
+    </style>
+
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+  </head>
+
+  <body style="margin: 0px; overflow: hidden">
+    <!---  
+    <div id="game-title">
+      <h1>성종실록기사 AR</h1>
+    </div>
+    <br />
+    <br />
+   
+    <div class="game-scene">
+  
+      <div class="arjs-loader">
+        <p>
+          Now Loading...<br />
+          Please prepare the marker image :)
+        </p>
+      </div>
+
+---->
+    <div class="action">
+      <button
+        id="btn-primary"
+        style="background: grey; color: rgb(60, 60, 61)"
+        type="button"
+        name="button"
+        onclick="go();"
+        disabled
+      >
+        검거 완료</button
+      ><br /><br />
+    </div>
+
+    <a-scene
+      vr-mode-ui="enabled: false;"
+      renderer="logarithmicDepthBuffer: true;"
+      embedded
+      arjs="trackingMethod: best; sourceType: webcam;debugUIEnabled: false;"
+    >
+      <a-nft
+        markerhandler
+        type="nft"
+        url="./nft/달력"
+        smooth="true"
+        smoothCount="10"
+        smoothTolerance="0.01"
+        smoothThreshold="5"
+      >
+ <!---     
+        <a-text
+          value="억울함"
+          font="NanumBarunGothic-msdf.json"
+          font-image="NanumBarunGothic.png"
+          color="#33C3F0"
+          negate="false"
+          position="100 0.5 -180"
+          scale="30 30 30"
+        >
+        </a-text>
+        <a-box
+          src="src/억울함.png"
+          text="value: 억울함; color: black;"
+          position="100 0.5 -180"
+          material="opacity: 1; side: double"
+          scale="80 80 80"
+        ></a-box>
+    -->
+    
+    <a-entity>
+        <a-image src="./src/IMG_0673.PNG"
+            height="160"
+            width="120"
+            rotation="-90 -45 45"
+            position="100 90 -280"
+            crossorigin
+        ></a-image>
+        </a-entity>
+
+      </a-nft>
+      <a-entity camera></a-entity>
+    </a-scene>
+
+    <script>
+      function go() {
+        window.location.href = "chocomansion_scene5complete.html";
+      }
+    </script>
+  </body>
+</html>

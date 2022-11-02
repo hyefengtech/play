@@ -1,0 +1,61 @@
+<!--초콜릿 획득. 인벤토리에 초콜릿 얻은 갯수 추가 인벤토리 0 부터 시작. 초콜릿 카운트가 3이 되면 해당 게임 엔딩 페이지로 이동하는 버튼등장-->
+<!--하윤이는 trick or treat 이라는 주문을 외치게 한다 그럼 하윤이에게는 실제 초콜릿 주기-->
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      월드플레이 - 이나와 초콜릿맨션 : sweet halloween | 인터랙티브 스토리텔링 몰입경험콘텐츠 플랫폼
+    </title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap"
+      rel="stylesheet"
+    />
+    <script src="script.js"></script>
+  </head>
+  <body>
+    <div id="game-title">
+      <h1>호박머리 잭이 훔쳐간 초콜릿을 찾았다!</h1>
+    </div>
+    <br />
+    <br />
+    <div class="game-scene">
+        <img src="src/IMG_0676.PNG" style="max-width: 80%; height: auto;" alt="초콜릿맨션">
+        <br> 
+      <p>
+        맛있어 보이는 초콜릿을 되찾았다.<br /><br />
+      </p>
+      <br />
+      <br />
+    </div>
+
+    <div class="action">
+      <button
+        type="button"
+        class="btn btn-primary"
+        name="button"
+        onclick="go();"
+      >
+        다른 초콜릿도 찾아보자
+      </button>
+    </div>
+
+    <script>
+      function go() {
+        window.location.href = "chocomansion_scene7.html"; //몽타주2, 3이 아직 열림
+      }
+    </script>
+  </body>
+</html>

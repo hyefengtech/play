@@ -1,0 +1,90 @@
+   <!--호박머리는 찾았으니 블락--> 
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      월드플레이 - 이나와 초콜릿맨션 : sweet halloween | 인터랙티브 스토리텔링 몰입경험콘텐츠 플랫폼
+    </title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap"
+      rel="stylesheet"
+    />
+    <script src="script.js"></script>
+  </head>
+  <body>
+    <div id="game-title">
+      <h1>초콜릿을 훔쳐간 범인의 몽타주</h1>
+    </div>
+    <br />
+    <br />
+    <div class="game-scene">
+        <br>
+      <img src="src/skull.jpg" style="max-width: 80%; height: auto; margin-left: 10%;" alt="해골소품">
+      <br>
+      <p>
+        고마워! <br /><br />
+        실은 이 범인들이 얼마나 짓궂은 개구쟁이인 건지 마치 찾을 수 있으면 찾아보라는 둥<br>
+        이렇게 깜찍한 범행장을 남겨두었단다.
+        <br /><br />
+        그런데 전부 수수께끼라 나는 도저히 감이 잡히지 않네.<br /><br/>
+        하윤이가 한번 풀어봐주고 범인을 잡아줄래?<br /><br />
+        이들에게서 초콜릿을 회수하면 내가 답례를 하마.
+      </p>
+      <br />
+      <br />
+    </div>
+
+    <div class="action">
+      <button
+        type="button"
+        class="btn btn-primary"
+        name="button"
+        onclick="go();"
+        disabled
+      >
+        몽타주 1의 수수께끼
+      </button>
+      <button
+      type="button"
+      class="btn btn-primary"
+      name="button"
+      onclick="go2();"
+    >
+      몽타주 2의 수수께끼
+    </button>
+    <button
+    type="button"
+    class="btn btn-primary"
+    name="button"
+    onclick="go3();"
+  >
+    몽타주 3의 수수께끼
+  </button>
+    </div>
+
+    <script>
+      function go() {
+        window.location.href = "chocomansion_scene4.html";
+      }
+      function go2() {
+        window.location.href = "chocomansion_scene5.html";
+      }
+      function go3() {
+        window.location.href = "chocomansion_scene6.html";
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,130 @@
+html {
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(
+    320deg,
+    rgba(133, 80, 2, 0.7),
+    rgba(119, 49, 8, 0.7)
+  );
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+
+  @font-face {
+    font-family: "HancomUljuBangudae";
+    src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2205-2@1.0/HancomUljuBangudae.woff2")
+      format("woff2");
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  font-family: "HancomUljuBangudae", sans-serif;
+  color: white;
+}
+
+body {
+  margin: 0 auto;
+  min-height: 100vh;
+  height: 100%;
+  background-attachment: fixed;
+}
+
+/*스크롤바 안보이게 */
+ul {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+ul::-webkit-scrollbar {
+  display: none;
+}
+
+#title {
+  text-align: center;
+}
+
+#game-title {
+  display: flex;
+  justify-content: center;
+}
+
+#game-title h1 {
+  font-size: 25px;
+  font-weight: 700;
+}
+
+.game-scene,
+#game-info,
+#synopsis {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /*min-height: 40vh;*/
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.game-scene .game-image img {
+  border-radius: 10%;
+}
+
+.action,
+#start-button {
+  display: grid;
+  justify-content: center;
+}
+
+.action button {
+  display: grid;
+  justify-content: center;
+  font-size: 14px;
+  border: 0.5px solid transparent;
+  background-image: linear-gradient(#e4ae4bbe, #775407aa),
+    linear-gradient(to right, #503803be, #925802aa);
+  background-origin: border-box;
+  margin: 20px;
+  border-radius: 0.5em;
+  padding: 0.6em 0.3em; /* 원하는 여백 설정, 상하단 여백으로 높이를 조절 */
+  font-family: inherit;
+  width: 100%;
+  color: rgb(60, 60, 61);
+}
+
+button:focus {
+  outline: 0 !important;
+}
+
+button:active {
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+
+button:disabled {
+  background-image: linear-gradient(#2b2314be, #3f2c03aa),
+    linear-gradient(to right, #503803be, #925802aa);
+  color: whitesmoke;
+}
+
+.action input {
+  display: grid;
+  justify-content: center;
+  font-size: 18px;
+}
+
+input {
+  width: 100%; /* 원하는 너비 설정 */
+  height: auto; /* 높이값 초기화 */
+  line-height: normal; /* line-height 초기화 */
+  padding: 0.5em 0.3em; /* 원하는 여백 설정, 상하단 여백으로 높이를 조절 */
+  font-family: inherit; /* 폰트 상속 */
+  border: none; /*1px solid #999;*/
+  border-radius: 5px; /* iSO 둥근모서리 제거 */
+  outline-style: none; /* 포커스시 발생하는 효과 제거를 원한다면 */
+  -webkit-appearance: none; /* 브라우저별 기본 스타일링 제거 */
+  -moz-appearance: none;
+  appearance: none;
+  text-align: center;
+}
+
+input:focus {
+  outline: none;
+}
