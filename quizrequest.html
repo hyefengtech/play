@@ -340,18 +340,61 @@
                 const currentURL = window.location.href;
                 window.history.pushState({}, document.title, currentURL);
             };
-    
-            // 링크 공유하기 함수
+
+
+// 단축 URL 생성 함수
+const shortenURL = async (url) => {
+    try {
+        const response = await fetch(`https://cleanuri.com/api/v1/shorten`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ url: url }),
+        });
+
+        const data = await response.json();
+        return data.result_url;
+    } catch (error) {
+        console.error('URL 단축 변환 오류:', error);
+        return url;
+    }
+};
+
+// 링크 공유하기 함수
+const shareLink = async () => {
+    const currentURL = window.location.href;
+    const encodedQuizzes = encodeURIComponent(JSON.stringify(quizzes));
+    const link = `${currentURL}?quizzes=${encodedQuizzes}`;
+    const shortenedLink = await shortenURL(link);
+
+    // 복사 기능
+    const tempInput = document.createElement('input');
+    tempInput.value = shortenedLink;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempInput);
+
+    alert('단축 링크가 복사되었습니다:\n' + shortenedLink);
+
+                          // 페이지 이동 시 URL 변경
+                          changeURL();
+};
+
+
+
+/*          // 링크 공유하기 함수
             const shareLink = () => {
                 const currentURL = window.location.href;
                 const encodedQuizzes = encodeURIComponent(JSON.stringify(quizzes));
                 const link = `${currentURL}?quizzes=${encodedQuizzes}`;
                 prompt('아래 링크를 복사하여 공유하세요:', link);
-    
+ 
                 // 페이지 이동 시 URL 변경
                 changeURL();
             };
-    
+*/    
             // Facebook 공유하기 함수
             const shareOnFacebook = () => {
                 const url = window.location.href;
