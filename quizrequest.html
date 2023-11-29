@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>한국사 주관식 Quiz - 당신의 기억력을 테스트합니다</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f8f8f8;
+        }
+
+        #quiz-container {
+            max-width: 600px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        header button.action-btn {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+
+        header button.action-btn {
+            margin-top: 10px;
+            width: 100px;
+            height: 40px; /* 조정된 부분: 200px로 설정했으나 버튼의 높이는 콘텐츠에 맞게 조절하는 것이 일반적입니다. */
+        }
+
+
+
+
+
+        .quiz {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            background-color: #f5f5f5;
+        }
+
+        #comment-input {
+            width: calc(100% - 10px);
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .action-btn {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            width: 100%;
+            display: inline-block;
+        }
+
+        #quiz-status,
+        #score-result,
+        #all-quizzes {
+            margin-top: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        h1,
+        h2,
+        h3 {
+            text-align: center;
+        }
+
+        #show-all-quizzes-btn {
+            display: none;
+        }
+
+        footer {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .share-btn {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        /* 모바일 화면에 대한 스타일 */
+        @media screen and (max-width: 600px) {
+            #quiz-container {
+                padding: 10px;
+            }
+
+            .quiz {
+                padding: 10px;
+                margin-bottom: 15px;
+            }
+
+            #comment-input {
+                width: calc(100% - 20px);
+            }
+
+            footer {
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+                background-color: #fff;
+                padding: 10px;
+                box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <button class="action-btn" onclick="addNewQuiz()">새 기억 추가</button>
+    </header>
+
+    <div id="quiz-container">
+        <h1>한국사 메모리 게임</h1>
+        <h2> [ 사용 방법 ]</h2>
+        <p>어서오세요! 여기에는 지금 기억이 텅 비어 있습니다.</p>
+        <p>우선 새 기억 추가 버튼을 눌러 당신만의 단답식 문제를 만드세요</p>
+        <p>친구들에게 당신이 만든 문제를 널리 공유해서 메모리게임을 해보세요</p>
+
+        <div id="quizzes"></div>
+
+        <textarea id="comment-input" placeholder="답을 입력하세요..."></textarea>
+        <button class="action-btn" onclick="submitAnswer()">답 제출</button>
+       <!--- <button class="action-btn" onclick="addNewQuiz()">새 기억 추가</button> -->
+        <button class="action-btn" onclick="showScore()">점수 확인</button>
+        <button id="show-all-quizzes-btn" class="action-btn" onclick="showAllQuizzes()">전체 퀴즈 보기</button>
+
+        <div id="quiz-status"></div>
+        <div id="score-result"></div>
+        <div id="all-quizzes"></div>
+    </div>
+
+    <footer>
+ <!---   <button class="share-btn" onclick="shareOnFacebook()">Facebook 공유하기</button>
+        <button class="share-btn" onclick="shareOnInstagram()">Instagram 공유하기</button> -->
+        <button class="share-btn" onclick="shareLink()">링크 공유하기</button>
+    </footer>
+
+    <script>
+        // 퀴즈를 저장할 배열
+        let quizzes = [];
+
+        // 퀴즈를 현재 표시 중인 인덱스
+        let currentQuizIndex = 0;
+
+        // 맞은 개수와 틀린 개수
+        let correctCount = 0;
+        let incorrectCount = 0;
+
+        // 전체 퀴즈 보기 버튼
+        const showAllQuizzesBtn = document.getElementById('show-all-quizzes-btn');
+
+        // 퀴즈를 표시하는 함수
+        const displayQuiz = () => {
+            const quizzesContainer = document.getElementById('quizzes');
+            quizzesContainer.innerHTML = '';
+
+            const currentQuiz = quizzes[currentQuizIndex];
+            const quizDiv = document.createElement('div');
+            quizDiv.classList.add('quiz');
+            quizDiv.innerHTML = `<strong>질문:</strong> ${currentQuiz.question}`;
+
+            quizzesContainer.appendChild(quizDiv);
+        };
+
+        // 답을 제출하는 함수
+        const submitAnswer = () => {
+            const commentInput = document.getElementById('comment-input');
+            const userAnswer = commentInput.value.toLowerCase(); // 답 비교 시 대소문자 무시
+
+            const currentQuiz = quizzes[currentQuizIndex];
+            const correctAnswer = currentQuiz.answer.toLowerCase();
+
+            if (userAnswer === correctAnswer) {
+                alert('정답입니다!');
+                correctCount++;
+            } else {
+                alert(`틀렸습니다. 정답은 ${currentQuiz.answer}입니다.`);
+                incorrectCount++;
+            }
+
+            // 다음 퀴즈로 넘어감
+            currentQuizIndex++;
+            if (currentQuizIndex < quizzes.length) {
+                // 다음 퀴즈가 있으면 표시
+                displayQuiz();
+                // 퀴즈 상태 업데이트
+                updateQuizStatus();
+            } else {
+                // 모든 퀴즈가 끝났을 경우
+                alert('모든 퀴즈가 끝났습니다.');
+                // 여기에서 다른 동작을 추가할 수 있습니다.
+                showScore();
+                // 전체 퀴즈 보기 버튼 활성화
+                showAllQuizzesBtn.style.display = 'inline-block';
+            }
+
+            // 입력 필드 비우기
+            commentInput.value = '';
+        };
+
+        // 새 퀴즈를 추가하는 함수
+        const addNewQuiz = () => {
+            const question = prompt('새로운 퀴즈의 질문을 입력하세요:');
+            const answer = prompt('퀴즈의 정답을 입력하세요:');
+
+            if (question && answer) {
+                // 새 퀴즈를 배열에 추가
+                quizzes.push({ question, answer });
+
+                // 새로 추가된 퀴즈를 표시
+                displayQuiz();
+                // 퀴즈 상태 업데이트
+                updateQuizStatus();
+            }
+        };
+
+        // 퀴즈 상태를 업데이트하는 함수
+        const updateQuizStatus = () => {
+            const quizStatus = document.getElementById('quiz-status');
+            quizStatus.innerText = `현재 ${currentQuizIndex + 1}번째 문제, 총 ${quizzes.length}문제`;
+        };
+
+        // 점수를 확인하는 함수
+        const showScore = () => {
+            const scoreResult = document.getElementById('score-result');
+            scoreResult.innerText = `맞은 개수: ${correctCount}, 틀린 개수: ${incorrectCount}`;
+        };
+
+        // 전체 퀴즈를 보여주는 함수
+        const showAllQuizzes = () => {
+            const allQuizzesContainer = document.getElementById('all-quizzes');
+            allQuizzesContainer.innerHTML = '<h3>전체 퀴즈 목록</h3><ul>';
+
+            quizzes.forEach((quiz, index) => {
+                const listItem = document.createElement('li');
+                listItem.innerText = `${index + 1}. ${quiz.question} - 정답: ${quiz.answer}`;
+                allQuizzesContainer.appendChild(listItem);
+            });
+
+            allQuizzesContainer.innerHTML += '</ul>';
+        };
+
+
+            // 이전 URL 저장
+            let previousURL = window.location.href;
+
+        // 퀴즈를 숨기는 함수
+        const removeQuizzesParameter = () => {
+            const urlWithoutQuizzes = window.location.href.split('?')[0];
+            window.history.pushState({}, document.title, urlWithoutQuizzes);
+            previousURL = urlWithoutQuizzes;
+        };
+
+    
+            // 링크를 통해 전달된 퀴즈를 푸는 기능
+            const loadSharedQuizzes = () => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const sharedQuizzes = urlParams.get('quizzes');
+    
+                if (sharedQuizzes) {
+                    quizzes = JSON.parse(decodeURIComponent(sharedQuizzes));
+                    currentQuizIndex = 0;
+                    correctCount = 0;
+                    incorrectCount = 0;
+    
+                    // 퀴즈를 표시
+                    displayQuiz();
+                    // 퀴즈 상태 업데이트
+                    updateQuizStatus();
+    
+                    // 퀴즈를 HTML 페이지에 삽입
+                    const quizzesContainer = document.getElementById('quizzes');
+                    quizzesContainer.innerHTML = '';
+                    quizzes.forEach((quiz, index) => {
+                        const quizDiv = document.createElement('div');
+                        quizDiv.classList.add('quiz');
+                        quizDiv.innerHTML = `<strong>질문:</strong> ${quiz.question}`;
+                        quizzesContainer.appendChild(quizDiv);
+                    });
+    
+                    // 현재 URL을 저장
+                    previousURL = window.location.href;
+                }
+            };
+    
+            // 페이지 로드 시 공유된 퀴즈 로드
+            loadSharedQuizzes();
+    
+            // 페이지 로드 시 URL 변경 감지
+            window.addEventListener('popstate', () => {
+                // 현재 URL과 이전 URL을 비교하여 변경된 경우 퀴즈를 다시 로드
+                if (window.location.href !== previousURL) {
+                    loadSharedQuizzes();
+                }
+            });
+    
+            // 페이지 이동 시 URL 변경
+            const changeURL = () => {
+                const currentURL = window.location.href;
+                window.history.pushState({}, document.title, currentURL);
+            };
+    
+            // 링크 공유하기 함수
+            const shareLink = () => {
+                const currentURL = window.location.href;
+                const encodedQuizzes = encodeURIComponent(JSON.stringify(quizzes));
+                const link = `${currentURL}?quizzes=${encodedQuizzes}`;
+                prompt('아래 링크를 복사하여 공유하세요:', link);
+    
+                // 페이지 이동 시 URL 변경
+                changeURL();
+            };
+    
+            // Facebook 공유하기 함수
+            const shareOnFacebook = () => {
+                const url = window.location.href;
+                window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+    
+                // 페이지 이동 시 URL 변경
+                changeURL();
+            };
+    
+            // Instagram 공유하기 함수
+            const shareOnInstagram = () => {
+                const url = window.location.href;
+                window.open(`https://www.instagram.com/?url=${url}`, '_blank');
+    
+                // 페이지 이동 시 URL 변경
+                changeURL();
+            };
+    
+// 퀴즈 답 입력 시 엔터 키로 답 제출
+const addEnterSubmit = () => {
+    const commentInput = document.getElementById('comment-input');
+    commentInput.addEventListener('keyup', (event) => {
+        if (event.key === 'Enter') {
+            submitAnswer();
+        }
+    });
+};
+
+
+  /*      
+        // 링크 공유하기 함수
+        const shareLink = () => {
+            const currentURL = window.location.href;
+            const encodedQuizzes = encodeURIComponent(JSON.stringify(quizzes));
+            const link = `${currentURL}?quizzes=${encodedQuizzes}`;
+            prompt('아래 링크를 복사하여 공유하세요:', link);
+        };
+
+
+
+
+/**
+        // Facebook 공유하기 함수
+        const shareOnFacebook = () => {
+            const url = window.location.href;
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+        };
+
+        // Instagram 공유하기 함수
+        const shareOnInstagram = () => {
+            const url = window.location.href;
+            window.open(`https://www.instagram.com/?url=${url}`, '_blank');
+        };
+ **/       
+        // 초기화: 페이지 로드 시 첫 번째 퀴즈 표시
+        displayQuiz();
+        // 초기 퀴즈 상태 표시
+        updateQuizStatus();
+
+        // 페이지 로드 시 퀴즈 파라미터 숨기기
+        removeQuizzesParameter();
+
+                // 페이지 로드 시 퀴즈 답 입력 시 엔터 키로 답 제출 활성화
+                addEnterSubmit();
+
+
+
+// 페이지 로드 시 공유된 퀴즈 로드
+loadSharedQuizzes();
+
+
+
+    </script>
+
+</body>
+
+</html>
