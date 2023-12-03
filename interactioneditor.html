@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>인터랙티브 콘텐츠 생성기</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        form,
+        #result,
+        footer {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            transition: opacity 0.3s ease, height 0.3s ease;
+        }
+
+        form {
+            display: block;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        input,
+        textarea,
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #result {
+            text-align: left;
+        }
+
+        #result img,
+        #result audio,
+        #result video {
+            max-width: 100%;
+            margin-top: 15px;
+        }
+
+        footer {
+            display: none;
+            margin-top: 20px;
+        }
+
+        #shareLink {
+            color: #008CBA;
+            cursor: pointer;
+        }
+
+        #shareLinkText {
+            display: inline-block;
+            word-wrap: break-word;
+            max-width: 100%;
+            margin-top: 10px;
+        }
+
+        .user-button {
+            background-color: #008CBA;
+            color: #fff;
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+            margin-right: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .user-button:hover {
+            background-color: #00688B;
+        }
+
+        .delete-button {
+            background-color: #ff4444;
+            color: #fff;
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+            margin-left: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .delete-button:hover {
+            background-color: #cc0000;
+        }
+
+        .user-button a {
+            text-decoration: none; /* 링크의 밑줄 제거 */
+            color: #fff;
+            display: inline-block;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>인터랙티브 콘텐츠 생성기</h1>
+    <div class="container">
+        <form id="contentForm">
+            <label for="title">제목:</label>
+            <input type="text" id="title" name="title" required>
+
+            <label for="content">내용:</label>
+            <textarea id="content" name="content" rows="4" required></textarea>
+
+            <div id="buttonContainer"></div>
+            <button type="button" onclick="addCustomButton()">사용자 버튼 추가</button>
+            <label for="image">이미지 업로드:</label>
+            <input type="file" id="image" name="image">
+            <label for="audio">오디오 업로드:</label>
+            <input type="file" id="audio" name="audio">
+            <label for="video">동영상 업로드:</label>
+            <input type="file" id="video" name="video">
+            <button type="button" onclick="createContent()">콘텐츠 만들기</button>
+        </form>
+
+        <div id="result"></div>
+
+        <footer id="footer">
+            <div id="shareLinkContainer">
+                <p id="shareLink"></p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const titleParam = urlParams.get('title');
+            const contentParam = urlParams.get('content');
+            const imageParam = urlParams.get('image');
+            const audioParam = urlParams.get('audio');
+            const videoParam = urlParams.get('video');
+            const buttonTexts = urlParams.getAll('buttonText') || [];
+            const buttonLinks = urlParams.getAll('buttonLink') || [];
+
+            if (titleParam && contentParam) {
+                const form = document.getElementById('contentForm');
+                const resultDiv = document.getElementById('result');
+                const footer = document.getElementById('footer');
+                const shareLinkContainer = document.getElementById('shareLink');
+
+                const resultHTML = `
+                    <h2>${decodeURIComponent(titleParam)}</h2>
+                    <p>${decodeURIComponent(contentParam)}</p>
+                    ${imageParam ? `<img src="${decodeURIComponent(imageParam)}" alt="업로드된 이미지">` : ''}
+                    ${audioParam ? `<audio controls><source src="${decodeURIComponent(audioParam)}" type="audio/mp3">Your browser does not support the audio tag.</audio>` : ''}
+                    ${videoParam ? `<video width="320" height="240" controls><source src="${decodeURIComponent(videoParam)}" type="video/mp4">Your browser does not support the video tag.</video>` : ''}
+                    ${buttonTexts.map((text, index) => `<button class="user-button" onclick="openUserLink('${buttonLinks[index]}')">${decodeURIComponent(text)}</button>`).join('')}
+                `;
+
+                resultDiv.innerHTML = resultHTML;
+
+                resultDiv.style.display = 'block';
+                form.style.display = 'none';
+                footer.style.display = 'block';
+
+                // Update share link
+                const shareLink = window.location.href;
+                shareLinkContainer.innerHTML = `콘텐츠를 공유할 링크: <span id="shareLinkText">${shareLink}</span>`;
+            }
+        });
+
+        function createContent() {
+            const title = document.getElementById('title').value;
+            const content = document.getElementById('content').value;
+            const image = document.getElementById('image').files[0];
+            const audio = document.getElementById('audio').files[0];
+            const video = document.getElementById('video').files[0];
+            const buttonTexts = Array.from(document.querySelectorAll('.user-button')).map(button => button.textContent.trim());
+            const buttonLinks = Array.from(document.querySelectorAll('.user-button')).map(button => button.getAttribute('data-link'));
+
+            const form = document.getElementById('contentForm');
+            const resultDiv = document.getElementById('result');
+            const footer = document.getElementById('footer');
+            const shareLinkContainer = document.getElementById('shareLink');
+            const buttonContainer = document.getElementById('buttonContainer');
+
+            const resultHTML = `
+                <h2>${title}</h2>
+                <p>${content}</p>
+                ${image ? `<img src="${URL.createObjectURL(image)}" alt="업로드된 이미지">` : ''}
+                ${audio ? `<audio controls><source src="${URL.createObjectURL(audio)}" type="audio/mp3">Your browser does not support the audio tag.</audio>` : ''}
+                ${video ? `<video width="320" height="240" controls><source src="${URL.createObjectURL(video)}" type="video/mp4">Your browser does not support the video tag.</video>` : ''}
+                ${buttonTexts.map((text, index) => `<button class="user-button" onclick="openUserLink('${buttonLinks[index]}')">${text}</button>`).join('')}
+            `;
+
+            resultDiv.innerHTML = resultHTML;
+
+            resultDiv.style.display = 'block';
+            form.style.display = 'none';
+            footer.style.display = 'block';
+
+            // Update share link
+            const queryParams = new URLSearchParams();
+            queryParams.set('title', encodeURIComponent(title));
+            queryParams.set('content', encodeURIComponent(content));
+            if (image) queryParams.set('image', encodeURIComponent(URL.createObjectURL(image)));
+            if (audio) queryParams.set('audio', encodeURIComponent(URL.createObjectURL(audio)));
+            if (video) queryParams.set('video', encodeURIComponent(URL.createObjectURL(video)));
+            buttonTexts.forEach((text, index) => {
+                queryParams.append('buttonText', encodeURIComponent(text));
+                queryParams.append('buttonLink', encodeURIComponent(buttonLinks[index]));
+            });
+
+            const shareLink = `${window.location.origin}${window.location.pathname}?${queryParams.toString()}`;
+            shareLinkContainer.innerHTML = `콘텐츠를 공유할 링크: <span id="shareLinkText">${shareLink}</span>`;
+
+            // Clear existing buttons
+            buttonContainer.innerHTML = '';
+        }
+
+        function addCustomButton() {
+            const buttonContainer = document.getElementById('buttonContainer');
+            const newButton = document.createElement('button');
+            newButton.classList.add('user-button');
+
+            const buttonText = prompt('버튼에 추가할 문구를 입력하세요:');
+            const buttonLink = prompt('버튼에 추가할 링크를 입력하세요:');
+
+            newButton.textContent = buttonText;
+            newButton.setAttribute('data-link', buttonLink);
+
+            // 추가된 버튼에 삭제 버튼 추가
+            const deleteButton = document.createElement('button');
+            deleteButton.classList.add('delete-button');
+            deleteButton.textContent = '삭제';
+            deleteButton.onclick = function () {
+                buttonContainer.removeChild(newButton);
+                buttonContainer.removeChild(deleteButton);
+            };
+
+            buttonContainer.appendChild(newButton);
+            buttonContainer.appendChild(deleteButton);
+        }
+
+        function openUserLink(link) {
+            window.open(link, '_blank');
+        }
+    </script>
+</body>
+
+</html>
