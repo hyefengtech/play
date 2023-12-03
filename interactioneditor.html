@@ -162,6 +162,7 @@
             <div id="shareLinkContainer">
                 <p id="shareLink"></p>
             </div>
+            <button type="button" onclick="goBack()">이전 화면으로 돌아가기</button>
         </footer>
     </div>
 
@@ -278,6 +279,16 @@
 
         function openUserLink(link) {
             window.open(link, '_blank');
+        }
+
+               function goBack() {
+            const form = document.getElementById('contentForm');
+            const resultDiv = document.getElementById('result');
+            const footer = document.getElementById('footer');
+
+            form.style.display = 'block';
+            resultDiv.style.display = 'none';
+            footer.style.display = 'none';
         }
     </script>
 </body>
