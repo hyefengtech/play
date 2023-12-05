@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Culture Diary with Calendar</title>
+  <style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 20px;
+        background-color: #f4f4f4;
+      }
+  
+      .diary-form {
+        display: none;
+        max-width: 600px;
+        margin: 20px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+  
+      .form-group {
+        margin-bottom: 15px;
+      }
+  
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+  
+      input,
+      textarea {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+        margin-top: 5px;
+      }
+  
+      button {
+        background-color: #4caf50;
+        color: #fff;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-right: 5px;
+      }
+  
+      button.cancel {
+        background-color: #ccc;
+      }
+  
+      #calendar {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 10px;
+        margin-top: 20px;
+      }
+  
+      .calendar-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+  
+      .calendar-header button {
+        background-color: #4caf50;
+        color: #fff;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+  
+      .month-year-text {
+        font-size: 1.2em;
+        font-weight: bold;
+        text-align: center;
+      }
+      .day-container {
+        position: relative;
+        text-align: center;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+        overflow: hidden;
+      
+        /* 조정된 스타일 */
+        width: 80px; /* 가로 크기 조정 */
+        height: 120px; /* 세로 크기 조정 */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .day {
+        padding: 15px;
+        cursor: pointer;
+        flex-grow: 1;
+      }
+      
+      .day.has-image {
+        /* 이미지가 있는 경우의 스타일 */
+        background-size: cover;
+        background-position: center;
+        background-color: #e0e0e0;
+        border: 1px solid #ccc;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+      }
+      
+      .day-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    
+      .day-container.has-diary {
+        background-size: cover;
+        background-position: center;
+        background-color: #e0e0e0;
+        border: 1px solid #ccc;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+      
+        /* 조정된 스타일 */
+        width: 100%;
+        height: 100%;
+      }
+      
+  
+      .selected-day {
+        background-color: #4caf50;
+        color: #fff;
+        font-weight: bold;
+      }
+  
+
+    ㄴ
+      .day:hover {
+        background-color: #f2f2f2;
+      }
+
+
+      .entry {
+        margin-bottom: 20px;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #fff;
+      }
+  
+      .entry img {
+        max-width: 100%;
+        height: auto;
+        margin-bottom: 10px;
+      }
+  
+      @media (max-width: 600px) {
+        #calendar {
+          grid-template-columns: repeat(1, 1fr);
+        }
+  
+        .day {
+          margin-bottom: 10px;
+        }
+      }
+  </style>
+</head>
+<body>
+    <h1 style="text-align: center;">My Culture Life's playlist</h1>
+
+    <div id="diary-form" class="diary-form">
+      <h2>기억하고 싶은 경험을 담으세요</h2>
+      <div class="form-group">
+        <label for="event">이벤트 [종류]이름 </label>
+        <input type="text" id="event" placeholder="예: 영화, 전시회, 뮤지컬">
+      </div>
+      <div class="form-group">
+        <label for="image-url">이미지 URL</label>
+        <input type="text" id="image-url" placeholder="이미지 URL 입력">
+      </div>
+      <div class="form-group">
+        <label for="review">후기</label>
+        <textarea id="review" rows="4" placeholder="간단한 후기를 입력하세요"></textarea>
+      </div>
+      <button onclick="saveEntry()">저장</button>
+      <button class="cancel" onclick="cancelEntry()">취소</button>
+    </div>
+  
+    <div class="calendar-header">
+      <button onclick="changeMonth(-1)">&#60;</button>
+      <h2 id="month-year" class="month-year-text"></h2>
+      <button onclick="changeMonth(1)">&#62;</button>
+    </div> 
+  
+    <div id="calendar"></div>
+    <div id="entries"></div>
+
+  <script>
+    let selectedDay = null;
+    let year = new Date().getFullYear();
+    let month = new Date().getMonth();
+
+    function saveEntry() {
+        const event = document.getElementById('event').value;
+        const imageUrl = document.getElementById('image-url').value;
+        const review = document.getElementById('review').value;
+      
+        if (event && imageUrl && review) {
+          const entry = { event, imageUrl, review };
+          const selectedDate = selectedDateString();
+          const entries = getEntriesForDate(selectedDate);
+          entries.push(entry);
+          setEntriesForDate(selectedDate, entries);
+      
+          // 새로운 다이어리를 저장한 후에 날짜 버튼의 배경 이미지 업데이트
+          updateDayButtonImage(selectedDate, imageUrl);
+      
+          displayEntries();
+          cancelEntry(); // 다이어리 작성 폼 닫기
+        } else {
+          alert('이벤트, 이미지 URL, 후기를 모두 입력하세요.');
+        }
+      }
+
+      function updateDayButtonImage(selectedDate, imageUrl) {
+        const day = parseInt(selectedDate.split('-')[2]);
+        const dayContainer = document.querySelector(`.day-container[data-day="${day}"]`);
+      
+        if (dayContainer) {
+          if (imageUrl) {
+            dayContainer.style.backgroundImage = `url('${imageUrl}')`;
+            dayContainer.classList.add('has-image');
+          } else {
+            dayContainer.style.backgroundImage = 'none';
+            dayContainer.classList.remove('has-image');
+          }
+        }
+      }
+
+    function cancelEntry() {
+      hideDiaryForm();
+    }
+
+    function showDiaryForm() {
+      const diaryForm = document.getElementById('diary-form');
+      diaryForm.style.display = 'block';
+    }
+
+    function hideDiaryForm() {
+      const diaryForm = document.getElementById('diary-form');
+      diaryForm.style.display = 'none';
+    }
+
+    function handleDayClick(day) {
+      selectedDay = day;
+      displayEntries();
+      showDiaryForm();
+
+      // 선택된 날짜에 대한 스타일을 변경
+      const days = document.querySelectorAll('.day-container');
+      days.forEach((dayElement) => {
+        dayElement.classList.remove('selected-day');
+      });
+
+      const selectedDayElement = document.querySelector(`.day-container[data-day="${day}"]`);
+      selectedDayElement.classList.add('selected-day');
+    }
+
+    function displayEntries() {
+      const entriesContainer = document.getElementById('entries');
+      entriesContainer.innerHTML = '';
+
+      const selectedDate = selectedDateString();
+      const entries = getEntriesForDate(selectedDate) || [];
+
+      entries.forEach((entry, index) => {
+        const entryDiv = createEntryElement(entry, index);
+        entriesContainer.appendChild(entryDiv);
+      });
+    }
+
+    function createEntryElement(entry, index) {
+      const entryDiv = document.createElement('div');
+      entryDiv.classList.add('entry');
+
+      const image = document.createElement('img');
+      image.src = entry.imageUrl;
+      image.alt = entry.event;
+      image.style.maxWidth = '100%';
+
+      const eventHeading = document.createElement('h3');
+      eventHeading.textContent = entry.event;
+
+      const reviewParagraph = document.createElement('p');
+      reviewParagraph.textContent = entry.review;
+
+      const editButton = document.createElement('button');
+      editButton.textContent = '수정';
+      editButton.onclick = () => editEntry(index);
+
+      const deleteButton = document.createElement('button');
+      deleteButton.textContent = '삭제';
+      deleteButton.onclick = () => deleteEntry(index);
+
+      entryDiv.appendChild(image);
+      entryDiv.appendChild(eventHeading);
+      entryDiv.appendChild(reviewParagraph);
+      entryDiv.appendChild(editButton);
+      entryDiv.appendChild(deleteButton);
+
+      return entryDiv;
+    }
+
+    function editEntry(index) {
+      const selectedDate = selectedDateString();
+      const entries = getEntriesForDate(selectedDate) || [];
+      const entryToEdit = entries[index];
+
+      if (entryToEdit) {
+        document.getElementById('event').value = entryToEdit.event;
+        document.getElementById('image-url').value = entryToEdit.imageUrl;
+        document.getElementById('review').value = entryToEdit.review;
+
+        entries.splice(index, 1);
+        setEntriesForDate(selectedDate, entries);
+        displayEntries();
+        showDiaryForm(); // 수정할 때 다이어리 폼 열기
+      }
+    }
+
+function deleteEntry(index) {
+    const selectedDate = selectedDateString();
+    const entries = getEntriesForDate(selectedDate) || [];
+  
+    if (entries[index]) {
+      entries.splice(index, 1);
+      setEntriesForDate(selectedDate, entries);
+  
+      // 다이어리를 삭제한 후에 날짜 버튼의 배경 이미지와 클래스 제거
+      updateDayButtonImage(selectedDate, null);
+  
+      displayEntries();
+    }
+  }
+  
+  function updateDayButtonImage(selectedDate, imageUrl) {
+    const day = parseInt(selectedDate.split('-')[2]);
+    const dayContainer = document.querySelector(`.day-container[data-day="${day}"]`);
+  
+    if (dayContainer) {
+      if (imageUrl) {
+        dayContainer.style.backgroundImage = `url('${imageUrl}')`;
+        dayContainer.classList.add('has-image');
+      } else {
+        dayContainer.style.backgroundImage = 'none';
+        dayContainer.classList.remove('has-image');
+      }
+    }
+  }
+
+
+    function getEntriesForDate(date) {
+      const storedEntries = JSON.parse(localStorage.getItem('cultureDiaryEntries')) || {};
+      return storedEntries[date] || [];
+    }
+
+    function setEntriesForDate(date, entries) {
+      const storedEntries = JSON.parse(localStorage.getItem('cultureDiaryEntries')) || {};
+      storedEntries[date] = entries;
+      localStorage.setItem('cultureDiaryEntries', JSON.stringify(storedEntries));
+    }
+
+    function selectedDateString() {
+      return `${year}-${padZero(month + 1)}-${padZero(selectedDay)}`;
+    }
+
+    function padZero(number) {
+      return number.toString().padStart(2, '0');
+    }
+
+    function createCalendar() {
+      const calendarContainer = document.getElementById('calendar');
+      const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
+
+      daysOfWeek.forEach(dayOfWeek => {
+        const dayElement = document.createElement('div');
+        dayElement.classList.add('day-of-week');
+        dayElement.textContent = dayOfWeek;
+        calendarContainer.appendChild(dayElement);
+      });
+
+      createDaysOfMonth();
+      updateMonthYearText();
+    }
+
+
+    function createDaysOfMonth() {
+        const calendarContainer = document.getElementById('calendar');
+        const firstDayOfMonth = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+  
+        for (let i = 0; i < firstDayOfMonth; i++) {
+          const emptyDayElement = document.createElement('div');
+          emptyDayElement.classList.add('empty-day');
+          calendarContainer.appendChild(emptyDayElement);
+        }
+  
+        for (let i = 1; i <= daysInMonth; i++) {
+          const dayContainer = document.createElement('div');
+          dayContainer.classList.add('day-container');
+          dayContainer.setAttribute('data-day', i);
+  
+          const dayElement = document.createElement('div');
+          dayElement.classList.add('day');
+          dayElement.textContent = i;
+          dayElement.addEventListener('click', () => handleDayClick(i));
+  
+          const dateEntries = getEntriesForDate(`${year}-${padZero(month + 1)}-${padZero(i)}`);
+          if (dateEntries.length > 0 && dateEntries[0].imageUrl) {
+            dayContainer.classList.add('has-image');
+            dayContainer.style.backgroundImage = `url('${dateEntries[0].imageUrl}')`;
+          }
+  
+          // 새로운 코드: 다이어리가 저장되어 있는 날짜에 표시
+          if (dateEntries.length > 0) {
+            dayContainer.classList.add('has-diary');
+          }
+  
+          dayContainer.appendChild(dayElement);
+          calendarContainer.appendChild(dayContainer);
+        }
+      }
+  
+      function displayEntriesForCurrentMonth() {
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+  
+        for (let i = 1; i <= daysInMonth; i++) {
+          const selectedDate = `${year}-${padZero(month + 1)}-${padZero(i)}`;
+          const entries = getEntriesForDate(selectedDate) || [];
+  
+          const dayButton = document.querySelector(`.day-container[data-day="${i}"]`);
+          if (dayContainer && entries.length > 0) {
+            const hasImage = entries.some(entry => entry.imageUrl);
+
+            if (hasImage) {
+                const imageUrl = entries[0].imageUrl;
+                dayContainer.style.backgroundImage = `url(${imageUrl})`;
+                dayContainer.classList.add('has-diary');
+            } else {
+                dayContainer.style.backgroundImage = 'none';
+                dayContainer.classList.remove('has-diary'); }
+  
+            // 새로운 코드: 다이어리가 저장되어 있는 날짜에 표시
+            if (entries.length > 0) {
+              dayButton.classList.add('has-diary');
+            }
+          }
+        }
+      }
+  
+    function updateMonthYearText() {
+      const monthYearText = document.querySelector('.month-year-text');
+      monthYearText.textContent = `${year}년 ${month + 1}월`;
+    }
+
+    function changeMonth(delta) {
+      month += delta;
+
+      if (month < 0) {
+        month = 11;
+        year--;
+      } else if (month > 11) {
+        month = 0;
+        year++;
+      }
+
+      clearCalendar();
+      createCalendar();
+      displayEntries();
+    }
+
+    function clearCalendar() {
+      const calendarContainer = document.getElementById('calendar');
+      calendarContainer.innerHTML = '';
+    }
+
+ 
+    window.onload = function() {
+      createCalendar();
+      displayEntries();
+      displayEntriesForCurrentMonth();
+    };
+  </script>
+</body>
+</html>
