@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>양력/음력 변환기</title>
+  <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    .container {
+      background-color: white;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 400px;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0;
+      font-weight: bold;
+      color: #333;
+    }
+
+    input {
+      padding: 5px;
+      font-size: 16px;
+      width: calc(100% - 10px);
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 8px 15px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    p {
+      margin: 20px 0;
+      color: #333;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>양력<->음력 변환기</h1>
+
+<div class="container">
+  <label for="solarDate">양력 날짜 입력 (YYYY-MM-DD): </label>
+  <input type="text" id="solarDate" placeholder="예: 2023-12-08">
+  <button onclick="convertToLunar()">양력 → 음력 변환</button>
+  <p id="resultToLunar"></p>
+</div>
+
+<div class="container">
+  <label for="lunarDate">음력 날짜 입력 (YYYY-MM-DD): </label>
+  <input type="text" id="lunarDate" placeholder="예: 2023-11-05">
+  <button onclick="convertToSolar()">음력 → 양력 변환</button>
+  <p id="resultToSolar"></p>
+</div>
+
+<script>
+  function convertToLunar() {
+    const solarDateInput = document.getElementById('solarDate').value;
+    const [year, month, day] = solarDateInput.split('-');
+    const lunarDate = solarToLunar(parseInt(year), parseInt(month), parseInt(day));
+    document.getElementById('resultToLunar').innerText = `양력 ${solarDateInput}은 음력 ${lunarDate.year}-${lunarDate.month}-${lunarDate.day}로 변환됩니다.`;
+  }
+
+  function convertToSolar() {
+    const lunarDateInput = document.getElementById('lunarDate').value;
+    const [year, month, day] = lunarDateInput.split('-');
+    const solarDate = lunarToSolar(parseInt(year), parseInt(month), parseInt(day));
+    document.getElementById('resultToSolar').innerText = `음력 ${lunarDateInput}은 양력 ${solarDate.year}-${solarDate.month}-${solarDate.day}로 변환됩니다.`;
+  }
+
+  function solarToLunar(year, month, day) {
+    const solarDate = moment(`${year}-${month}-${day}`, 'YYYY-MM-DD');
+    const lunarDate = solarDate.clone().subtract(9, 'days');
+    return {
+      year: lunarDate.year(),
+      month: lunarDate.month() + 1,
+      day: lunarDate.date()
+    };
+  }
+
+  function lunarToSolar(year, month, day) {
+    const lunarDate = moment(`${year}-${month}-${day}`, 'YYYY-MM-DD');
+    const solarDate = lunarDate.clone().add(9, 'days');
+    return {
+      year: solarDate.year(),
+      month: solarDate.month() + 1,
+      day: solarDate.date()
+    };
+  }
+</script>
+
+</body>
+</html>
