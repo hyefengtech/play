@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todo List</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f8f8f8;
+      margin: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    form {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      color: #555;
+    }
+
+    input {
+      margin-bottom: 15px;
+      padding: 10px;
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    button {
+      background-color: #4caf50;
+      color: #fff;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+      width: 300px;
+    }
+
+    li {
+      margin-bottom: 10px;
+      padding: 15px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      opacity: 1;
+      transition: opacity 0.3s ease-in-out;
+    }
+
+    .todo-item span {
+      margin-right: 10px;
+    }
+
+    .delete-button {
+      background-color: #d9534f;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .delete-button:hover {
+      background-color: #c9302c;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>P를 위한 우선순위 결정 투두리스트</h1>
+  <form>
+    <label for="description">해야할 일</label>
+    <input type="text" id="description" placeholder="Enter task description">
+
+    <label for="importance">중요도 (1-4):</label>
+    <input type="number" id="importance" min="1" max="4" placeholder="Enter importance">
+
+    <label for="urgency">긴급도 (1-4):</label>
+    <input type="number" id="urgency" min="1" max="4" placeholder="Enter urgency">
+
+    <button type="button" onclick="addTodo()">할 일 추가</button>
+  </form>
+
+  <ul id="todoList"></ul>
+
+  <script>
+    function calculatePriority(importance, urgency) {
+      const weightMatrix = [
+        [4, 3, 2, 1],
+        [5, 4, 3, 2],
+        [6, 5, 4, 3],
+        [7, 6, 5, 4]
+      ];
+
+      const quadrant = Math.floor((importance - 1) / 2) * 2 + Math.floor((urgency - 1) / 2);
+      return weightMatrix[quadrant][quadrant];
+    }
+
+    function addTodo() {
+      const descriptionInput = document.getElementById('description');
+      const importanceInput = document.getElementById('importance');
+      const urgencyInput = document.getElementById('urgency');
+
+      const description = descriptionInput.value.trim();
+      const importance = parseInt(importanceInput.value);
+      const urgency = parseInt(urgencyInput.value);
+
+      if (description && !isNaN(importance) && !isNaN(urgency) && importance >= 1 && importance <= 4 && urgency >= 1 && urgency <= 4) {
+        const newTodo = new Todo(description, importance, urgency);
+        todoList.addTodo(newTodo);
+
+        // 입력란 초기화
+        descriptionInput.value = '';
+        importanceInput.value = '';
+        urgencyInput.value = '';
+      } else {
+        alert('Please enter valid values for description, importance, and urgency.');
+      }
+    }
+
+    function deleteTodo(index) {
+      todoList.todos.splice(index, 1);
+      todoList.renderTodos();
+    }
+
+    function Todo(description, importance, urgency) {
+      this.description = description;
+      this.importance = importance;
+      this.urgency = urgency;
+      this.timestamp = Date.now();
+      this.priority = calculatePriority(importance, urgency);
+    }
+
+    function TodoList() {
+      this.todos = [];
+
+      this.addTodo = function (todo) {
+        this.todos.push(todo);
+        this.renderTodos();
+      };
+
+      this.renderTodos = function () {
+        const sortedTodos = this.todos.sort((a, b) => b.importance - a.importance || b.urgency - a.urgency || b.timestamp - a.timestamp);
+        const todoListElement = document.getElementById('todoList');
+        todoListElement.innerHTML = '';
+
+        sortedTodos.forEach((todo, index) => {
+          const todoItem = document.createElement('li');
+          todoItem.classList.add('todo-item');
+
+          const priorityLabel = document.createElement('span');
+          priorityLabel.textContent = `Priority: ${todo.priority}`;
+          priorityLabel.classList.add('priority-label');
+
+          const importanceLabel = document.createElement('span');
+          importanceLabel.textContent = `Importance: ${todo.importance}`;
+          importanceLabel.classList.add('importance-label');
+
+          const descriptionLabel = document.createElement('span');
+          descriptionLabel.textContent = `Description: ${todo.description}`;
+          descriptionLabel.classList.add('description-label');
+
+          const deleteButton = document.createElement('button');
+          deleteButton.textContent = 'Delete';
+          deleteButton.classList.add('delete-button');
+          deleteButton.addEventListener('click', () => deleteTodo(index));
+
+          todoItem.appendChild(priorityLabel);
+          todoItem.appendChild(importanceLabel);
+          todoItem.appendChild(descriptionLabel);
+          todoItem.appendChild(deleteButton);
+
+          todoListElement.appendChild(todoItem);
+
+          // setTimeout을 이용하여 항목이 표시된 후에 opacity 속성을 변경
+          setTimeout(() => {
+            todoItem.style.opacity = '1';
+          }, 0);
+        });
+      };
+    }
+
+    const todoList = new TodoList();
+
+        // 엔터 키 이벤트 처리 추가
+        document.addEventListener('keypress', function (event) {
+            const isEnterKey = event.key === 'Enter';
+      
+            if (isEnterKey) {
+              addTodo();
+            }
+          });
+  </script>
+
+</body>
+</html>
