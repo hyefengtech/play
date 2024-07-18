@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>항저우 비밀의 문 - 성문 터 보물찾기</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <header>
+            <h1>항저우 비밀의 문</h1>
+            <p>10개의 고대 성문 터를 찾아라!</p>
+        </header>
+        <main>
+            <section id="intro">
+                <h2>모험을 시작하세요!</h2>
+                <p>항저우의 역사 속에 숨겨진 10개의 성문 터를 찾아 나서세요. <br>모든 성문 터를 방문하면 놀라운 보물이 여러분을 기다립니다! <br><br>gps 기반으로 성문 터 방문을 인식하기 때문에 휴대폰의 위치를 켜주세요 :)</p>
+                <button id="start-adventure">모험 시작하기</button>
+            </section>
+            <section id="quest" style="display: none;">
+                <div id="progress-container">
+                    <h3>탐험 진행도</h3>
+                    <div id="progress-bar"><span id="progress-text"></span></div>
+                </div>
+                <ul id="gate-list"></ul>
+                <div id="status"></div>
+                <button id="return-to-intro">처음으로 돌아가기</button>
+            </section>
+            <section id="mission-complete" style="display: none;">
+                <h2>축하합니다!</h2>
+                <p>모든 성문터를 발견하셨습니다.</p>
+                <button id="complete-button">보물 획득하기</button>
+                <button id="restart-adventure">새로운 모험 시작하기</button>
+            </section>
+        </main>
+        <footer>
+            <p>© 2024 항저우 비밀의 문. 월드플레이 로퀘스트 모든 권리 보유.</p>
+        </footer>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
