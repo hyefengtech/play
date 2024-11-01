@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>꿈을 이루는 뽀모도로 타이머</title>
+  <meta name="description" content="매력적이고 동기 부여를 주는 뽀모도로 타이머 웹 애플리케이션">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      height: 100vh;
+      background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+      font-family: 'Arial', sans-serif;
+    }
+    /* 헤더 */
+    header {
+      width: 100%;
+      padding: 20px 0;
+      background-color: #ffffffcc;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    header h2 {
+      font-size: 1.5em;
+      color: #ff6347;
+      font-weight: bold;
+    }
+    header p {
+      color: #666;
+      margin-top: 5px;
+    }
+    /* 컨테이너 */
+    .container {
+      text-align: center;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      max-width: 400px;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    h1 {
+      font-size: 1.8em;
+      color: #333;
+      margin-bottom: 10px;
+    }
+    .timer {
+      font-size: 2.5em;
+      color: #ff6347;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .message {
+      font-size: 1em;
+      color: #666;
+      font-style: italic;
+      margin-bottom: 15px;
+    }
+    .buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    button {
+      padding: 10px 15px;
+      font-size: 1em;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .start { background-color: #4caf50; color: white; }
+    .stop { background-color: #f44336; color: white; }
+    .reset { background-color: #333; color: white; }
+    button:hover { transform: scale(1.1); }
+    /* 푸터 */
+    footer {
+      width: 100%;
+      padding: 10px 0;
+      text-align: center;
+      background-color: #ffffffcc;
+      color: #666;
+      font-size: 0.9em;
+    }
+    footer a {
+      color: #666;
+      text-decoration: none;
+      margin-left: 5px;
+    }
+    footer a:hover {
+      color: #ff6347;
+    }
+  </style>
+</head>
+<body>
+  <!-- 헤더 -->
+  <header>
+    <h2>🍅 꿈을 이루는 뽀모도로 타이머 🍅</h2>
+    <p>집중과 휴식, 원하는 타이머로 사용하세요!</p>
+  </header>
+
+  <!-- 작업 타이머 -->
+  <div class="container">
+    <h1>🍅 작업 타이머</h1>
+    <div id="work-message" class="message">최고의 성과를 위해 집중하세요!</div>
+    <div class="timer" id="work-timer">25:00</div>
+    <div class="buttons">
+      <button class="start" onclick="startWorkTimer()">시작</button>
+      <button class="stop" onclick="stopWorkTimer()">정지</button>
+      <button class="reset" onclick="resetWorkTimer()">초기화</button>
+    </div>
+  </div>
+
+  <!-- 휴식 타이머 -->
+  <div class="container">
+    <h1>😌 휴식 타이머</h1>
+    <div id="break-message" class="message">잠시 쉬어가세요!</div>
+    <div class="timer" id="break-timer">05:00</div>
+    <div class="buttons">
+      <button class="start" onclick="startBreakTimer()">시작</button>
+      <button class="stop" onclick="stopBreakTimer()">정지</button>
+      <button class="reset" onclick="resetBreakTimer()">초기화</button>
+    </div>
+  </div>
+
+  <!-- 푸터 -->
+  <footer>
+    <p>© 2024 꿈을 이루는 뽀모도로 타이머 🌟 | 
+      <a href="https://worldplay.oopy.io/" target="_blank">Worldplay Locquest</a>
+      <a href="https://blog.naver.com/aspasia_388" target="_blank">Blog</a>
+    </p>
+  </footer>
+
+  <script>
+    let workTime = 1500; // 25분 작업 시간
+    let breakTime = 300; // 5분 휴식 시간
+    let workTimerInterval, breakTimerInterval;
+
+    const workTimerDisplay = document.getElementById('work-timer');
+    const workMessageDisplay = document.getElementById('work-message');
+    const breakTimerDisplay = document.getElementById('break-timer');
+    const breakMessageDisplay = document.getElementById('break-message');
+
+    // 작업 타이머
+    function updateWorkDisplay() {
+      const minutes = Math.floor(workTime / 60);
+      const seconds = workTime % 60;
+      workTimerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+
+    function startWorkTimer() {
+      if (!workTimerInterval) {
+        workMessageDisplay.textContent = "작업 시작! 집중해서 목표를 이루세요! 💪";
+        workTimerInterval = setInterval(() => {
+          if (workTime > 0) {
+            workTime--;
+            updateWorkDisplay();
+          } else {
+            clearInterval(workTimerInterval);
+            workTimerInterval = null;
+            alert("작업 타이머 종료! 이제 휴식하세요.");
+            workMessageDisplay.textContent = "최고의 성과를 위해 집중하세요!";
+          }
+        }, 1000);
+      }
+    }
+
+    function stopWorkTimer() {
+      clearInterval(workTimerInterval);
+      workTimerInterval = null;
+      workMessageDisplay.textContent = "작업 일시 중지. 다시 시작할 준비가 되면 클릭!";
+    }
+
+    function resetWorkTimer() {
+      stopWorkTimer();
+      workTime = 1500;
+      updateWorkDisplay();
+      workMessageDisplay.textContent = "최고의 성과를 위해 집중하세요!";
+    }
+
+    // 휴식 타이머
+    function updateBreakDisplay() {
+      const minutes = Math.floor(breakTime / 60);
+      const seconds = breakTime % 60;
+      breakTimerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+
+    function startBreakTimer() {
+      if (!breakTimerInterval) {
+        breakMessageDisplay.textContent = "휴식 시작! 잠시 쉬어가세요! 😊";
+        breakTimerInterval = setInterval(() => {
+          if (breakTime > 0) {
+            breakTime--;
+            updateBreakDisplay();
+          } else {
+            clearInterval(breakTimerInterval);
+            breakTimerInterval = null;
+            alert("휴식 타이머 종료! 다시 집중해 보세요.");
+            breakMessageDisplay.textContent = "잠시 쉬어가세요!";
+          }
+        }, 1000);
+      }
+    }
+
+    function stopBreakTimer() {
+      clearInterval(breakTimerInterval);
+      breakTimerInterval = null;
+      breakMessageDisplay.textContent = "휴식 일시 중지. 필요할 때 다시 시작!";
+    }
+
+    function resetBreakTimer() {
+      stopBreakTimer();
+      breakTime = 300;
+      updateBreakDisplay();
+      breakMessageDisplay.textContent = "잠시 쉬어가세요!";
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      updateWorkDisplay();
+      updateBreakDisplay();
+    });
+  </script>
+</body>
+</html>
