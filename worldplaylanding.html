@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>국내여행 몰입체험 상품 서비스</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            background: #f4f4f4;
+            color: #333;
+        }
+        header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        header .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        header nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+        header nav a:hover {
+            color: #f39c12;
+        }
+        section {
+            padding: 100px 20px 20px;
+            text-align: center;
+        }
+        .hero {
+            background: url('hero-bg.jpg') no-repeat center center/cover;
+            color: white;
+            padding: 100px 20px;
+        }
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: black;
+        }
+        .hero p {
+            font-size: 24px;
+            margin-bottom: 30px;
+            color:black;s
+        }
+        .cta-button {
+            background: #f39c12;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            margin-top: 20px;
+            transition: background 0.3s ease;
+        }
+        .cta-button:hover {
+            background: #e67e22;
+        }
+        .service-intro .content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            gap: 20px;
+        }
+        .service-intro img {
+            width: 300px;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .map-container {
+            background: #ecf0f1;
+            padding: 40px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .email-form form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .email-form input, .email-form textarea {
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            width: 300px;
+            max-width: 100%;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+            transition: border-color 0.3s ease;
+        }
+        .email-form input:focus, .email-form textarea:focus {
+            border-color: #f39c12;
+            outline: none;
+        }
+        .customer-reviews .reviews-slider {
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+            margin-top: 20px;
+            gap: 20px;
+        }
+        .customer-reviews .review {
+            min-width: 300px;
+            margin: 0 10px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .premium-offer, .subscription-offer {
+            background: white;
+            padding: 40px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        .subscription-offer input {
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            width: 300px;
+            max-width: 100%;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+            transition: border-color 0.3s ease;
+        }
+        .subscription-offer input:focus {
+            border-color: #f39c12;
+            outline: none;
+        }
+        .subscription-offer button {
+            background: #f39c12;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            margin-top: 10px;
+            transition: background 0.3s ease;
+        }
+        .subscription-offer button:hover {
+            background: #e67e22;
+        }
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            margin-top: 20px;
+        }
+        footer a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+        footer a:hover {
+            color: #f39c12;
+        }
+    </style>
+    <script>
+        async function submitForm(event) {
+            event.preventDefault();
+            const email = document.querySelector('input[name="email"]').value;
+            const location = document.querySelector('textarea[name="location"]').value;
+            const response = await fetch('YOUR_DEPLOYED_WEB_APP_URL', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: email, location: location }),
+            });
+            const result = await response.json();
+            if (result.status === 'success') {
+                alert('디지털 키트가 성공적으로 요청되었습니다!');
+                document.querySelector('input[name="email"]').value = '';
+                document.querySelector('textarea[name="location"]').value = '';
+            } else {
+                alert('오류가 발생했습니다. 다시 시도해주세요.');
+            }
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <div class="logo">LOGO</div>
+        <nav>
+            <a href="#">홈</a>
+            <a href="#service-intro">서비스 소개</a>
+            <a href="#customer-reviews">고객 후기</a>
+            <a href="#contact">문의하기</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>국내여행을 새로운 방식으로 경험하세요!</h1>
+        <p>지도를 클릭하고 몰입형 야외 방탈출 스토리 미션 여행을 떠나보세요.</p>
+        <button class="cta-button" onclick="document.getElementById('map').scrollIntoView()">지금 시작하기</button>
+    </section>
+
+    <section class="service-intro" id="service-intro">
+        <h2>서비스 이용 방법</h2>
+        <div class="content">
+            <img src="service-image.jpg" alt="서비스 이미지">
+            <div class="text">
+                <p>1. 여행지 선택: 지도를 클릭하여 원하는 국내 여행지를 선택하세요.</p>
+                <p>2. 미션 받기: 이메일로 디지털 키트를 받아보세요.</p>
+                <p>3. 모험 시작: 현장에서 미션을 수행하며 특별한 경험을 즐기세요.</p>
+            </div>
+        </div>
+        <button class="cta-button" onclick="document.getElementById('map').scrollIntoView()">지금 여행지 선택하기</button>
+    </section>
+
+    <section class="map-container" id="map">
+        <h2>원하는 여행지를 클릭하세요</h2>
+        <!-- 구글 지도 삽입 -->
+        <iframe src="https://www.google.com/maps/d/u/0/embed?mid=1alMm_S3OwaPHSyVc9KTIJovxKTApcDw&ehbc=2E312F" width="640" height="480" style="border:0;"></iframe>
+        <button class="cta-button" onclick="document.getElementById('email-form').scrollIntoView()">이 여행지 선택하기</button>
+    </section>
+
+    <section class="email-form" id="email-form">
+        <h2>디지털 키트를 받아보세요</h2>
+        <p>이메일 주소와 가고 싶은 지역을 입력하고 디지털 키트를 받아보세요. 모험이 곧 시작됩니다!</p>
+      <!--  <form onsubmit="submitForm(event)">
+            <input type="email" name="email" placeholder="이메일 주소 입력" required>
+            <textarea name="location" placeholder="가고 싶은 지역을 입력하세요" rows="4" required></textarea>
+            <button type="submit" class="cta-button">디지털 키트 받기</button>
+        </form>
+        --->
+        <!-- modify this form HTML and place wherever you want your form -->
+<form
+action="https://formspree.io/f/xovajpba"
+method="POST"
+>
+<label>
+  <input type="email" name="email" placeholder="메일 주소" required>
+</label>
+<label>
+  <textarea name="message" placeholder="가고 싶은 지역" required></textarea>
+</label>
+<!-- your other form fields go here -->
+<button class="cta-button">디지털 키트 받기</button>
+</form>
+    </section>
+
+    <section class="customer-reviews" id="customer-reviews">
+        <h2>고객 후기</h2>
+        <div class="reviews-slider">
+            <div class="review">"최고의 경험이었어요!" - 김지수</div>
+            <div class="review">"정말 재미있었어요!" - 박철수</div>
+        </div>
+        <button class="cta-button">더 많은 후기 보기</button>
+    </section>
+
+    <section class="premium-offer">
+        <h2>프리미엄 오퍼</h2>
+        <p>프리미엄 구독으로 더욱 특별한 혜택을 누리세요!</p>
+        <button class="cta-button">프리미엄 구독하기</button>
+    </section>
+
+    <section class="subscription-offer">
+        <h2>이벤트 및 뉴스레터 구독</h2>
+        <p>이메일을 등록하고 특별 이벤트와 뉴스를 받아보세요.</p>
+  <!----
+        <form onsubmit="submitForm(event)">
+            <input type="email" name="email" placeholder="이메일 주소 입력" required>
+            <button type="submit" class="cta-button">구독하기</button>
+        </form>
+  --->
+    <!-- modify this form HTML and place wherever you want your form -->
+<form
+action="https://formspree.io/f/xovajpba"
+method="POST"
+>
+<label>
+  <input type="email" name="email" placeholder="이메일 주소 입력" required>
+</label>
+<!-- your other form fields go here -->
+<button class="cta-button">구독하기</button>
+</form>
+    </section>
+
+    <footer id="contact">
+        <div>회사명 | 주소 | 연락처</div>
+        <div>
+            <a href="#">페이스북</a> | <a href="#">인스타그램</a> | <a href="#">트위터</a>
+        </div>
+        <div>
+            <a href="#">이용약관</a> | <a href="#">개인정보처리방침</a> | <a href="#">문의하기</a>
+        </div>
+    </footer>
+</body>
+</html>
