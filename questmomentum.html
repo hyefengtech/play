@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Momentum 생산성 게임</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #282c34;
+      color: #61dafb;
+    }
+
+    #container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px;
+    }
+
+    #dialog, #checklist, #reward {
+      width: 400px;
+      border: 1px solid #61dafb;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+
+    #checklist label {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    #checklist input[type="checkbox"] {
+      margin-right: 10px;
+    }
+
+    #questButton, #addQuestButton, #clearCompletedButton {
+      padding: 10px;
+      background-color: #61dafb;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s, border-radius 0.3s;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+
+    #questButton:hover, #addQuestButton:hover, #clearCompletedButton:hover {
+      background-color: #4fa3d1;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="container">
+  <h1>생산적인 하루를 살기 위한 미라클 게임</h1>
+  <div id="dialog"></div>
+  <div id="checklist"></div>
+  <button id="questButton">퀘스트 받기</button>
+  <button id="addQuestButton">새로운 퀘스트 추가</button>
+  <button id="clearCompletedButton">완료된 퀘스트 지우기</button>
+  <div id="reward">보상: <span id="rewardAmount">0</span> 골드</div>
+</div>
+
+<script>
+  class Quest {
+    constructor(description, reward) {
+      this.description = description;
+      this.reward = reward;
+      this.completed = false;
+    }
+
+    complete() {
+      this.completed = true;
+    }
+  }
+
+  class Player {
+    constructor(name) {
+      this.name = name;
+      this.quests = [];
+      this.gold = 0;
+    }
+
+    setName(name) {
+      this.name = name;
+    }
+
+    acceptQuest(quest) {
+      this.quests.push(quest);
+      this.displayMessage(`${this.name}가 퀘스트를 수락했습니다: ${quest.description}`);
+      this.displayQuests();
+      this.displayChecklist();
+      this.saveQuestsToLocalStorage();
+    }
+
+    completeQuest(quest) {
+      if (quest.completed) {
+        this.displayMessage(`이미 완료된 퀘스트입니다: ${quest.description}`);
+        return;
+      }
+
+      quest.complete();
+      this.gold += quest.reward;
+      this.displayMessage(`${this.name}가 퀘스트를 완료했습니다: ${quest.description}`);
+      this.displayMessage(`${this.name}가 ${quest.reward} 골드를 획득했습니다!`);
+      this.displayQuests();
+      this.displayChecklist();
+      this.displayReward();
+      this.saveQuestsToLocalStorage();
+    }
+
+    getRandomUncompletedQuest() {
+      const uncompletedQuests = this.quests.filter(quest => !quest.completed);
+      if (uncompletedQuests.length === 0) {
+        return null;
+      }
+      const randomIndex = Math.floor(Math.random() * uncompletedQuests.length);
+      return uncompletedQuests[randomIndex];
+    }
+
+    removeCompletedQuests() {
+      this.quests = this.quests.filter(quest => !quest.completed);
+      this.displayMessage(`완료된 퀘스트를 모두 지웠습니다.`);
+      this.displayQuests();
+      this.displayChecklist();
+      this.displayReward();
+      this.saveQuestsToLocalStorage();
+    }
+
+    displayQuests() {
+      let message = `${this.name}의 퀘스트 목록:<br>`;
+      this.quests.forEach((quest, index) => {
+        message += `${index + 1}. ${quest.description} - ${quest.completed ? '완료됨' : '미완료'}<br>`;
+      });
+      this.displayMessage(message);
+    }
+
+    displayChecklist() {
+      const checklistDiv = document.getElementById('checklist');
+      checklistDiv.innerHTML = '체크리스트:';
+      this.quests.forEach((quest, index) => {
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.disabled = quest.completed;
+        checkbox.checked = quest.completed;
+        checkbox.addEventListener('change', () => this.handleCheckboxChange(index));
+        const label = document.createElement('label');
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(quest.description));
+        checklistDiv.appendChild(label);
+      });
+    }
+
+    handleCheckboxChange(index) {
+      const quest = this.quests[index];
+      if (quest.completed) {
+        quest.completed = false;
+        this.displayMessage(`${this.name}가 퀘스트를 미완료로 표시했습니다: ${quest.description}`);
+      } else {
+        this.completeQuest(quest);
+      }
+      this.displayChecklist();
+    }
+
+    displayReward() {
+      const rewardAmountSpan = document.getElementById('rewardAmount');
+      rewardAmountSpan.textContent = this.gold;
+    }
+
+    displayMessage(message) {
+      const dialog = document.getElementById('dialog');
+      dialog.innerHTML = message; // 이전 메시지를 지우고 새로운 메시지로 대체
+    }
+
+    saveQuestsToLocalStorage() {
+      localStorage.setItem('quests', JSON.stringify(this.quests));
+    }
+
+    loadQuestsFromLocalStorage() {
+      const savedQuests = localStorage.getItem('quests');
+      if (savedQuests) {
+        this.quests = JSON.parse(savedQuests);
+        this.displayQuests();
+        this.displayChecklist();
+      }
+    }
+  }
+
+  const playerName = prompt("플레이어의 이름을 입력하세요:", "");
+  const player = new Player(playerName);
+  player.loadQuestsFromLocalStorage();
+
+  const questButton = document.getElementById('questButton');
+  questButton.addEventListener('click', () => {
+    const randomQuest = player.getRandomUncompletedQuest();
+    if (randomQuest) {
+      player.displayMessage(`랜덤 퀘스트를 받았습니다: ${randomQuest.description}`);
+    } else {
+      player.displayMessage('모든 퀘스트가 완료되었습니다. 새로운 의뢰를 추가하세요.');
+    }
+  });
+
+  const addQuestButton = document.getElementById('addQuestButton');
+  addQuestButton.addEventListener('click', () => {
+    const newQuestDescription = prompt('새로운 의뢰를 입력하세요:');
+    if (newQuestDescription) {
+      const newQuest = new Quest(newQuestDescription, Math.floor(Math.random() * 50) + 20);
+      player.acceptQuest(newQuest);
+    }
+  });
+
+  const clearCompletedButton = document.getElementById('clearCompletedButton');
+  clearCompletedButton.addEventListener('click', () => {
+    player.removeCompletedQuests();
+  });
+
+</script>
+
+</body>
+</html>
