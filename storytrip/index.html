@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>스토리트립 | 이야기가 있는 여행</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>여행을 떠나는 순간, 당신은 역사 속 주인공이 된다</h1>
+    <nav>
+      <a href="#about">소개</a>
+      <a href="#services">서비스</a>
+      <a href="#contact">문의하기</a>
+    </nav>
+  </header>
+
+  <section id="hero">
+    <h2>역사와 문화를 체험하는 맞춤형 답사여행</h2>
+    <button onclick="explore()">지금 시작하기</button>
+  </section>
+
+  <section id="about">
+    <h2>사업 소개</h2>
+    <p>이야기가 있는 여행 스토리트립은 역사와 문화를 사랑하는 여행자와 기관들을 위해 맞춤형 답사여행 코스를 제공합니다.</p>
+  </section>
+
+  <section id="services">
+    <h2>서비스 소개</h2>
+    <div class="services-container">
+      <div class="service-card">
+        <h3>맞춤형 코스 제공</h3>
+        <p>사용자 맞춤형 답사여행 코스를 제공하여 풍부한 역사적 경험을 지원합니다.</p>
+      </div>
+      <div class="service-card">
+        <h3>B2B 솔루션</h3>
+        <p>교육 기관과 기업 연수를 위한 맞춤형 프로그램을 제공합니다.</p>
+      </div>
+      <div class="service-card">
+        <h3>디지털 콘텐츠</h3>
+        <p>AR과 음성 가이드를 통해 역사적 장소의 몰입형 경험을 제공합니다.</p>
+      </div>
+    </div>
+  </section>
+
+
+
+  <section id="contact">
+    <h2>문의하기</h2>
+    <form id="contactForm" onsubmit="submitForm(event)">
+        <label for="name">이름:</label>
+        <input type="text" id="name" required>
+        <label for="email">이메일:</label>
+        <input type="email" id="email" required>
+        <label for="message">메시지:</label>
+        <textarea id="message" required></textarea>
+        <button type="submit">제출하기</button>
+      </form>
+  </section>
+
+  <footer>
+    <p>&copy; 2020 스토리트립 당신만의 이야기를 위한 답사여행 솔루션</p>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    // Google Apps Script 웹 애플리케이션 URL
+    const scriptUrl = 'https://script.google.com/macros/s/AKfycbzIoWTCCtIJZOSuoq7pb1jPDziHVy8w04lywRPT_1uGU5meoeyqEFH71IjysFb0z5MPKQ/exec'; // 실제 URL로 변경
+
+    // 폼 제출 이벤트 처리
+    function submitForm(event) {
+        event.preventDefault();
+
+        // 폼 데이터 가져오기
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const message = document.getElementById('message').value;
+
+        // 폼 데이터 객체로 만들기
+        const formData = {
+            name: name,
+            email: email,
+            message: message
+        };
+
+        // Google Apps Script로 POST 요청 보내기
+        fetch(scriptUrl, {
+            method: 'POST',
+            body: new URLSearchParams(formData),  // 폼 데이터를 URLSearchParams 형식으로 변환
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+        .then(response => response.text())  // 텍스트 응답 처리
+        .then(data => {
+            alert(data);  // 응답 메시지 표시
+            document.getElementById('contactForm').reset();  // 폼 초기화
+        })
+        .catch(error => {
+            alert("문제가 발생했습니다. 다시 시도해 주세요.");
+            console.error(error);
+        });
+    }
+</script>
+
+</body>
+</html>
