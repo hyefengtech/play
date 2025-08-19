@@ -487,6 +487,11 @@
     if (typeof track === 'function') track('demo_choice', { result:text });
   };
 
+
+const $ = sel => document.querySelector(sel);
+const $all = sel => Array.from(document.querySelectorAll(sel));
+
+
   // -------- Sticky header + fallback for old browsers --------
   (function(){
     const header = $('#site-header'); if (!header) return;
