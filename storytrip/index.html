@@ -1,0 +1,675 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>StoryTrip | 인터랙티브 역사 체험 여행</title>
+  <meta name="description" content="AR·스토리 오디오로 즐기는 인터랙티브 역사 체험 여행 플랫폼. 개인, 학교, 기업 연수까지 상황별 추천 코스와 몰입형 콘텐츠를 만나보세요." />
+  <meta name="theme-color" content="#0f172a" />
+  <meta property="og:title" content="StoryTrip | 인터랙티브 역사 체험 여행" />
+  <meta property="og:description" content="AR과 미션형 오디오 스토리로 즐기는 몰입형 역사 여행. 지금 바로 내 취향 코스를 추천받아 보세요." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/assets/og-storytrip.jpg" />
+  <link rel="icon" href="/assets/favicon.ico" />
+  <style>
+    :root {
+      --bg: #0b1020;      /* deep slate */
+      --panel: #10172b;   /* slightly lighter */
+      --muted: #94a3b8;   /* slate-400 */
+      --text: #e5e7eb;    /* zinc-200 */
+      --brand: #60a5fa;   /* blue-400 */
+      --accent: #22d3ee;  /* cyan-400 */
+      --accent-2:#34d399; /* emerald-400 */
+      --danger:#ef4444;
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+
+    * { box-sizing: border-box }
+    html, body { margin:0; padding:0; background:var(--bg); color:var(--text); font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, 'Noto Sans KR', sans-serif; }
+    a { color: inherit; text-decoration: none }
+    img { max-width: 100%; display:block }
+    button { font: inherit }
+
+    .container { width: min(1200px, 92%); margin-inline:auto; }
+    .grid { display:grid; gap: 24px }
+
+    /* Header */
+    header.site { position:sticky; top:0; z-index:50; backdrop-filter: blur(8px); background: color-mix(in oklab, var(--bg) 85%, #000 15%); border-bottom: 1px solid #1f2937; }
+    .nav { display:flex; align-items:center; justify-content:space-between; height: 64px; }
+    .brand { display:flex; align-items:center; gap:12px; font-weight:700 }
+    .brand .logo { width:28px; height:28px; background:linear-gradient(135deg, var(--brand), var(--accent)); border-radius:8px }
+    .nav a { opacity:.9; padding: 10px 12px; border-radius: 10px }
+    .nav a:hover { background:#111827 }
+    .cta-group { display:flex; gap:10px }
+    .btn { padding: 12px 16px; border-radius: 999px; border:1px solid #1f2937; background:#0b1220; color:var(--text); cursor:pointer; transition:.2s transform; }
+    .btn:hover { transform: translateY(-1px) }
+    .btn.primary { background: linear-gradient(135deg, var(--brand), var(--accent)); color:#0b1220; border: none; }
+    .btn.outline { background: transparent; border:1px solid #374151 }
+
+    /* Hero */
+    .hero { padding: 80px 0 40px; background: radial-gradient(1200px 500px at 70% -10%, rgba(96,165,250,.15), transparent), radial-gradient(600px 400px at 10% 10%, rgba(34,211,238,.12), transparent); }
+    .hero .wrap { display:grid; grid-template-columns: 1.1fr .9fr; gap: 32px; align-items:center }
+    .kicker { color: var(--accent); font-weight:600; letter-spacing:.02em; font-size:14px; }
+    .title { font-size: clamp(28px, 4.6vw, 54px); line-height:1.05; font-weight: 850; letter-spacing:-.02em; margin: 10px 0 12px }
+    .subtitle { color: var(--muted); font-size: clamp(15px, 1.9vw, 18px); }
+    .hero .cta-row { margin-top: 18px; display:flex; gap: 12px; flex-wrap:wrap }
+    .hero .badges { margin-top: 20px; display:flex; gap: 14px; align-items:center; flex-wrap:wrap; color:#cbd5e1 }
+    .hero .panel { background: var(--panel); border:1px solid #1f2937; padding: 14px; border-radius: var(--radius); box-shadow: var(--shadow) }
+
+    .video-stub { aspect-ratio: 16/10; border-radius: 14px; background: #0b1220; border:1px dashed #334155; display:grid; place-items:center; color:#9ca3af; position:relative; overflow:hidden }
+    .video-stub button { position:absolute; inset:auto auto 12px 12px }
+
+    /* Trust */
+    .trust { padding: 26px 0 10px }
+    .trust .logos { display:grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 24px; align-items:center; opacity:.8; filter:saturate(.7) }
+
+    /* Segments */
+    .segments { padding: 40px 0 }
+    .card { background: var(--panel); border:1px solid #1f2937; border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); display:flex; flex-direction:column; gap:10px }
+    .card h3 { margin:0; font-size: 20px }
+    .card p { color: var(--muted); margin:0 }
+    .card .actions { margin-top:auto; display:flex; gap:10px; flex-wrap:wrap }
+
+    /* Features */
+    .features { padding: 50px 0 }
+    .features .grid { grid-template-columns: repeat(3, minmax(0,1fr)) }
+    .feat { background:#0b1220; border:1px solid #1f2937; border-radius:14px; padding:18px }
+    .feat h4 { margin: 6px 0 8px }
+    .feat p { color: var(--muted); margin:0 }
+
+    /* Quiz */
+    .quiz { padding: 54px 0 }
+    .quiz .q { background: var(--panel); border:1px solid #1f2937; border-radius: 14px; padding:18px }
+
+    /* Lead magnet */
+    .lead { padding: 40px 0 }
+    .lead .inner { background: linear-gradient(135deg, rgba(34,211,238,.12), rgba(96,165,250,.12)); border:1px solid #1f2937; border-radius: var(--radius); padding: 24px }
+
+    /* Pricing */
+    .pricing { padding: 40px 0 }
+    .pricing .plans { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 20px }
+    .plan { background: var(--panel); border:1px solid #1f2937; border-radius: var(--radius); padding: 22px; display:flex; flex-direction:column; gap: 8px }
+    .plan .price { font-size: 28px; font-weight: 800 }
+    .plan ul { margin: 8px 0 0 18px; color: var(--muted) }
+
+    /* Testimonials */
+    .testimonials { padding: 50px 0 }
+    .carousel { position:relative; overflow:hidden; border-radius:14px; border:1px solid #1f2937; background: #0b1220 }
+    .track { display:flex; transition: transform .4s ease; }
+    .quote { min-width:100%; padding: 26px }
+    .quote p { font-size:18px; line-height:1.6 }
+
+    /* FAQ */
+    .faq { padding: 40px 0 }
+    .faq details { background: var(--panel); border:1px solid #1f2937; padding:16px; border-radius:12px }
+    .faq details + details { margin-top:10px }
+
+    /* Form */
+    .contact { padding: 54px 0 }
+    form.contact { background: var(--panel); border:1px solid #1f2937; padding: 20px; border-radius: var(--radius); display:grid; gap: 14px }
+    .row { display:grid; grid-template-columns: 1fr 1fr; gap: 12px }
+    label { font-weight:600; font-size:14px }
+    input, select, textarea { width:100%; padding: 12px 12px; background: #0b1220; border:1px solid #334155; border-radius: 10px; color: var(--text) }
+    .help { color: var(--muted); font-size:12px }
+    .error { color: var(--danger); font-size: 12px }
+
+    /* Footer */
+    footer { padding: 30px 0; border-top: 1px solid #1f2937; color:#9aa4b2 }
+
+    /* Utilities */
+    .section-title { font-size: 24px; margin: 0 0 12px; letter-spacing:-.01em }
+    .pill { background:#0b1220; border:1px solid #334155; padding:6px 10px; border-radius:999px; font-size:12px; color:#cbd5e1 }
+
+    @media (max-width: 960px) {
+      .hero .wrap { grid-template-columns: 1fr }
+      .trust .logos { grid-template-columns: repeat(3, minmax(0,1fr)) }
+      .features .grid { grid-template-columns: 1fr 1fr }
+      .pricing .plans { grid-template-columns: 1fr }
+      .row { grid-template-columns: 1fr }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .track { transition: none }
+      .btn:hover { transform:none }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="site">
+    <div class="container nav">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <span>StoryTrip</span>
+      </div>
+      <nav class="hide-mobile">
+        <a href="#features">특징</a>
+        <a href="#demo">데모</a>
+        <a href="#segments">이용대상</a>
+        <a href="#pricing">요금</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <div class="cta-group">
+        <a class="btn outline" href="#lead">가이드북 받기</a>
+        <a class="btn primary" href="#contact">상담 신청</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="container wrap">
+      <div>
+        <div class="kicker">AR·미션형 오디오 기반 역사 체험</div>
+        <h1 id="hero-title" class="title">여행을 떠나는 순간, 당신은 역사 속 주인공이 됩니다</h1>
+        <p class="subtitle">스토리텔링 오디오와 AR 장면이 어우러진 인터랙티브 역사 투어. 개인, 학교, 기업 연수까지 맞춤형으로 경험하세요</p>
+        <div class="cta-row" role="group" aria-label="주요 행동">
+          <a class="btn primary" href="#quiz" id="cta-start">내 취향 코스 추천 받기</a>
+          <a class="btn" href="#demo">1분 데모 보기</a>
+          <a class="btn" href="#contact">B2B·교육 문의</a>
+        </div>
+        <div class="badges">
+          <span class="pill">평균 만족도 4.9/5</span>
+          <span class="pill">누적 체험 12만+</span>
+          <span class="pill">스토리형 미션 콘텐츠 제공</span>
+        </div>
+      </div>
+      <div class="panel" id="demo">
+        <div class="video-stub" aria-label="데모 영상">
+          <!-- YouTube 데모 임베드: 아래 VIDEO_ID 를 실제 ID로 교체하세요 -->
+          <iframe
+            id="ytDemo"
+            width="100%"
+            height="100%"
+            src="https://www.youtube-nocookie.com/embed/VIDEO_ID?rel=0&modestbranding=1&playsinline=1"
+            title="StoryTrip 인터랙티브 데모"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+            loading="lazy"
+            referrerpolicy="strict-origin-when-cross-origin"></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust logos -->
+  <section class="trust" aria-label="신뢰 로고">
+    <div class="container logos">
+      <img src="/assets/logo1.svg" alt="파트너 로고 1" />
+      <img src="/assets/logo2.svg" alt="파트너 로고 2" />
+      <img src="/assets/logo3.svg" alt="파트너 로고 3" />
+      <img src="/assets/logo4.svg" alt="파트너 로고 4" />
+      <img src="/assets/logo5.svg" alt="파트너 로고 5" />
+      <img src="/assets/logo6.svg" alt="파트너 로고 6" />
+    </div>
+  </section>
+
+  <!-- Segments -->
+  <section id="segments" class="segments">
+    <div class="container grid" style="grid-template-columns: repeat(3, minmax(0,1fr))">
+      <div class="card">
+        <h3>개인·소규모</h3>
+        <p>웹소설 같은 오디오 스토리와 AR로 주말 산책이 특별한 역사 체험으로 변합니다</p>
+        <div class="actions">
+          <a class="btn" href="#quiz">코스 추천</a>
+          <a class="btn outline" href="#pricing">요금 보기</a>
+        </div>
+      </div>
+      <div class="card">
+        <h3>학교·교육기관</h3>
+        <p>학생들이 직접 스토리 속 주인공이 되어 역사 맥락을 따라가며 배우는 체험형 수업</p>
+        <div class="actions">
+          <a class="btn" href="#contact">단체 상담</a>
+          <a class="btn outline" href="#lead">수업 가이드</a>
+        </div>
+      </div>
+      <div class="card">
+        <h3>기업 연수·워크숍</h3>
+        <p>팀이 함께 미션을 풀어나가며 협업과 리더십을 배우는 인터랙티브 역사 워크숍</p>
+        <div class="actions">
+          <a class="btn" href="#contact">프로그램 제안서</a>
+          <a class="btn outline" href="#pricing">B2B 요금</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features" class="features">
+    <div class="container">
+      <h2 class="section-title">StoryTrip의 특징</h2>
+      <div class="grid">
+        <div class="feat">
+          <h4>스토리형 오디오</h4>
+          <p>역사적 사실을 단순히 듣는 것이 아니라, 미션과 서사를 따라가며 참여하는 오디오 콘텐츠</p>
+        </div>
+        <div class="feat">
+          <h4>AR 현장 재현</h4>
+          <p>역사 속 장면을 눈앞에 오버레이해 마치 과거 속으로 걸어 들어간 듯한 경험</p>
+        </div>
+        <div class="feat">
+          <h4>맞춤형 코스</h4>
+          <p>목적·시간·취향에 맞춰 자동 구성되는 개인화된 투어 루트</p>
+        </div>
+        <div class="feat">
+          <h4>교육·기업 특화</h4>
+          <p>학습 목표와 팀빌딩을 반영한 커리큘럼과 운영 툴킷</p>
+        </div>
+        <div class="feat">
+          <h4>데이터 리포트</h4>
+          <p>참여율, 몰입도, 학습 성취를 분석해 제공</p>
+        </div>
+        <div class="feat">
+          <h4>현장+디지털 융합</h4>
+          <p>해설사, 박물관, 지자체와 제휴한 온·오프라인 연계 경험</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quiz -->
+  <section id="quiz" class="quiz">
+    <div class="container grid" style="grid-template-columns: 1.1fr .9fr">
+      <div class="q">
+        <h2 class="section-title">3문항으로 코스 추천 받기</h2>
+        <form id="quizForm" class="grid" style="gap:14px">
+          <div>
+            <label>누구와 떠나시나요?</label>
+            <select name="group">
+              <option value="solo">혼자/2인</option>
+              <option value="family">가족</option>
+              <option value="school">학교/교육</option>
+              <option value="corp">기업/팀</option>
+            </select>
+          </div>
+          <div>
+            <label>선호 스타일</label>
+            <select name="style">
+              <option value="walk">도보 탐방</option>
+              <option value="museum">박물관 중심</option>
+              <option value="ar">AR 체험 위주</option>
+              <option value="story">스토리 오디오 중심</option>
+              <option value="mix">혼합형</option>
+            </select>
+          </div>
+          <div>
+            <label>가능 시간</label>
+            <select name="time">
+              <option value="2h">2~3시간</option>
+              <option value="half">반나절</option>
+              <option value="full">하루</option>
+            </select>
+          </div>
+          <button class="btn primary" type="submit">추천 보기</button>
+          <p id="quizResult" aria-live="polite"></p>
+        </form>
+      </div>
+      <div class="panel">
+        <h3 style="margin-top:0">스토리 오디오 & AR 미리보기</h3>
+        <div class="video-stub"><p>미션형 오디오+AR 씬 예시 영역</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Samples: Audio & Mission -->
+  <section id="samples" class="samples" style="padding:48px 0">
+    <div class="container grid" style="grid-template-columns: 1.1fr .9fr">
+      <!-- Audio sample -->
+      <div class="card" aria-labelledby="audio-head">
+        <div class="pill" style="width:max-content">오디오 샘플</div>
+        <h2 id="audio-head" class="section-title" style="margin-top:6px">스토리 오디오 맛보기</h2>
+        <p class="subtitle">미션이 포함된 웹소설형 내레이션을 들어보세요 (샘플 45초)</p>
+        <audio id="sampleAudio" controls preload="none" style="width:100%">
+          <!-- 실제 파일로 교체: /assets/audio/sample.mp3 -->
+          <source src="/assets/audio/sample.mp3" type="audio/mpeg" />
+          <source src="/assets/audio/sample.ogg" type="audio/ogg" />
+          브라우저가 오디오 태그를 지원하지 않습니다.
+        </audio>
+        <details style="margin-top:10px">
+          <summary>스크립트 보기</summary>
+          <p class="help">“정동 네거리, 당신 앞에 멈춰 선 우편 마차에서 비밀 서류가 떨어집니다… (중략) 2분 안에 덕수궁 대한문으로 이동해 표식을 확인하세요.”</p>
+        </details>
+      </div>
+
+      <!-- Mission demo -->
+      <div class="card" aria-labelledby="mission-head">
+        <div class="pill" style="width:max-content">미션 데모</div>
+        <h2 id="mission-head" class="section-title" style="margin-top:6px">웹소설식 미션 체험</h2>
+        <p class="subtitle">간단한 선택형 데모입니다. 현장에서는 위치·AR과 연동됩니다.</p>
+        <div id="missionBox" style="background:#0b1220; border:1px solid #1f2937; border-radius:12px; padding:16px">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px">
+            <span class="pill" id="mStep">1/3</span>
+            <div aria-hidden="true" style="flex:1; height:6px; background:#111827; border-radius:999px; overflow:hidden">
+              <div id="mBar" style="height:100%; width:33%; background:linear-gradient(90deg, var(--brand), var(--accent))"></div>
+            </div>
+          </div>
+          <div id="mStory" style="min-height:84px">정동길 초입. 전보국에서 나온 기록원과 스쳐 지나갑니다. 손에서 떨어진 쪽지에는 ‘대한문 12시’라 적혀 있습니다. 당신의 선택은?</div>
+          <div id="mChoices" style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap">
+            <button class="btn" data-choice="follow">기록원을 따라간다</button>
+            <button class="btn outline" data-choice="note">쪽지를 먼저 확인한다</button>
+          </div>
+        </div>
+        <p id="mHint" class="help" style="margin-top:8px"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lead magnet -->
+  <section id="lead" class="lead">
+    <div class="container inner">
+      <div class="grid" style="grid-template-columns: 1fr .9fr">
+        <div>
+          <h2 class="section-title">무료 가이드북: 서울 근현대사 코스 7선</h2>
+          <p class="subtitle">이메일을 남기면 PDF를 보내드립니다. 초보자도 쉽게 따라갈 수 있는 동선·식당·주의사항까지.</p>
+          <form id="leadForm" class="grid" style="grid-template-columns:1fr auto; gap:10px">
+            <input type="email" name="email" placeholder="이메일 주소" required aria-label="이메일" />
+            <button class="btn primary" type="submit">받기</button>
+          </form>
+          <p id="leadMsg" class="help"></p>
+        </div>
+        <div class="panel" aria-hidden="true"><div class="video-stub"><p>가이드북 미리보기</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section id="pricing" class="pricing">
+    <div class="container">
+      <h2 class="section-title">요금 및 패키지</h2>
+      <div class="plans">
+        <div class="plan">
+          <h3>개인</h3>
+          <div class="price">₩9,900 ~</div>
+          <ul>
+            <li>스토리 오디오·AR 이용</li>
+            <li>맞춤 코스 자동 생성</li>
+            <li>이벤트 알림</li>
+          </ul>
+          <a class="btn primary" href="#contact">시작하기</a>
+        </div>
+        <div class="plan" style="outline:2px solid var(--accent); outline-offset:2px">
+          <h3>교육기관</h3>
+          <div class="price">맞춤 견적</div>
+          <ul>
+            <li>커리큘럼 설계 지원</li>
+            <li>단체 안전 툴킷</li>
+            <li>현장 운영 매뉴얼</li>
+          </ul>
+          <a class="btn primary" href="#contact">상담 요청</a>
+        </div>
+        <div class="plan">
+          <h3>기업</h3>
+          <div class="price">맞춤 견적</div>
+          <ul>
+            <li>팀빌딩/리더십 프로그램</li>
+            <li>데이터 리포트</li>
+            <li>오프라인 제휴</li>
+          </ul>
+          <a class="btn primary" href="#contact">제안서 받기</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials">
+    <div class="container">
+      <h2 class="section-title">이용자 후기</h2>
+      <div class="carousel" aria-label="후기 슬라이더">
+        <div class="track" id="tTrack">
+          <div class="quote">
+            <p>“스토리 오디오 덕분에 현장이 한 편의 드라마처럼 느껴졌어요.” — ○○중 역사교사</p>
+          </div>
+          <div class="quote">
+            <p>“AR 장면과 스토리 미션 조합이 최고. 아이들도 집중했어요!” — 가족 이용자</p>
+          </div>
+          <div class="quote">
+            <p>“팀으로 역할을 나눠 미션을 해결하니 대화가 자연스럽게 늘었어요.” — △△기업 HR</p>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex; gap:10px; margin-top:10px">
+        <button class="btn outline" id="prev">이전</button>
+        <button class="btn outline" id="next">다음</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="faq">
+    <div class="container">
+      <h2 class="section-title">자주 묻는 질문</h2>
+      <details>
+        <summary>오디오가 정말 ‘미션형’인가요?</summary>
+        <p>네. 단순 해설이 아니라, 현장에서 미션과 선택지가 이어지는 스토리형 오디오를 제공합니다.</p>
+      </details>
+      <details>
+        <summary>AR 기능은 모든 기기에서 작동하나요?</summary>
+        <p>최근 3년 이내 기기 대부분에서 사용 가능하나, 일부 모델은 제한될 수 있습니다. 데모로 호환을 먼저 확인하세요.</p>
+      </details>
+      <details>
+        <summary>오프라인 해설사 연계가 가능한가요?</summary>
+        <p>네, 지역 파트너와의 연계를 지원합니다. 교육/기업 전용 문의에서 요청해 주세요.</p>
+      </details>
+      <details>
+        <summary>환불 정책은 어떻게 되나요?</summary>
+        <p>구매 후 7일 이내 미이용 시 전액 환불, 일부 이용 시 비례 환불을 원칙으로 합니다.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="contact">
+    <div class="container">
+      <h2 class="section-title">상담 신청</h2>
+      <form id="contactForm" class="contact" novalidate>
+        <div class="row">
+          <div>
+            <label for="name">이름</label>
+            <input id="name" name="name" required placeholder="홍길동" />
+            <div class="error" data-err="name"></div>
+          </div>
+          <div>
+            <label for="email">이메일</label>
+            <input id="email" type="email" name="email" required placeholder="name@example.com" />
+            <div class="error" data-err="email"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label for="role">구분</label>
+            <select id="role" name="role">
+              <option value="individual">개인</option>
+              <option value="edu">학교/교육기관</option>
+              <option value="corp">기업/단체</option>
+            </select>
+          </div>
+          <div>
+            <label for="budget">예산 범위</label>
+            <select id="budget" name="budget">
+              <option value="<100k">10만원 미만</option>
+              <option value="100-500k">10~50만원</option>
+              <option value=">500k">50만원 이상</option>
+              <option value="custom">맞춤 협의</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label>관심 분야(복수 선택)</label>
+            <div style="display:flex; gap:10px; flex-wrap:wrap">
+              <label class="pill"><input type="checkbox" name="interests" value="story" /> 스토리 오디오</label>
+              <label class="pill"><input type="checkbox" name="interests" value="ar" /> AR 체험</label>
+              <label class="pill"><input type="checkbox" name="interests" value="museum" /> 박물관</label>
+              <label class="pill"><input type="checkbox" name="interests" value="walk" /> 도보</label>
+              <label class="pill"><input type="checkbox" name="interests" value="teambuilding" /> 팀빌딩</label>
+            </div>
+          </div>
+          <div>
+            <label for="size">예상 인원</label>
+            <input id="size" name="size" type="number" min="1" placeholder="예: 25" />
+          </div>
+        </div>
+        <div>
+          <label for="msg">요청사항</label>
+          <textarea id="msg" name="msg" rows="4" placeholder="희망 일정, 지역, 특이사항 등"></textarea>
+        </div>
+        <label style="display:flex; align-items:center; gap:8px">
+          <input type="checkbox" id="consent" required /> 마케팅 정보 수신에 동의합니다.
+        </label>
+        <button class="btn primary" type="submit">제출</button>
+        <p id="contactThanks" class="help" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container" style="display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap">
+      <small>© <span id="year"></span> StoryTrip</small>
+      <div style="display:flex; gap:12px">
+        <a href="#">이용약관</a>
+        <a href="#">개인정보처리방침</a>
+        <a href="#">고객센터</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Smooth scroll for internal links
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        const id = a.getAttribute('href');
+        const el = document.querySelector(id);
+        if (el) { e.preventDefault(); el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      });
+    });
+
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Simple testimonials carousel
+    (function(){
+      const track = document.getElementById('tTrack');
+      const slides = Array.from(track.children);
+      let idx = 0;
+      function go(i){ idx = (i + slides.length) % slides.length; track.style.transform = `translateX(-${idx*100}%)`; }
+      document.getElementById('prev').addEventListener('click', ()=>go(idx-1));
+      document.getElementById('next').addEventListener('click', ()=>go(idx+1));
+      let auto = setInterval(()=>go(idx+1), 6000);
+      ['mouseenter','focusin'].forEach(ev=>track.addEventListener(ev, ()=>clearInterval(auto)));
+    })();
+
+    // Quiz logic: rule-based suggestions (story style 반영)
+    document.getElementById('quizForm').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const fd = new FormData(e.currentTarget);
+      const group = fd.get('group');
+      const style = fd.get('style');
+      const time = fd.get('time');
+      let rec = '';
+      if (group==='school') rec = '학교 전용: 경복궁·서대문형무소 — 학생 미션 오디오 포함';
+      else if (group==='corp') rec = '기업 전용: 정동·덕수궁 팀빌딩 투어 — 협업형 스토리 미션';
+      else if (style==='ar') rec = 'AR 집중 코스: 창덕궁·수원화성 장면 재현';
+      else if (style==='story') rec = '스토리 오디오 집중: 북촌 골목 웹소설형 투어';
+      else if (style==='museum') rec = '박물관 중심: 국립중앙박물관·도산안창호기념관';
+      else rec = '도보 혼합형: 종로 골목 스토리워크';
+      if (time==='2h') rec += ' — 2~3시간 코스 요약 제공';
+      if (time==='full') rec += ' — 하루 몰입형 코스';
+      document.getElementById('quizResult').textContent = '추천: ' + rec + ' · 상담을 원하시면 아래 폼을 제출하세요.';
+    });
+
+    // Mission demo logic (simple client-side state machine)
+    (function(){
+      const story = document.getElementById('mStory');
+      const choices = document.getElementById('mChoices');
+      const step = document.getElementById('mStep');
+      const bar = document.getElementById('mBar');
+      const hint = document.getElementById('mHint');
+      if(!story || !choices) return;
+      const scenes = [
+        {
+          text: '정동길 초입. 전보국에서 나온 기록원과 스쳐 지나갑니다. 손에서 떨어진 쪽지에는 “대한문 12시”. 당신의 선택은?',
+          options: [
+            { key:'follow', label:'기록원을 따라간다', next:1, feedback:'발걸음을 맞추자 기록원이 주위를 살핍니다.' },
+            { key:'note', label:'쪽지를 먼저 확인한다', next:1, feedback:'쪽지 뒷면에 “바람이 불면 깃발을 보라”는 문구가 있습니다.' }
+          ]
+        },
+        {
+          text: '대한문 방향으로 불어오는 바람. 정문 깃발이 반쯤 내려와 있습니다. 무엇을 확인할까요?',
+          options: [
+            { key:'flag', label:'깃발 아래 표식을 찾는다', next:2, feedback:'돌난간 아래 새겨진 “ㅅ·ㄷ·ㄱ” 표식을 발견합니다.' },
+            { key:'crowd', label:'사람들 동선을 관찰한다', next:2, feedback:'문 주변으로 호위가 늘었습니다. 서둘러야 합니다.' }
+          ]
+        },
+        {
+          text: '표식 근처에서 작은 금속함을 발견합니다. 어떻게 열까요?',
+          options: [
+            { key:'code', label:'표식 자음 순서로 조합한다', next:null, feedback:'찰칵! 상자가 열리고 마지막 단서가 나타납니다.' },
+            { key:'force', label:'힘으로 연다', next:null, feedback:'덜컥거릴 뿐입니다. 순서가 중요해 보입니다.' }
+          ]
+        }
+      ];
+      let i=0;
+      function render(){
+        step.textContent = `${i+1}/${scenes.length}`;
+        bar.style.width = `${((i+1)/scenes.length)*100}%`;
+        story.textContent = scenes[i].text;
+        choices.innerHTML = '';
+        scenes[i].options.forEach(o=>{
+          const b = document.createElement('button');
+          b.className = o.key==='force' ? 'btn outline' : 'btn';
+          b.textContent = o.label;
+          b.dataset.choice = o.key;
+          b.addEventListener('click', ()=>{
+            hint.textContent = o.feedback;
+            if(o.next===null){
+              // finish
+              setTimeout(()=>{ hint.textContent = '미션 완료! 현장 투어에서 전체 시나리오를 경험해 보세요.'; }, 600);
+            } else { i=o.next; render(); }
+          });
+          choices.appendChild(b);
+        });
+      }
+      render();
+    })();
+
+    // Lead magnet stub
+    document.getElementById('leadForm').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const email = new FormData(e.currentTarget).get('email');
+      // TODO: connect real API
+      document.getElementById('leadMsg').textContent = `가이드북 다운로드 링크를 ${email} 로 전송했습니다. 스팸함도 확인해 주세요.`;
+      e.currentTarget.reset();
+    });
+
+    // Contact form validation stub
+    document.getElementById('contactForm').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const form = e.currentTarget;
+      const fd = new FormData(form);
+      const errors = {};
+      if (!fd.get('name')) errors.name = '이름을 입력해 주세요.';
+      const email = fd.get('email');
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = '유효한 이메일을 입력해 주세요.';
+      ['name','email'].forEach(k=>{
+        const el = form.querySelector(`[data-err="${k}"]`);
+        el.textContent = errors[k] || '';
+      });
+      if (Object.keys(errors).length) return;
+      if (!document.getElementById('consent').checked) { alert('마케팅 정보 수신 동의가 필요합니다.'); return; }
+      // TODO: connect CRM/Slack webhook
+      await new Promise(r=>setTimeout(r, 400));
+      document.getElementById('contactThanks').textContent = '접수되었습니다! 24시간 이내 담당자가 연락드립니다.';
+      form.reset();
+    });
+
+    // Analytics placeholder (replace with GA/Meta)
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments) }
+    gtag('js', new Date());
+    gtag('config', 'GA-MEASURE-ID');
+  </script>
+</body>
+</html>
