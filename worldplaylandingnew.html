@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>액티브 이머시브 스토리 미션 여행</title>
+
+  <!-- SEO -->
+  <meta name="description" content="지도를 고르고 디지털 키트를 받아 시작하는 야외 스토리 미션 여행. 2–6인, 60–90분, 도심이 무대가 됩니다." />
+  <link rel="canonical" href="https://tech.worldplay.kr/play/worldplaylanding.html" />
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:title" content="당신의 선택이 이야기가 되는 국내 여행" />
+  <meta property="og:description" content="연극x게임, 도심형 야외 스토리 미션. 지금 디지털 키트를 무료로 받아보세요." />
+  <meta property="og:image" content="/og.jpg" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Schema.org (Service) -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"Service",
+    "name":"액티브 이머시브 스토리 미션 여행",
+    "serviceType":"Immersive Outdoor Story Mission",
+    "areaServed":"KR",
+    "provider":{"@type":"Organization","name":"WorldPlay"},
+    "offers":{"@type":"Offer","availability":"https://schema.org/PreOrder","price":"0","priceCurrency":"KRW"}
+  }
+  </script>
+
+  <style>
+    :root{
+      --ink:#0b1220;           /* 깊은 네이비 */
+      --ink-2:#111827;         /* 다크 그레이 블루 */
+      --panel:#0f172a;         /* 섹션 배경 */
+      --text:#e5e7eb;          /* 본문 텍스트 */
+      --muted:#9ca3af;         /* 보조 텍스트 */
+      --brand:#f5c24b;         /* 프리미엄 골드 */
+      --brand-2:#f1b72b;
+      --glass: rgba(255,255,255,.06);
+      --stroke: rgba(255,255,255,.12);
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 16px;
+      --radius-lg: 22px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Pretendard,Apple SD Gothic Neo,Arial;
+      color:var(--text);
+      background:
+        radial-gradient(60rem 60rem at 120% -20%, #1f2937 0%, transparent 60%),
+        radial-gradient(50rem 50rem at -10% 10%, #0a0f1d 0%, transparent 60%),
+        linear-gradient(180deg, var(--ink) 0%, var(--panel) 100%);
+      letter-spacing:.1px;
+    }
+    a{color:inherit; text-decoration:none}
+    .wrap{max-width:1120px; margin:0 auto; padding:0 20px}
+    .section{padding:96px 0}
+    .shadow{box-shadow:var(--shadow)}
+    .card{
+      background:var(--glass);
+      border:1px solid var(--stroke);
+      border-radius:var(--radius);
+      backdrop-filter: blur(10px);
+    }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:10px;
+      padding:14px 22px; border-radius:14px; font-weight:700; font-size:16px;
+      transition:.2s ease; cursor:pointer; border:1px solid transparent;
+    }
+    .btn-primary{
+      background:linear-gradient(180deg, var(--brand), var(--brand-2));
+      color:#1a1a1a; box-shadow:0 6px 18px rgba(245,194,75,.25);
+    }
+    .btn-primary:hover{transform:translateY(-1px); filter:saturate(1.05)}
+    .btn-ghost{
+      background:transparent; color:var(--text); border-color:var(--stroke)
+    }
+    .btn-ghost:hover{background:rgba(255,255,255,.08)}
+    header{
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(10px);
+      background:linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.25));
+      border-bottom:1px solid var(--stroke);
+    }
+    .nav{display:flex; gap:26px; font-size:14px; color:var(--muted)}
+    .nav a{padding:8px 0}
+    .nav a:hover{color:#fff}
+    .hero{
+      position:relative; min-height:76vh; display:grid; place-items:center; text-align:center; overflow:hidden;
+    }
+    .hero-media{
+      position:absolute; inset:0; overflow:hidden;
+    }
+    .hero-media img{
+      width:100%; height:100%; object-fit:cover; opacity:.45; transform:scale(1.04)
+    }
+    .hero-overlay{
+      position:absolute; inset:0;
+      background:radial-gradient(80rem 40rem at 50% 10%, rgba(245,194,75,.08), transparent 60%),
+                 linear-gradient(180deg, rgba(0,0,0,.6), rgba(0,0,0,.9));
+    }
+    .hero-inner{position:relative; z-index:1; max-width:880px; padding:80px 20px}
+    h1{margin:0; font-size:44px; line-height:1.18; letter-spacing:.2px}
+    .hero-sub{margin-top:14px; font-size:18px; color:#d1d5db}
+    .meta{margin-top:8px; font-size:13px; color:var(--muted)}
+    .cta-row{display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:24px}
+
+    h2.section-title{font-size:34px; margin:0 0 10px}
+    .section-lead{color:var(--muted); margin-top:4px; font-size:15px}
+
+    .grid-3{display:grid; gap:18px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+    .tile{padding:24px}
+    .tile h3{margin:0 0 8px; color:var(--brand); font-size:18px}
+    .tile p{margin:0; color:#cbd5e1}
+
+    .reviews{display:grid; gap:18px; grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+    blockquote.review{padding:22px; font-style:italic; color:#e5e7eb}
+
+    .form{max-width:560px; margin:0 auto}
+    .input{
+      width:100%; padding:14px 16px; border-radius:14px; border:1px solid var(--stroke);
+      background:rgba(255,255,255,.06); color:#fff; font-size:16px; transition:.2s;
+    }
+    .input::placeholder{color:#a3a3a3}
+    .input:focus{outline:none; border-color:var(--brand)}
+    .hint{font-size:12px; color:var(--muted)}
+    .sr-only{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+    footer{
+      border-top:1px solid var(--stroke);
+      background:linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.45));
+      color:#c9c9c9; text-align:center; padding:28px 16px; margin-top:24px
+    }
+
+    /* 작은 화면 타이포/여백 보정 */
+    @media (max-width: 640px){
+      h1{font-size:34px}
+      .hero-inner{padding:64px 16px}
+      .section{padding:72px 0}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px">
+      <div aria-label="WorldPlay 로고" style="font-weight:800;letter-spacing:.4px">WorldPlay</div>
+      <nav class="nav" aria-label="주요">
+        <a href="#how">이용 방법</a>
+        <a href="#value">특징</a>
+        <a href="#reviews">후기</a>
+        <a href="#lead">디지털 키트</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-media">
+      <img src="east-asian-bg.png" alt="도심에서 진행되는 야외 스토리 미션" loading="eager" />
+    </div>
+    <div class="hero-overlay"></div>
+
+    <div class="hero-inner wrap">
+      <h1>당신의 선택이 이야기가 되는 국내 여행</h1>
+      <p class="hero-sub">디지털 키트를 받고 시작하는 야외 스토리 미션. 도시는 무대가 됩니다.</p>
+      <p class="meta">2–6인 · 60–90분 · 서울/부산/제주 순차 오픈</p>
+
+      <div class="cta-row" role="group" aria-label="주요 행동">
+        <a class="btn btn-primary" href="#lead">디지털 키트 받기(무료)</a>
+        <a class="btn btn-ghost" href="#trailer">60초로 보기</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUE -->
+  <section id="value" class="section">
+    <div class="wrap">
+      <h2 class="section-title">왜 새로운 주말 플레이인가?</h2>
+      <p class="section-lead">연극과 게임 사이, 당신의 선택이 분기를 만듭니다.</p>
+
+      <div class="grid-3" style="margin-top:18px">
+        <div class="card tile">
+          <h3>실시간 분기</h3>
+          <p>배우/미션과 상호작용, 선택에 따라 전개가 달라집니다.</p>
+        </div>
+        <div class="card tile">
+          <h3>도심이 무대</h3>
+          <p>카페/골목/마켓을 잇는 탐험형 동선.</p>
+        </div>
+        <div class="card tile">
+          <h3>완전 팀플레이</h3>
+          <p>2–6인이 역할을 나누고 협력합니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how" class="section" aria-labelledby="how-title">
+    <div class="wrap">
+      <h2 id="how-title" class="section-title">진행 방식</h2>
+      <p class="section-lead">간단하게 시작하고, 현장에서 몰입하세요.</p>
+
+      <div class="grid-3" style="margin-top:18px">
+        <div class="card tile">
+          <h3>1. 지역 선택</h3>
+          <p>선호 지역을 정하고 안내를 받습니다.</p>
+        </div>
+        <div class="card tile">
+          <h3>2. 키트 수령</h3>
+          <p>이메일로 디지털 키트/안내를 받습니다.</p>
+        </div>
+        <div class="card tile">
+          <h3>3. 현장 플레이</h3>
+          <p>분기형 미션을 수행하고 에필로그까지.</p>
+        </div>
+      </div>
+
+      <!-- 중앙 정렬된 CTA (요청 사항) -->
+      <div class="cta-row" style="margin-top:28px">
+        <a class="btn btn-primary" href="#lead">지금 바로 디지털 키트 받기</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section id="reviews" class="section" aria-labelledby="reviews-title">
+    <div class="wrap">
+      <h2 id="reviews-title" class="section-title">베타 유저 후기</h2>
+      <p class="section-lead">사람들이 이렇게 말했어요.</p>
+
+      <div class="reviews" style="margin-top:18px">
+        <blockquote class="card review">“방탈출과 공연 사이 어딘가—진짜 내가 스토리를 움직였어요.” — 지수</blockquote>
+        <blockquote class="card review">“데이트로 갔는데 팀워크 터졌습니다. 사진/영상도 건짐.” — 민수</blockquote>
+      </div>
+    </div>
+  </section>
+
+<!-- LEAD FORM (요청한 구조로 수정, honeypot 유지) -->
+<section id="lead" class="section email-form" aria-labelledby="lead-title">
+    <div class="wrap">
+      <h2 id="lead-title" class="section-title">디지털 키트를 받아보세요</h2>
+      <p class="section-lead">이메일 주소와 가고 싶은 지역을 입력하고 디지털 키트를 받아보세요. 모험이 곧 시작됩니다!</p>
+  
+      <!-- 요청한 form 구조 -->
+      <form class="form card" action="https://formspree.io/f/xovajpba" method="POST" style="padding:24px; margin-top:18px">
+        <label>
+          <input
+            type="email"
+            name="email"
+            placeholder="메일 주소"
+            required
+            autocomplete="email"
+            class="input"
+          />
+        </label>
+  
+        <div style="height:10px"></div>
+  
+        <label>
+          <textarea
+            name="message"
+            placeholder="가고 싶은 지역 (예: 성수/홍대/제주)"
+            required
+            rows="3"
+            class="input"
+          ></textarea>
+        </label>
+  
+        <!-- honeypot (스팸 방지) -->
+        <input
+          type="text"
+          name="hp"
+          class="sr-only"
+          tabindex="-1"
+          autocomplete="off"
+          aria-hidden="true"
+        />
+  
+        <div style="height:14px"></div>
+        <div class="cta-row">
+          <button type="submit" class="btn btn-primary" style="min-width:220px">
+            디지털 키트 받기
+          </button>  
+        </div>
+
+
+      <p class="hint" style="margin-top:10px; text-align:center">
+        제출 시 <a href="/privacy.html">개인정보 처리방침</a>에 동의합니다.
+      </p>
+      <p
+        id="lead-success"
+        role="status"
+        style="display:none; color:#7ee29b; text-align:center; margin-top:8px"
+      >
+        신청 완료! 메일함을 확인해 주세요.
+      </p>
+      </form>
+    </div>
+  </section>
+  
+
+  
+  
+<!-- TRAILER -->
+<section id="trailer" class="section" aria-labelledby="trailer-title">
+    <div class="wrap">
+      <h2 id="trailer-title" class="section-title">60초로 보기</h2>
+      <p class="section-lead">분기 순간의 긴장감을 느껴보세요.</p>
+  
+      <!-- 실제 영상으로 교체 -->
+      <div class="card" style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; margin-top:18px; border-radius:12px;">
+        <iframe 
+          src="https://www.youtube.com/embed/YOUR_VIDEO_ID" 
+          title="티저" 
+          loading="lazy" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+          allowfullscreen
+          style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;">
+        </iframe>
+      </div>
+  
+      <div class="cta-row" style="margin-top:24px">
+        <a class="btn btn-ghost" href="#lead">먼저 키트 받고 나중에 보기</a>
+      </div>
+    </div>
+  </section>
+  
+
+  <footer>
+    <div class="wrap" style="display:flex; flex-direction:column; align-items:center; gap:10px">
+      <div style="color:#fff; font-weight:600">WorldPlay | 사업자정보 | 연락처</div>
+      <div style="opacity:.9; display:flex; gap:10px; font-size:13px">
+        <a href="/terms.html">이용약관</a> · <a href="/privacy.html">개인정보처리방침</a> · <a href="#lead">문의/신청</a>
+      </div>
+      <div style="font-size:12px; color:#a3a3a3">© <span id="y"></span> WorldPlay. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <script>
+    // footer year
+    document.getElementById('y').textContent = new Date().getFullYear();
+
+    // 성공 피드백 + 스팸 방지(honeypot: name="hp")
+    const form = document.getElementById('lead-form');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fd = new FormData(form);
+      if (fd.get('hp')) return; // bot
+      try{
+        await fetch(form.action || '#', { method:'POST', body: fd });
+        document.getElementById('lead-success').style.display = 'block';
+        form.reset();
+        track('lead_submit', {source:'lead_section'});
+      }catch(e){
+        console.error(e);
+      }
+    });
+
+    // 아주 가벼운 트래킹 큐
+    window.__aiq = [];
+    function track(e,c){window.__aiq.push({e,c,t:Date.now()})}
+    document.querySelectorAll('a.btn, .btn').forEach(a=>a.addEventListener('click',()=>track('cta_click',{href:a.getAttribute('href') || 'button'})));
+    const io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) track('section_view',{id:e.target.id}) }),{threshold:.5});
+    document.querySelectorAll('section[id]').forEach(sec=>io.observe(sec));
+  </script>
+</body>
+</html>
+
