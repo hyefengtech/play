@@ -133,6 +133,136 @@
       .track { transition: none }
       .btn:hover { transform:none }
     }
+
+/* ===== Mobile polish (append-only) ===== */
+
+/* 공통: 작은 화면에서 안전 영역 여백(iOS 노치), 글줄바꿈, 고정폭 요소 방지 */
+html, body {
+  padding-left: max(0px, env(safe-area-inset-left));
+  padding-right: max(0px, env(safe-area-inset-right));
+}
+img, iframe, video, audio, .video-stub { max-width: 100%; height: auto }
+* { word-break: keep-all; overflow-wrap: anywhere }
+
+/* 헤더: 모바일에서 내비 숨김 처리 (이미 class="hide-mobile" 사용 중) */
+@media (max-width: 960px) {
+  .hide-mobile { display: none !important }
+}
+
+/* 섹션별 여백 축소 & 요소 간격 최적화 */
+@media (max-width: 960px) {
+  .hero { padding: 48px 0 28px }
+  .features { padding: 36px 0 }
+  .segments { padding: 28px 0 }
+  .pricing { padding: 28px 0 }
+  .testimonials { padding: 36px 0 }
+  .faq { padding: 28px 0 }
+  .contact { padding: 36px 0 }
+  .lead { padding: 28px 0 }
+}
+
+/* 버튼/CTA: 터치 타겟 확대 & 줄바꿈 시 100% 너비로 배치 */
+@media (max-width: 640px) {
+  .cta-group,
+  .hero .cta-row,
+  .card .actions {
+    flex-direction: column;
+  }
+  .cta-group .btn,
+  .hero .cta-row .btn,
+  .card .actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .btn { padding: 14px 18px } /* 터치 타겟 44px+ 보장 */
+}
+
+/* 입력폼: 모바일에서 1열, 터치 여백 증가, 폰트 가독성 개선 */
+@media (max-width: 640px) {
+  .row { grid-template-columns: 1fr !important; gap: 10px }
+  input, select, textarea { padding: 14px 12px; font-size: 16px } /* iOS 확대 방지 */
+  form.contact { padding: 16px }
+  #leadForm { grid-template-columns: 1fr; }
+  #leadForm .btn { width: 100% }
+}
+
+/* 그리드/카드: 모바일 여백과 음영 과도함 완화 */
+@media (max-width: 640px) {
+  .grid { gap: 16px }
+  .card, .feat, .plan, .quiz .q { padding: 16px; border-radius: 12px; box-shadow: none }
+}
+
+/* 히어로 타이포 살짝 축소, 배지 줄바꿈 간격 조정 */
+@media (max-width: 640px) {
+  .title { font-size: clamp(26px, 8vw, 34px) }
+  .subtitle { font-size: clamp(14px, 3.8vw, 16px) }
+  .hero .badges { gap: 8px }
+  .pill { font-size: 11px; padding: 5px 8px }
+}
+
+/* 신뢰 로고 영역: 2열로, 과도한 빈공간 제거 */
+@media (max-width: 640px) {
+  .trust .logos { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px }
+}
+
+/* 피처 섹션: 1열로 단순화 */
+@media (max-width: 960px) {
+  .features .grid { grid-template-columns: 1fr !important }
+}
+
+/* 샘플/퀴즈 2단 → 1단 전환 시 내부 여백 균형 */
+@media (max-width: 960px) {
+  #samples .container.grid,
+  #quiz .container.grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* 가격표: 1열 전환은 유지, 카드 간 하단 고정 CTA 사용성 개선 */
+@media (max-width: 640px) {
+  .pricing .plans { gap: 14px }
+  .plan .price { font-size: 24px }
+  .plan a.btn { width: 100% }
+}
+
+/* 후기 캐러셀: 버튼 고정폭 & 터치 영역 확보 */
+@media (max-width: 640px) {
+  .quote p { font-size: 16px; line-height: 1.55 }
+  #prev, #next { padding: 12px 14px; min-width: 96px }
+}
+
+/* FAQ: 터치 여백 */
+@media (max-width: 640px) {
+  .faq details { padding: 14px }
+  .faq details + details { margin-top: 8px }
+}
+
+/* 푸터: 작은 화면에서 컬럼 간격 최적화 */
+@media (max-width: 640px) {
+  footer .container { gap: 8px }
+  footer a { padding: 6px 8px; border-radius: 8px }
+}
+
+/* iOS에서 iframe(유튜브) 가로스크롤 방지 + 반응형 박스 */
+.video-stub iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+/* 헤더: 스크롤 시 배경/경계 가시성 강화 (모바일 가독성) */
+@media (max-width: 960px) {
+  header.site {
+    background: color-mix(in oklab, var(--bg) 80%, #000 20%);
+    border-bottom-color: #273247;
+  }
+}
+
+/* 폼 동의 체크박스: 터치 타겟 확보 */
+@media (max-width: 640px) {
+  label[for="consent"], #consent { min-height: 44px }
+}
   </style>
 </head>
 <body>
