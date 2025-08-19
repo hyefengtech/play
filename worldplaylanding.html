@@ -83,8 +83,30 @@
       position:sticky; top:0; z-index:50;
       backdrop-filter: blur(10px);
       background:linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.25));
-      border-bottom:1px solid var(--stroke);
+      border-bottom: 1px solid rgba(255,255,255,.12);
+      transition: box-shadow .2s ease, background .2s ease;
     }
+
+  /* 스크롤 시 살짝 더 진하고 그림자 */
+  header.is-scrolled{
+    background: rgba(0,0,0,.75);
+    box-shadow: 0 10px 25px rgba(0,0,0,.25);
+  }
+
+  /* 네비 링크 활성화 스타일 */
+  .nav a.active{
+    color: #fff;
+    position: relative;
+  }
+  .nav a.active::after{
+    content: "";
+    position: absolute; left: 0; right: 0; bottom: -6px; height: 2px;
+    background: var(--brand, #f5c24b);
+    border-radius: 2px;
+  }
+
+  /* 섹션 앵커 점프 시 헤더 높이 보정 */
+  .anchor-offset{ scroll-margin-top: 80px; }
     .nav{display:flex; gap:26px; font-size:14px; color:var(--muted)}
     .nav a{padding:8px 0}
     .nav a:hover{color:#fff}
@@ -188,7 +210,7 @@
 
 
   <!-- VALUE -->
-  <section id="value" class="section">
+  <section id="value" class="section anchor-offset">
     <div class="wrap">
       <h2 class="section-title">왜 새로운 주말 플레이인가?</h2>
       <p class="section-lead">연극과 게임 사이, 당신의 선택이 분기를 만듭니다</p>
@@ -211,7 +233,7 @@
   </section>
 
   <!-- HOW IT WORKS -->
-  <section id="how" class="section" aria-labelledby="how-title">
+  <section id="how" class="section anchor-offset" aria-labelledby="how-title">
     <div class="wrap">
       <h2 id="how-title" class="section-title">진행 방식</h2>
       <p class="section-lead">간단하게 시작하고 현장에서 몰입하세요</p>
@@ -239,7 +261,7 @@
   </section>
 
 <!-- MINI DEMO (5초 맛보기) -->
-<section id="demo" class="section" aria-labelledby="demo-title">
+<section id="demo" class="section anchor-offset" aria-labelledby="demo-title">
   <div class="wrap" style="max-width:640px; margin:0 auto; text-align:center">
     <h2 id="demo-title" class="section-title">5초 맛보기 미션</h2>
     <p class="section-lead">아래 버튼을 눌러 실제 게임의 분기 경험을 살짝 체험해보세요.</p>
@@ -269,7 +291,7 @@
 
 
   <!-- REVIEWS -->
-  <section id="reviews" class="section" aria-labelledby="reviews-title">
+  <section id="reviews" class="section anchor-offset" aria-labelledby="reviews-title">
     <div class="wrap">
       <h2 id="reviews-title" class="section-title">베타 유저 후기</h2>
       <p class="section-lead">사람들이 이렇게 말했어요</p>
@@ -282,7 +304,7 @@
   </section>
 
 <!-- FAQ -->
-<section id="faq" class="section" aria-labelledby="faq-title">
+<section id="faq" class="section anchor-offset" aria-labelledby="faq-title">
   <div class="wrap" style="max-width:800px; margin:0 auto">
     <h2 id="faq-title" class="section-title">자주 묻는 질문</h2>
     <p class="section-lead">오픈 전 궁금하실만한 질문을 모았습니다</p>
@@ -318,7 +340,7 @@
 
 
 <!-- LEAD FORM (요청한 구조로 수정, honeypot 유지) -->
-<section id="lead" class="section email-form" aria-labelledby="lead-title">
+<section id="lead" class="section anchor-offset email-form" aria-labelledby="lead-title">
     <div class="wrap">
       <h2 id="lead-title" class="section-title">디지털 키트를 받아보세요</h2>
       <p class="section-lead">이메일 주소와 가고 싶은 지역을 입력하고 디지털 키트를 받아보세요. 모험이 곧 시작됩니다!</p>
@@ -384,7 +406,7 @@
   
   
 <!-- TRAILER -->
-<section id="trailer" class="section" aria-labelledby="trailer-title">
+<section id="trailer" class="section anchor-offset" aria-labelledby="trailer-title">
     <div class="wrap">
       <h2 id="trailer-title" class="section-title">60초로 보기</h2>
       <p class="section-lead">분기 순간의 긴장감을 느껴보세요</p>
@@ -454,6 +476,54 @@
     setTimeout(()=>{ el.style.opacity = '1'; }, 50);
     track && track('demo_choice', { result: text });
   }
+
+ // 헤더 스크롤 상태 토글
+  (function(){
+    const header = document.querySelector('header');
+    const onScroll = () => {
+      if (!header) return;
+      header.classList.toggle('is-scrolled', window.scrollY > 8);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  })();
+
+  // 현재 섹션에 해당하는 네비 링크 하이라이트
+  (function(){
+    const links = Array.from(document.querySelectorAll('header nav a[href^="#"]'));
+    if (!links.length) return;
+
+    // href -> id 매핑
+    const map = new Map();
+    links.forEach(a => {
+      const id = a.getAttribute('href').replace('#','');
+      const sec = document.getElementById(id);
+      if (sec) map.set(sec, a);
+      // 스무스 스크롤(선택)
+      a.addEventListener('click', e => {
+        // 기본 동작 유지하면서도 부드럽게
+        const target = document.getElementById(id);
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          history.pushState(null, "", '#'+id);
+        }
+      });
+    });
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const link = map.get(entry.target);
+        if (!link) return;
+        if (entry.isIntersecting) {
+          links.forEach(l => l.classList.remove('active'));
+          link.classList.add('active');
+        }
+      });
+    }, { threshold: 0.55 });
+
+    map.forEach((_, sec) => io.observe(sec));
+  })();
   </script>
 </body>
 </html>
