@@ -134,30 +134,37 @@
     .section{padding:72px 0}
   }
 
-  /* === header sticky + scroll 상태 + nav active (최우선: 맨 끝) === */
-  header{
-    position: sticky; top: 0; z-index: 100;
-    backdrop-filter: blur(10px);
-    background: linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.25));
-    border-bottom: 1px solid rgba(255,255,255,.12);
-    transition: box-shadow .2s ease, background .2s ease;
-  }
-  header.is-scrolled{
-    background: rgba(0,0,0,.75);
-    box-shadow: 0 10px 25px rgba(0,0,0,.25);
-  }
-  .nav a.active{
-    color: #fff; position: relative;
-  }
-  .nav a.active::after{
-    content: ""; position: absolute; left: 0; right: 0; bottom: -6px; height: 2px;
-    background: var(--brand, #f5c24b); border-radius: 2px;
-  }
-  .anchor-offset{ scroll-margin-top: 80px; }
+/* === Sticky & Active underline (OVERRIDE, MUST BE LAST) === */
+#site-header{
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  background: linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.25));
+  border-bottom: 1px solid rgba(255,255,255,.12);
+  transition: box-shadow .2s ease, background .2s ease;
+}
+#site-header.is-scrolled{
+  background: rgba(0,0,0,.78);
+  box-shadow: 0 10px 25px rgba(0,0,0,.25);
+}
+/* 네비 활성화(골드바) */
+.nav a.active{
+  color:#fff; position:relative;
+}
+.nav a.active::after{
+  content:"";
+  position:absolute; left:0; right:0; bottom:-6px; height:2px;
+  background: var(--brand, #f5c24b);
+  border-radius: 2px;
+}
+/* 앵커 보정 */
+.anchor-offset{ scroll-margin-top: 84px; } /* 헤더 높이 여유 */
 </style>
 </head>
 <body>
-  <header>
+  <header id="site-header">
     <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px">
       <div aria-label="WorldPlay 로고" style="font-weight:800;letter-spacing:.4px">WorldPlay</div>
       <nav class="nav" aria-label="주요">
@@ -432,123 +439,129 @@
   </footer>
 
 <script>
-  // ---------- Footer year (안전하게) ----------
-  (function(){
-    const y = document.getElementById('y');
-    if (y) y.textContent = new Date().getFullYear();
-  })();
+  // -------- Safe helpers --------
+  function $(sel, root=document){ return root.querySelector(sel); }
+  function $all(sel, root=document){ return Array.from(root.querySelectorAll(sel)); }
 
-  // ---------- 성공 피드백 + 스팸 방지(honeypot) ----------
-  (function () {
-    const form = document.getElementById('lead-form') || document.querySelector('form[action]');
-    if (!form) return; // 폼이 없으면 스킵
+  // -------- Footer year (safe) --------
+  (function(){ const y = $('#y'); if (y) y.textContent = new Date().getFullYear(); })();
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      try {
-        const fd = new FormData(form);
-        if (fd.get('hp')) return; // bot
-
-        // 서버 연동: action이 유효하면 전송
-        if (form.action && form.action !== '#') {
-          await fetch(form.action, { method: form.method || 'POST', body: fd });
-        }
-
-        // 성공 메시지 표시
-        const ok = document.getElementById('lead-success');
-        if (ok) ok.style.display = 'block';
-
-        // 입력값 초기화
-        form.reset();
-
-        // 트래킹
-        if (typeof track === 'function') track('lead_submit', { source: 'lead_section' });
-      } catch (err) {
-        console.error(err);
-      }
-    });
-  })();
-
-  // ---------- 아주 가벼운 트래킹 큐 ----------
+  // -------- Lightweight tracking queue --------
   (function(){
     window.__aiq = window.__aiq || [];
-    window.track = window.track || function(e,c){window.__aiq.push({e,c,t:Date.now()})};
-
-    document.querySelectorAll('a.btn, .btn').forEach(el => {
-      el.addEventListener('click', () => {
-        const href = el.getAttribute('href') || 'button';
-        track('cta_click', { href });
-      });
-    });
-
-    // 섹션 노출 트래킹
-    const sections = Array.from(document.querySelectorAll('section[id]'));
-    if (sections.length) {
-      const ioTrack = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) track('section_view', { id: entry.target.id });
-        });
-      }, { threshold: 0.5 });
+    window.track = window.track || function(e,c){ window.__aiq.push({e,c,t:Date.now()}); };
+    $all('a.btn, .btn').forEach(el => el.addEventListener('click', () => {
+      track('cta_click', { href: el.getAttribute('href') || 'button' });
+    }));
+    const sections = $all('section[id]');
+    if (sections.length){
+      const ioTrack = new IntersectionObserver(entries => {
+        entries.forEach(en => { if (en.isIntersecting) track('section_view', { id: en.target.id }); });
+      }, { threshold: .5 });
       sections.forEach(sec => ioTrack.observe(sec));
     }
   })();
 
-  // ---------- 헤더 스크롤 상태 토글 ----------
+  // -------- Lead form (honeypot + success + reset, safe) --------
   (function(){
-    const header = document.querySelector('header');
-    if (!header) return;
-    const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
+    const form = $('#lead-form') || $('form[action]');
+    if (!form) return;
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try{
+        const fd = new FormData(form);
+        if (fd.get('hp')) return; // bot
+        if (form.action && form.action !== '#') {
+          await fetch(form.action, { method: form.method || 'POST', body: fd });
+        }
+        const ok = $('#lead-success'); if (ok) ok.style.display = 'block';
+        form.reset();
+        if (typeof track === 'function') track('lead_submit', { source:'lead_section' });
+      }catch(err){ console.error(err); }
+    });
   })();
 
-  // ---------- 현재 섹션 네비 링크 하이라이트 ----------
+  // -------- Mini demo --------
+  window.demoChoose = function(text){
+    const el = $('#demo-result'); if (!el) return;
+    el.innerText = text;
+    el.style.opacity = '0'; setTimeout(()=>{ el.style.opacity = '1'; }, 50);
+    if (typeof track === 'function') track('demo_choice', { result:text });
+  };
+
+  // -------- Sticky header + fallback for old browsers --------
   (function(){
-    const links = Array.from(document.querySelectorAll('header nav a[href^="#"]'));
-    if (!links.length) return;
+    const header = $('#site-header'); if (!header) return;
 
-    // href -> id 매핑
-    const map = new Map();
-    links.forEach(a => {
-      const id = a.getAttribute('href').replace('#','');
-      const sec = document.getElementById(id);
-      if (sec) {
-        map.set(sec, a);
-        // 부드러운 스크롤
-        a.addEventListener('click', ev => {
-          ev.preventDefault();
-          sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          history.pushState(null, "", '#'+id);
-        });
-      }
-    });
+    // Sticky 상태 스타일 토글
+    const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
+    onScroll(); window.addEventListener('scroll', onScroll, { passive: true });
 
-    if (map.size) {
-      const ioNav = new IntersectionObserver((entries) => {
-        // 보이는 섹션 중 교차비율이 가장 큰 것을 활성화
-        const visible = entries
-          .filter(e => e.isIntersecting)
-          .sort((a,b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (!visible) return;
-        const activeLink = map.get(visible.target);
-        if (!activeLink) return;
-        links.forEach(l => l.classList.remove('active'));
-        activeLink.classList.add('active');
-      }, { threshold: 0.55 });
-
-      map.forEach((_, sec) => ioNav.observe(sec));
+    // Sticky 지원 점검 & fallback (fixed)
+    const supportsSticky = (CSS && (CSS.supports('position', 'sticky') || CSS.supports('position','-webkit-sticky')));
+    if (!supportsSticky){
+      let fixed = false, padApplied = false, h = 0;
+      const ensure = () => {
+        if (!fixed && window.scrollY > 0){
+          h = header.offsetHeight || 64;
+          header.style.position = 'fixed';
+          header.style.top = '0';
+          header.style.left = '0';
+          header.style.right = '0';
+          header.style.zIndex = '1000';
+          if (!padApplied){ document.body.style.paddingTop = h+'px'; padApplied = true; }
+          fixed = true;
+        } else if (fixed && window.scrollY === 0){
+          header.style.position = '';
+          header.style.top = '';
+          header.style.left = '';
+          header.style.right = '';
+          if (padApplied){ document.body.style.paddingTop = ''; padApplied = false; }
+          fixed = false;
+        }
+      };
+      ensure(); window.addEventListener('scroll', ensure, { passive:true });
+      window.addEventListener('resize', () => { if (fixed){ document.body.style.paddingTop = (header.offsetHeight || 64)+'px'; } });
     }
   })();
 
-  // ---------- 미니게임(데모) ----------
-  function demoChoose(text){
-    const el = document.getElementById('demo-result');
-    if (!el) return;
-    el.innerText = text;
-    el.style.opacity = '0';
-    setTimeout(()=>{ el.style.opacity = '1'; }, 50);
-    if (typeof track === 'function') track('demo_choice', { result: text });
-  }
+  // -------- Active nav underline (gold bar) --------
+  (function(){
+    const links = $all('header nav a[href^="#"]'); if (!links.length) return;
+
+    // Smooth scroll
+    links.forEach(a => {
+      const id = a.getAttribute('href').slice(1);
+      const sec = document.getElementById(id);
+      if (!sec) return;
+      a.addEventListener('click', ev => {
+        ev.preventDefault();
+        sec.scrollIntoView({ behavior:'smooth', block:'start' });
+        history.pushState(null, "", '#'+id);
+      });
+    });
+
+    // IntersectionObserver로 현재 섹션 하이라이트
+    const map = new Map();
+    links.forEach(a => {
+      const id = a.getAttribute('href').slice(1);
+      const sec = document.getElementById(id);
+      if (sec) map.set(sec, a);
+    });
+    if (!map.size) return;
+
+    const ioNav = new IntersectionObserver(entries => {
+      // 화면에 가장 크게 보이는 섹션 선택
+      const vis = entries.filter(e => e.isIntersecting)
+                         .sort((a,b)=> b.intersectionRatio - a.intersectionRatio)[0];
+      if (!vis) return;
+      const active = map.get(vis.target); if (!active) return;
+      links.forEach(l => l.classList.remove('active'));
+      active.classList.add('active');
+    }, { threshold: 0.55 });
+
+    map.forEach((_, sec) => ioNav.observe(sec));
+  })();
 </script>
 </body>
 </html>
