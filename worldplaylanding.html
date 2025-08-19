@@ -31,12 +31,12 @@
 
 <style>
   :root{
-    --ink:#0b1220;           /* 깊은 네이비 */
-    --ink-2:#111827;         /* 다크 그레이 블루 */
-    --panel:#0f172a;         /* 섹션 배경 */
-    --text:#e5e7eb;          /* 본문 텍스트 */
-    --muted:#9ca3af;         /* 보조 텍스트 */
-    --brand:#f5c24b;         /* 프리미엄 골드 */
+    --ink:#0b1220;
+    --ink-2:#111827;
+    --panel:#0f172a;
+    --text:#e5e7eb;
+    --muted:#9ca3af;
+    --brand:#f5c24b;
     --brand-2:#f1b72b;
     --glass: rgba(255,255,255,.06);
     --stroke: rgba(255,255,255,.12);
@@ -85,7 +85,8 @@
   .nav a:hover{color:#fff}
 
   .hero{
-    position:relative; min-height:76vh; display:grid; place-items:center; text-align:center; overflow:hidden;
+    position:relative; min-height:76vh; display:grid; place-items:center; text-align:center;
+    /* overflow:hidden; ← 제거 (sticky 방해 원인) */
   }
   .hero-media{position:absolute; inset:0; overflow:hidden;}
   .hero-media img{width:100%; height:100%; object-fit:cover; opacity:.45; transform:scale(1.04)}
@@ -127,40 +128,37 @@
     color:#c9c9c9; text-align:center; padding:28px 16px; margin-top:24px
   }
 
-  /* 작은 화면 타이포/여백 보정 */
   @media (max-width: 640px){
     h1{font-size:34px}
     .hero-inner{padding:64px 16px}
     .section{padding:72px 0}
   }
 
-/* === Sticky & Active underline (OVERRIDE, MUST BE LAST) === */
-#site-header{
-  position: -webkit-sticky;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  backdrop-filter: blur(10px);
-  background: linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.25));
-  border-bottom: 1px solid rgba(255,255,255,.12);
-  transition: box-shadow .2s ease, background .2s ease;
-}
-#site-header.is-scrolled{
-  background: rgba(0,0,0,.78);
-  box-shadow: 0 10px 25px rgba(0,0,0,.25);
-}
-/* 네비 활성화(골드바) */
-.nav a.active{
-  color:#fff; position:relative;
-}
-.nav a.active::after{
-  content:"";
-  position:absolute; left:0; right:0; bottom:-6px; height:2px;
-  background: var(--brand, #f5c24b);
-  border-radius: 2px;
-}
-/* 앵커 보정 */
-.anchor-offset{ scroll-margin-top: 84px; } /* 헤더 높이 여유 */
+  /* Sticky Header & Active Nav */
+  #site-header{
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    background: linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.25));
+    border-bottom: 1px solid rgba(255,255,255,.12);
+    transition: box-shadow .2s ease, background .2s ease;
+  }
+  #site-header.is-scrolled{
+    background: rgba(0,0,0,.78);
+    box-shadow: 0 10px 25px rgba(0,0,0,.25);
+  }
+  .nav a.active{
+    color:#fff; position:relative;
+  }
+  .nav a.active::after{
+    content:"";
+    position:absolute; left:0; right:0; bottom:-6px; height:2px;
+    background: var(--brand, #f5c24b);
+    border-radius: 2px;
+  }
+  .anchor-offset{ scroll-margin-top: 84px; }
 </style>
 </head>
 <body>
@@ -177,7 +175,7 @@
   </header>
 
   <!-- HERO -->
-  <section class="hero">
+  <section class="hero anchor-offset" id="hero">
     <div class="hero-media">
       <img src="east-asian-bg.png" alt="도심에서 진행되는 야외 스토리 미션" loading="eager" />
     </div>
