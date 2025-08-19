@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ActivImmersive 연극게임 여행 | WorldPlay</title>
+  <meta name="description" content="실제 공간에서 주인공이 되어 진행하는 몰입형 연극식 게임 투어. 선택과 행동으로 서사가 분기합니다." />
+  <meta property="og:title" content="ActivImmersive 연극게임 여행" />
+  <meta property="og:description" content="실제 도심에서 배우와 함께 진행하는 몰입형 연극 게임 투어. 당신의 선택이 스토리를 바꿉니다." />
+  <meta property="og:image" content="https://tech.worldplay.kr/play/activimmersive-og.jpg" />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="preconnect" href="https://images.unsplash.com" />
+  <style>
+    /* Base */
+    body { margin:0; font-family: system-ui, sans-serif; background:#0a0a0a; color:#e5e5e5; line-height:1.6; }
+    *, *::before, *::after { box-sizing: border-box; }
+    a { color:inherit; text-decoration:none; }
+    img { max-width:100%; display:block; }
+    :root {
+      --maxw:72rem;
+      --fuchsia-600:#c026d3; --fuchsia-500:#d946ef; --fuchsia-400:#e879f9;
+      --neutral-400:#a3a3a3; --neutral-300:#d4d4d4;
+    }
+    .container{max-width:var(--maxw);margin:0 auto;padding:0 1rem;}
+    .btn{display:inline-block;padding:.875rem 1.25rem;border-radius:1rem;font-weight:700;transition:.2s;}
+    .btn-primary{background:var(--fuchsia-600);} .btn-primary:hover{background:var(--fuchsia-500);}
+    .btn-ghost{background:rgba(255,255,255,.1);} .btn-ghost:hover{background:rgba(255,255,255,.2);}
+    .section{padding:5rem 0;}
+    h2{font-size:2rem;font-weight:800;margin:0;}
+    .card{border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);border-radius:1rem;}
+
+    /* Announcement Bar */
+    .announce{position:sticky;top:0;z-index:50;width:100%;backdrop-filter:blur(8px);background:rgba(217,70,239,.1);border-bottom:1px solid rgba(217,70,239,.3);}
+    .announce-inner{display:flex;justify-content:space-between;align-items:center;font-size:.9rem;padding:.5rem 1rem;}
+
+    /* Hero */
+    .hero{position:relative;overflow:hidden;}
+    .hero .overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(162,28,175,.2),transparent 40%,#000 100%);}
+    .hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.4;}
+    .hero-inner{position:relative;padding:7rem 0;max-width:42rem;}
+    .hero h1{font-size:2.5rem;font-weight:900;line-height:1.2;margin:0;}
+    .hero .lead{margin-top:1rem;color:var(--neutral-300);font-size:1.125rem;}
+    .hero .actions{margin-top:1.5rem;display:flex;gap:.75rem;flex-wrap:wrap;}
+    .hero .note{margin-top:.75rem;font-size:.9rem;color:var(--neutral-400);}
+
+    /* Proof */
+    .proof{border-block:1px solid rgba(255,255,255,.05);background:rgba(255,255,255,.05);}
+    .proof-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;text-align:center;}
+    .proof-grid .num{font-size:1.5rem;font-weight:800;}
+    @media(min-width:768px){.proof-grid{grid-template-columns:repeat(4,1fr);}}
+
+    /* Features */
+    .features{display:grid;gap:1rem;margin-top:2rem;}
+    @media(min-width:768px){.features{grid-template-columns:repeat(3,1fr);}}
+    .features h3{margin:.5rem 0;}
+
+    /* Steps */
+    .steps{display:grid;gap:1rem;margin-top:2rem;}
+    @media(min-width:768px){.steps{grid-template-columns:repeat(4,1fr);}}
+
+    /* Video */
+    .video{border:1px solid rgba(255,255,255,.1);border-radius:1rem;overflow:hidden;}
+    .aspect{position:relative;width:100%;padding-top:56.25%;}
+    .aspect iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+
+    /* Cards 3 */
+    .cards-3{display:grid;gap:1rem;margin-top:2rem;}
+    @media(min-width:768px){.cards-3{grid-template-columns:repeat(3,1fr);}}
+    .scenario img{height:12rem;object-fit:cover;width:100%;}
+    .scenario .body{padding:1rem;}
+
+    /* Testimonials */
+    .testimonials{display:grid;gap:1rem;margin-top:2rem;}
+    @media(min-width:768px){.testimonials{grid-template-columns:repeat(3,1fr);}}
+
+    /* FAQ */
+    .faq{margin-top:2rem;display:grid;gap:1rem;}
+
+    /* Signup CTA */
+    .cta{border-radius:1.5rem;border:1px solid rgba(255,255,255,.1);background:linear-gradient(135deg,rgba(162,28,175,.2),rgba(67,56,202,.1));padding:2rem;}
+    form{display:grid;gap:.75rem;margin-top:1rem;grid-template-columns:repeat(6,1fr);}
+    input,select{grid-column:span 6;padding:.85rem 1rem;border-radius:.75rem;border:0;background:#fff;color:#000;}
+    button{grid-column:span 6;}
+    @media(min-width:768px){.email{grid-column:span 2;}.area{grid-column:span 2;}.size{grid-column:span 1;}button{grid-column:span 1;}}
+    .helper{grid-column:span 6;font-size:.8rem;color:var(--neutral-400);}
+    .helper a{text-decoration:underline;}
+
+    /* Footer */
+    footer{border-top:1px solid rgba(255,255,255,.1);}
+    .foot{display:flex;flex-direction:column;gap:1rem;padding:2rem 0;font-size:.9rem;color:var(--neutral-400);}
+    .foot nav{display:flex;gap:1rem;}
+    @media(min-width:768px){.foot{flex-direction:row;justify-content:space-between;align-items:center;}}
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "ActivImmersive 연극게임 여행",
+    "description": "실제 공간에서 주인공이 되어 진행하는 몰입형 연극식 게임 투어. 선택과 행동으로 서사가 분기합니다.",
+    "brand": { "@type": "Brand", "name": "WorldPlay" },
+    "offers": { "@type": "Offer", "availability": "https://schema.org/PreOrder" }
+  }
+  </script>
+</head>
+<body>
+  <div class="announce"><div class="container announce-inner"><span>🎟️ 베타 체험단 300명 선착순 모집 중</span><a href="#signup">지금 신청</a></div></div>
+
+  <section class="hero">
+    <div class="overlay"></div>
+    <img src="https://images.unsplash.com/photo-1520975922215-230f1d5b1a2d?q=80&w=1600&auto=format&fit=crop" alt="Hero" fetchpriority="high" />
+    <div class="container hero-inner">
+      <h1>당신이 주인공이 되는 액티브 이머시브 연극게임 여행</h1>
+      <p class="lead">배우와 상호작용하며 선택에 따라 사건이 변하는 도심형 탐험.</p>
+      <div class="actions">
+        <a href="#signup" class="btn btn-primary">베타 먼저 받기</a>
+        <a href="#trailer" class="btn btn-ghost">60초 티저 보기</a>
+      </div>
+      <p class="note">2~6인 팀플 · 60~90분 · 서울 홍대/성수부터 시작</p>
+    </div>
+  </section>
+
+  <section class="proof"><div class="container" style="padding:2rem 0;">
+    <div class="proof-grid">
+      <div><div class="num">4.8/5</div><p>테스터 만족도</p></div>
+      <div><div class="num">300+</div><p>베타 신청</p></div>
+      <div><div class="num">3</div><p>시그니처 시나리오</p></div>
+      <div><div class="num">7</div><p>제휴 공간</p></div>
+    </div>
+  </div></section>
+
+  <section class="section" id="value"><div class="container">
+    <h2>왜 새로운 주말 플레이인가?</h2>
+    <div class="features">
+      <div class="card" style="padding:1rem;"><h3>🎭 실시간 분기 서사</h3><p>선택에 따라 매번 다른 전개.</p></div>
+      <div class="card" style="padding:1rem;"><h3>🗺️ 도심 탐험형 무대</h3><p>홍대·성수 골목을 무대로 한 플레이.</p></div>
+      <div class="card" style="padding:1rem;"><h3>🤝 완전 팀플레이</h3><p>2~6인 팀이 역할 나눠 퍼즐 해결.</p></div>
+    </div>
+  </div></section>
+
+  <section class="section" id="how"><div class="container">
+    <h2>진행 방식</h2>
+    <div class="steps">
+      <div class="card" style="padding:1rem;"><h3>STEP 1 사전 예약</h3><p>날짜/지역/인원 선택</p></div>
+      <div class="card" style="padding:1rem;"><h3>STEP 2 체크인</h3><p>키트 수령 · 안전 브리핑</p></div>
+      <div class="card" style="padding:1rem;"><h3>STEP 3 도심 플레이</h3><p>배우와 인터랙션 · 분기형 미션</p></div>
+      <div class="card" style="padding:1rem;"><h3>STEP 4 에필로그</h3><p>사진/영상 제공 · 팀별 기록</p></div>
+    </div>
+  </div></section>
+
+  <section class="section" id="trailer"><div class="container">
+    <div class="video"><div class="aspect"><iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0" title="티저" loading="lazy" allowfullscreen></iframe></div></div>
+  </div></section>
+
+  <section class="section" id="scenarios"><div class="container">
+    <h2>시그니처 시나리오</h2>
+    <div class="cards-3">
+      <article class="card scenario"><img src="https://images.unsplash.com/photo-1542332213-52b6f5d2f3aa?q=80&w=1200&auto=format&fit=crop" alt="밤의 전언" loading="lazy"/><div class="body"><h3>밤의 전언</h3><p>미스터리 · 90분 · 성수</p><p>사라진 배우의 흔적을 좇는 인터랙티브 스릴러.</p><a href="#signup" class="btn btn-primary mt-4">알림 신청</a></div></article>
+      <article class="card scenario"><img src="https://images.unsplash.com/photo-1518544801976-3e159e50e5bb?q=80&w=1200&auto=format&fit=crop" alt="루프의 끝" loading="lazy"/><div class="body"><h3>루프의 끝</h3><p>SF · 75분 · 홍대</p><p>같은 30분이 반복되는 거리에서 루프를 깨라.</p><a href="#signup" class="btn btn-primary mt-4">알림 신청</a></div></article>
+      <article class="card scenario"><img src="https://images.unsplash.com/photo-1517244683847-7456b63c5969?q=80&w=1200&auto=format&fit=crop" alt="비밀의 레시피" loading="lazy"/><div class="body"><h3>비밀의 레시피</h3><p>코지 · 60분 · 연남</p><p>동네 가게들과 함께 만드는 협동 수사극.</p><a href="#signup" class="btn btn-primary mt-4">알림 신청</a></div></article>
+    </div>
+  </div></section>
+
+  <section class="section" id="social"><div class="container">
+    <h2>베타 유저 후기</h2>
+    <div class="testimonials">
+      <blockquote class="card" style="padding:1rem;">“내가 스토리를 움직인다는 감각! 방탈출과 공연 사이.”<div class="muted mt-2">— 테스터 #1</div></blockquote>
+      <blockquote class="card" style="padding:1rem;">“배우님들과 교차하는 순간들이 미쳤다… 사진 영상 다 건짐.”<div class="muted mt-2">— 테스터 #2</div></blockquote>
+      <blockquote class="card" style="padding:1rem;">“데이트로 갔는데 팀워크 터져서 레벨업한 느낌.”<div class="muted mt-2">— 테스터 #3</div></blockquote>
+    </div>
+  </div></section>
+
+  <section class="section" id="faq"><div class="container">
+    <h2>자주 묻는 질문</h2>
+    <div class="faq">
+      <div class="card" style="padding:1rem;"><strong>난이도는?</strong><p>초보자도 즐길 수 있게 설계.</p></div>
+      <div class="card" style="padding:1rem;"><strong>안전한가요?</strong><p>동선 안전 점검 완료, 스태프 상시 모니터링.</p></div>
+      <div class="card" style="padding:1rem;"><strong>언제부터 가능?</strong><p>홍대/성수부터 순차 오픈, 사전 신청자 우선.</p></div>
+    </div>
+  </div></section>
+
+  <section class="section" id="signup"><div class="container">
+    <div class="cta">
+      <h2>베타 체험 알림 받기</h2>
+      <p class="muted">선착순 초대, 얼리버드 혜택, 시나리오 우선권 제공.</p>
+      <form id="lead-form">
+        <input class="email" type="email" required placeholder="이메일" aria-label="이메일" />
+        <select class="area" aria-label="관심 지역"><option>관심 지역</option><option>홍대</option><option>성수</option><option>연남</option></select>
+        <select class="size" aria-label="인원"><option>인원</option><option>2</option><option>3-4</option><option>5-6</option></select>
+        <button type="submit" class="btn btn-primary">신청</button>
+        <p class="helper">제출 시 <a href="#">개인정보 처리방침</a> 동의.</p>
+      </form>
+    </div>
+  </div></section>
+
+  <footer>
+    <div class="container foot">
+      <p>© <span id="year"></span> ActivImmersive. All rights reserved.</p>
+      <p><a href="/privacy.html" style="color:#fff;">개인정보 처리방침</a> · <a href="/terms.html" style="color:#fff;">이용약관</a></p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    document.querySelector('form').addEventListener('submit', function(e){
+      e.preventDefault();
+      alert('신청이 완료되었습니다! 곧 소식을 보내드릴게요.');
+    });
+  </script>
+</body>
+</html>
