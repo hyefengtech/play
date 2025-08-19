@@ -175,6 +175,18 @@
     </div>
   </section>
 
+  <!-- SOCIAL PROOF BADGES -->
+<section class="section" aria-label="사회적 증거">
+  <div class="wrap" style="text-align:center">
+    <div style="display:inline-flex; gap:10px; flex-wrap:wrap; justify-content:center; font-weight:700; font-size:14px">
+      <span class="card" style="padding:8px 12px;">⏱ 현재 <strong>120명</strong> 신청 중</span>
+      <span class="card" style="padding:8px 12px;">⭐ 만족도 <strong>4.8/5.0</strong></span>
+      <span class="card" style="padding:8px 12px;">🚀 얼리버드 마감 임박</span>
+    </div>
+  </div>
+</section>
+
+
   <!-- VALUE -->
   <section id="value" class="section">
     <div class="wrap">
@@ -226,6 +238,36 @@
     </div>
   </section>
 
+<!-- MINI DEMO (5초 맛보기) -->
+<section id="demo" class="section" aria-labelledby="demo-title">
+  <div class="wrap" style="max-width:640px; margin:0 auto; text-align:center">
+    <h2 id="demo-title" class="section-title">5초 맛보기 미션</h2>
+    <p class="section-lead">아래 버튼을 눌러 실제 게임의 분기 경험을 살짝 체험해보세요.</p>
+
+    <div id="demo-box" class="card" style="padding:22px; margin-top:14px">
+      <p style="margin:0 0 12px">🕵️ 카페 안에서 수상한 인물을 발견했다. 당신은?</p>
+
+      <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap">
+        <button
+          type="button"
+          class="btn btn-primary"
+          onclick="demoChoose('📸 몰래 촬영 성공! 새로운 단서를 얻었다.')">
+          사진 찍는다
+        </button>
+        <button
+          type="button"
+          class="btn btn-ghost"
+          onclick="demoChoose('🤝 대화를 시도했다! 예상치 못한 힌트를 받았다.')">
+          대화를 건다
+        </button>
+      </div>
+
+      <p id="demo-result" style="margin-top:12px; font-weight:700; color:var(--brand)"></p>
+    </div>
+  </div>
+</section>
+
+
   <!-- REVIEWS -->
   <section id="reviews" class="section" aria-labelledby="reviews-title">
     <div class="wrap">
@@ -238,6 +280,42 @@
       </div>
     </div>
   </section>
+
+<!-- FAQ -->
+<section id="faq" class="section" aria-labelledby="faq-title">
+  <div class="wrap" style="max-width:800px; margin:0 auto">
+    <h2 id="faq-title" class="section-title">자주 묻는 질문</h2>
+    <p class="section-lead">오픈 전 궁금하실만한 질문을 모았습니다</p>
+
+    <div style="margin-top:14px; display:grid; gap:10px">
+      <details class="card" style="padding:16px">
+        <summary style="cursor:pointer; font-weight:700">Q. 디지털 키트는 무료인가요?</summary>
+        <p style="margin:10px 0 0; color:#cbd5e1">네, 베타 단계에서는 무료로 제공합니다. 얼리버드 혜택은 선착순으로 마감됩니다.</p>
+      </details>
+
+      <details class="card" style="padding:16px">
+        <summary style="cursor:pointer; font-weight:700">Q. 어디서 플레이할 수 있나요?</summary>
+        <p style="margin:10px 0 0; color:#cbd5e1">현재 서울(성수/홍대)과 제주에서 먼저 체험 가능합니다. 지역은 계속 확대될 예정입니다.</p>
+      </details>
+
+      <details class="card" style="padding:16px">
+        <summary style="cursor:pointer; font-weight:700">Q. 혼자 참여해도 되나요?</summary>
+        <p style="margin:10px 0 0; color:#cbd5e1">가능합니다. 혼자 플레이 또는 현장에서 다른 참가자와 팀업할 수 있어요. 권장 인원은 2–6인입니다.</p>
+      </details>
+
+      <details class="card" style="padding:16px">
+        <summary style="cursor:pointer; font-weight:700">Q. 소요 시간과 준비물은?</summary>
+        <p style="margin:10px 0 0; color:#cbd5e1">플레이는 60–90분 정도이며, 스마트폰과 이어폰이면 충분합니다.</p>
+      </details>
+    </div>
+
+    <!-- FAQ 하단 보조 CTA -->
+    <div class="cta-row" style="margin-top:18px">
+      <a class="btn btn-primary" href="#lead">지금 무료 디지털 키트 받기</a>
+    </div>
+  </div>
+</section>
+
 
 <!-- LEAD FORM (요청한 구조로 수정, honeypot 유지) -->
 <section id="lead" class="section email-form" aria-labelledby="lead-title">
@@ -366,6 +444,16 @@
     document.querySelectorAll('a.btn, .btn').forEach(a=>a.addEventListener('click',()=>track('cta_click',{href:a.getAttribute('href') || 'button'})));
     const io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) track('section_view',{id:e.target.id}) }),{threshold:.5});
     document.querySelectorAll('section[id]').forEach(sec=>io.observe(sec));
+
+// 미니게임용
+  function demoChoose(text){
+    const el = document.getElementById('demo-result');
+    el.innerText = text;
+    // 간단한 강조 효과
+    el.style.opacity = '0';
+    setTimeout(()=>{ el.style.opacity = '1'; }, 50);
+    track && track('demo_choice', { result: text });
+  }
   </script>
 </body>
 </html>
