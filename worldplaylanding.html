@@ -45,7 +45,7 @@
     --radius-lg: 22px;
   }
   *{box-sizing:border-box}
-  html,body{height:100%}
+  html,body{min-height:100%; margin:0;}
   body{
     margin:0; font-family: ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Pretendard,Apple SD Gothic Neo,Arial;
     color:var(--text);
@@ -442,7 +442,10 @@
   function $all(sel, root=document){ return Array.from(root.querySelectorAll(sel)); }
 
   // -------- Footer year (safe) --------
-  (function(){ const y = $('#y'); if (y) y.textContent = new Date().getFullYear(); })();
+  (function(){ 
+    const y = $('#y'); 
+    if (y) y.textContent = new Date().getFullYear(); 
+  })();
 
   // -------- Lightweight tracking queue --------
   (function(){
@@ -454,7 +457,9 @@
     const sections = $all('section[id]');
     if (sections.length){
       const ioTrack = new IntersectionObserver(entries => {
-        entries.forEach(en => { if (en.isIntersecting) track('section_view', { id: en.target.id }); });
+        entries.forEach(en => { 
+          if (en.isIntersecting) track('section_view', { id: en.target.id }); 
+        });
       }, { threshold: .5 });
       sections.forEach(sec => ioTrack.observe(sec));
     }
@@ -472,7 +477,8 @@
         if (form.action && form.action !== '#') {
           await fetch(form.action, { method: form.method || 'POST', body: fd });
         }
-        const ok = $('#lead-success'); if (ok) ok.style.display = 'block';
+        const ok = $('#lead-success'); 
+        if (ok) ok.style.display = 'block';
         form.reset();
         if (typeof track === 'function') track('lead_submit', { source:'lead_section' });
       }catch(err){ console.error(err); }
@@ -483,22 +489,20 @@
   window.demoChoose = function(text){
     const el = $('#demo-result'); if (!el) return;
     el.innerText = text;
-    el.style.opacity = '0'; setTimeout(()=>{ el.style.opacity = '1'; }, 50);
+    el.style.opacity = '0'; 
+    setTimeout(()=>{ el.style.opacity = '1'; }, 50);
     if (typeof track === 'function') track('demo_choice', { result:text });
   };
 
-
-const $ = sel => document.querySelector(sel);
-const $all = sel => Array.from(document.querySelectorAll(sel));
-
-
   // -------- Sticky header + fallback for old browsers --------
   (function(){
-    const header = $('#site-header'); if (!header) return;
+    const header = $('#site-header'); 
+    if (!header) return;
 
     // Sticky 상태 스타일 토글
     const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
-    onScroll(); window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll(); 
+    window.addEventListener('scroll', onScroll, { passive: true });
 
     // Sticky 지원 점검 & fallback (fixed)
     const supportsSticky = (CSS && (CSS.supports('position', 'sticky') || CSS.supports('position','-webkit-sticky')));
@@ -523,14 +527,18 @@ const $all = sel => Array.from(document.querySelectorAll(sel));
           fixed = false;
         }
       };
-      ensure(); window.addEventListener('scroll', ensure, { passive:true });
-      window.addEventListener('resize', () => { if (fixed){ document.body.style.paddingTop = (header.offsetHeight || 64)+'px'; } });
+      ensure(); 
+      window.addEventListener('scroll', ensure, { passive:true });
+      window.addEventListener('resize', () => { 
+        if (fixed){ document.body.style.paddingTop = (header.offsetHeight || 64)+'px'; } 
+      });
     }
   })();
 
   // -------- Active nav underline (gold bar) --------
   (function(){
-    const links = $all('header nav a[href^="#"]'); if (!links.length) return;
+    const links = $all('header nav a[href^="#"]'); 
+    if (!links.length) return;
 
     // Smooth scroll
     links.forEach(a => {
