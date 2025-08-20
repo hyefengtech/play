@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>STORYFIELD | 지역의 이야기를 다시 걷다</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #0f172a; color: #f1f5f9; overflow-x: hidden; }
+
+    /* NAV */
+    nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 60px; position: fixed; width: 100%; top: 0;
+      background: rgba(15,23,42,0.85); backdrop-filter: blur(12px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4); z-index: 1000;
+    }
+    nav .logo { font-weight: 700; font-size: 1.4rem; color: #38bdf8; letter-spacing: -0.5px; }
+    nav ul { display: flex; gap: 24px; list-style: none; align-items: center; }
+    nav ul li { font-size: 0.95rem; }
+    nav a { text-decoration: none; color: #f1f5f9; transition: color 0.3s; }
+    nav a:hover { color: #38bdf8; }
+    .nav-cta {
+      background: linear-gradient(135deg, #3b82f6, #06b6d4);
+      color: white; padding: 10px 20px; border-radius: 12px;
+      font-size: 0.9rem; font-weight: 600; box-shadow: 0 6px 14px rgba(6,182,212,0.4);
+    }
+
+    /* HERO */
+    header {
+      text-align: center; padding: 220px 20px 160px;
+      background: radial-gradient(circle at top left, #1e3a8a, #0f172a 70%);
+      color: white; position: relative; overflow: hidden;
+    }
+    header::after {
+      content: ""; position: absolute; top: -50px; left: -50px; width: 200%; height: 200%;
+      background: radial-gradient(circle, rgba(59,130,246,0.15), transparent 60%);
+      animation: pulse 8s infinite alternate;
+      pointer-events: none;
+    }
+    @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.2); } }
+    header h1 { font-size: 3.6rem; font-weight: 700; margin-bottom: 24px; line-height: 1.2; }
+    header p { font-size: 1.25rem; color: #cbd5e1; max-width: 680px; margin: 0 auto 40px; }
+    .cta-btn {
+      display: inline-block; padding: 16px 36px; background: linear-gradient(135deg, #3b82f6, #06b6d4);
+      color: white; border-radius: 14px; font-weight: 600; font-size: 1.05rem; text-decoration: none;
+      box-shadow: 0 8px 20px rgba(6,182,212,0.45); transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .cta-btn:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(6,182,212,0.6); }
+
+    /* SECTIONS */
+    section {
+      max-width: 1100px; margin: 120px auto; padding: 0 20px; text-align: center;
+    }
+    h2 { font-size: 2.4rem; font-weight: 700; margin-bottom: 20px; color: #e0f2fe; }
+    p { font-size: 1.05rem; color: #94a3b8; margin-bottom: 20px; }
+
+    /* FEATURES */
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px; margin-top: 50px; }
+    .feature-box {
+      background: linear-gradient(145deg, #1e293b, #0f172a); border-radius: 20px; padding: 50px 30px; text-align: center;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.35); transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .feature-box:hover { transform: translateY(-8px); box-shadow: 0 16px 32px rgba(0,0,0,0.45); }
+    .feature-box h3 { margin-bottom: 16px; font-size: 1.3rem; color: #38bdf8; }
+    .feature-box p { font-size: 0.95rem; color: #cbd5e1; }
+
+    /* PROJECT */
+    .project { background: linear-gradient(145deg, #1e293b, #0f172a); padding: 100px 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+    .project p { margin-bottom: 40px; color: #cbd5e1; }
+
+    /* CONTACT */
+    .contact-form { max-width: 600px; margin: 0 auto; text-align: left; }
+    .contact-form input, .contact-form textarea {
+      width: 100%; padding: 16px; margin-bottom: 18px;
+      border: none; border-radius: 12px; font-size: 0.95rem;
+      background: #1e293b; color: #f1f5f9;
+    }
+    .contact-form input::placeholder, .contact-form textarea::placeholder { color: #64748b; }
+    .contact-form button {
+      width: 100%; padding: 16px; background: linear-gradient(135deg, #3b82f6, #06b6d4);
+      color: white; font-weight: 600; border: none; border-radius: 12px; cursor: pointer;
+      box-shadow: 0 8px 20px rgba(6,182,212,0.4); transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .contact-form button:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(6,182,212,0.6); }
+
+    /* FOOTER */
+    footer { text-align: center; padding: 50px 20px; font-size: 0.9rem; color: #64748b; background: #0f172a; }
+  </style>
+</head>
+<body>
+  <!-- NAV -->
+  <nav>
+    <div class="logo">STORYFIELD</div>
+    <ul>
+      <li><a href="#about" class="nav-link">소개</a></li>
+      <li><a href="#solution" class="nav-link">솔루션</a></li>
+      <li><a href="#project" class="nav-link">프로젝트</a></li>
+      <li><a href="#contact" class="nav-link">문의</a></li>
+      <li><a href="https://tech.worldplay.kr" target="_blank" rel="noopener">📝 블로그</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta nav-link">협업 제안</a>
+  </nav>
+
+  <!-- HERO -->
+  <header>
+    <h1>도시의 이야기를 미래로 이어가다</h1>
+    <p>STORYFIELD는 지역의 전설과 기억을 인터랙티브 경험으로 전환해<br>로컬 브랜드와 도시를 글로벌 무대로 연결하는 스토리테크 스타트업입니다.</p>
+    <a href="#project" class="cta-btn nav-link">샘플 콘텐츠 보기</a>
+  </header>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <h2>우리는 누구인가</h2>
+    <p>STORYFIELD는 지역의 이야기와 장소를 인터랙티브 경험으로 전환해, 도시와 브랜드의 새로운 접점을 만듭니다.</p>
+  </section>
+
+  <!-- SOLUTION -->
+  <section id="solution">
+    <h2>우리가 만드는 변화</h2>
+    <p>지역이 잃어버린 기억을 디지털과 감각으로 되살려 <br>새로운 도시 경험을 제시합니다.</p>
+    <div class="features">
+      <div class="feature-box">
+        <h3>📚 이야기 리서치</h3>
+        <p>구전 설화, 마을 유래, 고문헌을 탐구하고 아카이빙합니다.</p>
+      </div>
+      <div class="feature-box">
+        <h3>🎧 체험 콘텐츠</h3>
+        <p>산책 지도, 오디오워크 등 몰입형 콘텐츠를 제작합니다.</p>
+      </div>
+      <div class="feature-box">
+        <h3>🎯 로컬 브랜딩</h3>
+        <p>브랜드와 도시를 연결하는 스토리 중심 캠페인을 기획합니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECT -->
+  <section id="project" class="project">
+    <h2>첫 번째 프로젝트</h2>
+    <p>🗺️ 《용인의 이야기, 땅 위에 서다》<br>백옥천 전설을 바탕으로 용인의 장소를 체험형 콘텐츠로 재해석</p>
+    <a href="/sample-storyfield.pdf" class="cta-btn" download>샘플 리플렛 다운로드</a>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <h2>협업 제안 및 문의</h2>
+    <p>콘텐츠 제안서, 파트너십 제안, 협업 아이디어를 기다립니다.</p>
+    <form class="contact-form" action="https://formspree.io/f/your_form_id" method="POST">
+      <input type="text" name="name" placeholder="이름" required />
+      <input type="email" name="email" placeholder="이메일" required />
+      <textarea name="message" rows="5" placeholder="제안 내용" required></textarea>
+      <button type="submit">제안 보내기</button>
+    </form>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    &copy; 2025 STORYFIELD — 지역의 이야기를 미래로 이어가다
+  </footer>
+
+  <!-- ✅ JS로 스크롤 제어 -->
+  <script>
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', function(e) {
+        if (this.getAttribute('href').startsWith('#')) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            const top = target.offsetTop - 100; // 네비 높이 보정
+            window.scrollTo({ top: top, behavior: 'smooth' });
+          }
+        }
+      });
+    });
+  </script>
+  <script>
+    // ✅ 해시 링크 차단 이슈 대비: 기본 동작을 막고 오프셋 보정해 수동 스크롤
+    (function() {
+      const OFFSET = 120; // 고정 네비 높이 보정
+      const selector = 'nav a[href^="#"], .cta-btn[href^="#"]';
+      document.querySelectorAll(selector).forEach(link => {
+        link.addEventListener('click', (e) => {
+          const href = link.getAttribute('href');
+          if (!href || href === '#') { e.preventDefault(); return; }
+          const id = href.slice(1);
+          const target = document.getElementById(id);
+          if (target) {
+            e.preventDefault();
+            const y = target.getBoundingClientRect().top + window.pageYOffset - OFFSET;
+            window.scrollTo({ top: y, behavior: 'smooth' });
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
