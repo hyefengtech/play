@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WORLDPLAY | LOCQUEST – 서울 체험판 (무료 CTA)</title>
+  <meta name="description" content="5분 만에 몰입하는 로컬 미션 여행. 서울 골목에서 정도전을 만나라. 무료 체험판으로 스토리를 직접 선택하고 본편으로 이어가세요." />
+  <meta name="theme-color" content="#0f172a" />
+  <style>
+    :root{
+      --bg:#0b1020;          /* page background */
+      --ink:#e6e9f2;         /* main text */
+      --muted:#9aa2b2;       /* muted text */
+      --brand:#7c3aed;       /* primary */
+      --brand-2:#22d3ee;     /* accent */
+      --card:#121936;        /* surface */
+      --card-2:#0f1530;      /* surface alt */
+      --ok:#10b981;          /* success */
+      --warn:#f59e0b;        /* warning */
+      --danger:#ef4444;      /* danger */
+      --shadow: 0 15px 40px rgba(15,23,42,.35);
+      --radius:24px;
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "맑은 고딕", sans-serif;
+      color:var(--ink); background:radial-gradient(1200px 600px at 80% -10%,rgba(124,58,237,.15),transparent),
+              radial-gradient(800px 400px at 10% 110%,rgba(34,211,238,.12),transparent),
+              var(--bg);
+      line-height:1.6; letter-spacing:.1px;
+    }
+    a{color:inherit; text-decoration:none}
+    .container{max-width:1100px; margin:0 auto; padding:0 20px}
+    header{
+      position:sticky; top:0; z-index: 50; backdrop-filter:saturate(140%) blur(8px);
+      background:linear-gradient(180deg, rgba(11,16,32,.85), rgba(11,16,32,.55));
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .nav{display:flex; align-items:center; justify-content:space-between; padding:14px 0}
+    .logo{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.6px}
+    .logo-badge{width:32px; height:32px; border-radius:10px; background:linear-gradient(135deg,var(--brand),var(--brand-2)); box-shadow: var(--shadow)}
+    .nav a{opacity:.9}
+    .nav-cta{display:flex; gap:10px; align-items:center}
+    .btn{display:inline-flex; align-items:center; gap:10px; padding:12px 18px; border-radius:14px; background:var(--brand); color:white; font-weight:700; box-shadow: var(--shadow); border:1px solid rgba(255,255,255,.08)}
+    .btn:hover{transform:translateY(-1px); filter:brightness(1.05)}
+    .btn.secondary{background:transparent; border:1px solid rgba(255,255,255,.14)}
+
+    .hero{padding:96px 0 72px; position:relative; overflow:hidden}
+    .hero .container{display:grid; grid-template-columns:1.2fr .9fr; gap:40px}
+    .h-eyebrow{font-weight:800; font-size:14px; letter-spacing:.14em; text-transform:uppercase; color:var(--brand-2)}
+    .h-title{font-size: clamp(34px, 6vw, 54px); line-height:1.1; margin:12px 0 12px; font-weight:900}
+    .h-sub{font-size: clamp(16px, 2.2vw, 20px); color:var(--muted); margin-bottom:28px}
+    .hero-card{background:linear-gradient(180deg, rgba(124,58,237,.14), rgba(34,211,238,.08)); padding:22px; border-radius: var(--radius); border:1px solid rgba(255,255,255,.08)}
+
+    .features{padding: 18px 0 10px; display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+    .feature{background:var(--card); border:1px solid rgba(255,255,255,.07); border-radius:18px; padding:18px}
+    .feature h4{margin:6px 0 6px}
+    .feature p{color:var(--muted); margin:0}
+
+    .demo{padding:70px 0}
+    .stage{background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.03)); border:1px solid rgba(255,255,255,.08); border-radius: var(--radius); padding:24px; box-shadow: var(--shadow)}
+    .scene{display:none}
+    .scene.active{display:block}
+    .scene h3{margin:10px 0 6px}
+    .choice{display:grid; gap:12px; margin:18px 0}
+    .choice button{background:var(--card); color:var(--ink); border:1px solid rgba(255,255,255,.12); padding:14px 16px; border-radius:14px; text-align:left; font-weight:700}
+    .choice button:hover{border-color: rgba(124,58,237,.7)}
+    .hint{color:var(--muted); font-size:14px}
+
+    .cta-wrap{display:flex; flex-wrap:wrap; gap:12px; margin-top:18px}
+
+    .section{padding:60px 0}
+    .section h2{font-size:28px; margin:0 0 16px}
+
+    .grid-2{display:grid; grid-template-columns:1.2fr 1fr; gap:26px}
+    .card{background:var(--card); border:1px solid rgba(255,255,255,.08); border-radius:18px; padding:20px}
+
+    footer{padding:40px 0 70px; color:var(--muted)}
+    .tag{display:inline-flex; align-items:center; gap:8px; padding:8px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.14); background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.00))}
+
+    @media (max-width: 900px){
+      .hero .container, .grid-2{grid-template-columns:1fr}
+      .features{grid-template-columns:1fr}
+      .nav-cta{display:none}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a href="#top" class="logo" aria-label="Worldplay LOCQUEST 홈">
+        <span class="logo-badge"></span>
+        WORLDPLAY · LOCQUEST
+      </a>
+      <nav class="nav-cta">
+        <a class="btn secondary" href="#how">어떻게 진행돼요?</a>
+        <a class="btn" href="#demo">무료 체험 시작</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container">
+        <div>
+          <div class="h-eyebrow">로컬 미션 여행 · 인터랙티브 스토리</div>
+          <h1 class="h-title">서울 골목에서 <span style="background:linear-gradient(90deg,var(--brand),var(--brand-2)); -webkit-background-clip:text; background-clip:text; color:transparent">정도전</span>을 만난다면?</h1>
+          <p class="h-sub">5분 만에 몰입하는 무료 체험판. 당신의 선택이 엔딩을 바꿉니다. 지금 플레이하고 본편으로 이어가세요.</p>
+          <div class="cta-wrap">
+            <a class="btn" href="#demo">👉 무료 체험 시작</a>
+            <a class="btn secondary" href="#catalog">콘텐츠 카탈로그 보기</a>
+          </div>
+          <div class="hero-card" style="margin-top:14px">
+            <span class="tag">🔔 체험 팁</span>
+            <p class="hint" style="margin:10px 0 0">사운드를 켜고, 화면 밝기를 높이면 몰입도가 올라갑니다.</p>
+          </div>
+        </div>
+        <div>
+          <div class="stage" aria-label="서울 체험판 미리보기">
+            <strong>프리뷰</strong>
+            <p class="hint">선택지 기반 분기, 결과 저장 및 본편 연결 CTA가 포함됩니다.</p>
+            <ul class="hint" style="margin-left:16px">
+              <li>⌛ 5분 분량</li>
+              <li>👥 1–6인 소그룹 가능</li>
+              <li>📍 종로 탑골공원, 골목길</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section container" id="how">
+      <h2>어떻게 진행되나요?</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>1) 선택하세요</h3>
+          <p class="hint">짧은 장면 → 두 가지 선택지. 당신의 선택이 다른 장면을 여는 방식입니다.</p>
+        </div>
+        <div class="card">
+          <h3>2) 결과를 받으세요</h3>
+          <p class="hint">체험판 마지막에서 간단한 성향 리포트와 본편으로 이어지는 링크가 제공됩니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section container" id="demo" aria-label="서울 체험판">
+      <h2>🎭 서울 체험판 · 사라진 단서</h2>
+      <div class="stage" role="group" aria-live="polite">
+        <!-- Scene 1: Intro -->
+        <div class="scene active" id="scene-1">
+          <h3>🌆 인트로</h3>
+          <p>종로의 오래된 골목. 발밑에 **낡은 쪽지**가 떨어져 있다. 쪽지에는 단 하나의 문장이 적혀 있다.</p>
+          <blockquote style="margin:10px 0; padding:10px 14px; background:var(--card-2); border-left:3px solid var(--brand)">
+            <strong>“이 단서를 찾은 자, 기억을 열어라.”</strong>
+          </blockquote>
+          <div class="choice">
+            <button data-next="scene-2">👉 쪽지를 주워 읽는다</button>
+            <button data-next="scene-3">👉 무시하고 지나친다</button>
+          </div>
+        </div>
+
+        <!-- Scene 2: Read note -->
+        <div class="scene" id="scene-2">
+          <h3>🗺️ 쪽지를 읽는다</h3>
+          <p>쪽지 뒷면에는 <em>낯선 지도의 일부</em>와 함께 시간이 적혀 있다: <strong>오늘 밤 9시, 탑골공원 북문</strong>.</p>
+          <div class="choice">
+            <button data-next="scene-2a">🧭 지도를 따라간다</button>
+            <button data-next="scene-2b">🚔 경찰에 신고한다</button>
+          </div>
+        </div>
+
+        <!-- Scene 2a: Meet Jeong Do-jeon -->
+        <div class="scene" id="scene-2a">
+          <h3>🕯️ 탑골공원 북문</h3>
+          <p>등불 아래, 오래된 도포 차림의 사내가 서 있다. 그는 낮고 단단한 목소리로 말한다.</p>
+          <blockquote style="margin:10px 0; padding:10px 14px; background:var(--card-2); border-left:3px solid var(--brand-2)">
+            <strong>“나는 정도전. 이 땅의 새로운 판을 짜려 하는 자다.”</strong>
+          </blockquote>
+          <p>그는 당신의 손에 쪽지를 다시 쥐여주며 속삭인다. <em>“다음 길을 선택할 이는 바로 너다.”</em></p>
+          <div class="cta-wrap">
+            <a class="btn" href="#final" data-ending="visionary">👉 본편에서 이어보기</a>
+            <a class="btn secondary" href="#signup">내 선택 결과 저장</a>
+          </div>
+        </div>
+
+        <!-- Scene 2b: Report to police -->
+        <div class="scene" id="scene-2b">
+          <h3>🚔 신고</h3>
+          <p>경찰은 쪽지를 살피더니 낮게 말한다. <em>“최근 종로 일대 실종 사건과 연관 있을지 몰라요.”</em></p>
+          <div class="cta-wrap">
+            <a class="btn" href="#final" data-ending="cautious">👉 본편에서 이어보기</a>
+            <a class="btn secondary" href="#signup">내 선택 결과 저장</a>
+          </div>
+        </div>
+
+        <!-- Scene 3: Ignore note -->
+        <div class="scene" id="scene-3">
+          <h3>📵 무시하고 지나친다</h3>
+          <p>잠시 후 휴대폰에 미확인 메시지가 도착한다. <em>“선택은 곧 운명이다.”</em></p>
+          <div class="choice">
+            <button data-next="scene-3a">🙈 메시지를 무시한다</button>
+            <button data-next="scene-3b">🔍 발신자 추적을 시도한다</button>
+          </div>
+        </div>
+
+        <!-- Scene 3a: Phone dies -->
+        <div class="scene" id="scene-3a">
+          <h3>🕳️ 침묵</h3>
+          <p>휴대폰 화면이 깜박이며 꺼진다. 다시 켜지지 않는다.</p>
+          <div class="cta-wrap">
+            <a class="btn" href="#final" data-ending="stoic">👉 본편에서 이어보기</a>
+            <a class="btn secondary" href="#signup">내 선택 결과 저장</a>
+          </div>
+        </div>
+
+        <!-- Scene 3b: Trace caller (Jeong Do-jeon) -->
+        <div class="scene" id="scene-3b">
+          <h3>📡 추적</h3>
+          <p>발신지 정보가 화면에 뜬다. <strong>발신자: 정도전</strong></p>
+          <div class="cta-wrap">
+            <a class="btn" href="#final" data-ending="seeker">👉 본편에서 이어보기</a>
+            <a class="btn secondary" href="#signup">내 선택 결과 저장</a>
+          </div>
+        </div>
+      </div>
+      <p class="hint" style="margin-top:10px">* 체험판은 미리보기 버전입니다. 전체 버전은 더 많은 분기와 캐릭터 상호작용을 포함합니다.</p>
+    </section>
+
+    <section class="section container" id="final">
+      <div class="card">
+        <h2>🔓 본편으로 이어집니다</h2>
+        <p id="ending-msg" class="hint">당신의 선택 성향에 맞는 추천 경로를 준비 중…</p>
+        <div class="cta-wrap">
+          <a class="btn" id="go-full" href="#">서울 본편 플레이</a>
+          <a class="btn secondary" href="#catalog">다른 지역 미션 보기</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section container" id="signup">
+      <h2>📬 내 선택 결과 저장</h2>
+      <div class="grid-2">
+        <form class="card" id="lead-form">
+          <label for="email">이메일</label><br/>
+          <input id="email" name="email" type="email" required placeholder="you@example.com" style="width:100%; margin:8px 0 12px; padding:14px 16px; border-radius:12px; border:1px solid rgba(255,255,255,.18); background:var(--card-2); color:var(--ink)">
+          <label for="memo">한 줄 메모 (선택)</label><br/>
+          <input id="memo" name="memo" type="text" placeholder="어떤 장면이 인상적이었나요?" style="width:100%; margin:8px 0 16px; padding:14px 16px; border-radius:12px; border:1px solid rgba(255,255,255,.18); background:var(--card-2); color:var(--ink)">
+          <button class="btn" type="submit">결과 리포트 받기</button>
+          <p class="hint" id="lead-hint" style="margin-top:8px">제출 시 이메일로 체험판 결과와 본편 링크가 전송됩니다. (*데모: 콘솔 출력)</p>
+        </form>
+        <div class="card">
+          <h3>무엇을 보내드리나요?</h3>
+          <ul class="hint">
+            <li>당신의 선택 성향 간단 리포트</li>
+            <li>서울 본편 추천 경로</li>
+            <li>다음 출시 지역 알림 (선택)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section container" id="catalog">
+      <h2>🌏 LOCQUEST 카탈로그</h2>
+      <div class="features" aria-label="콘텐츠 목록">
+        <div class="feature"><h4>서울 · 사라진 단서</h4><p>정도전과 조우하는 분기형 서사</p></div>
+        <div class="feature"><h4>경기 · 호수의 비밀</h4><p>감정 트리거 기반 선택형 미션</p></div>
+        <div class="feature"><h4>항저우 · 그림자 상인</h4><p>상징 해석과 퍼즐 동기화</p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="tag">© WORLDPLAY · LOCQUEST</div>
+      <p class="hint">본 페이지는 랜딩/체험판 데모입니다. 실제 결제·발송 기능은 운영 사이트에서 제공됩니다.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Smooth-scrolling for hash links (accessibility-friendly)
+    document.addEventListener('click', (e)=>{
+      const a = e.target.closest('a[href^="#"]');
+      if(!a) return;
+      const id = a.getAttribute('href');
+      if(id.length > 1){
+        const target = document.querySelector(id);
+        if(target){ e.preventDefault(); target.scrollIntoView({behavior:'smooth', block:'start'}); }
+      }
+    });
+
+    // Simple scene router for the demo
+    const stage = document.querySelector('#demo .stage');
+    const scenes = [...stage.querySelectorAll('.scene')];
+
+    stage.addEventListener('click', (e)=>{
+      const btn = e.target.closest('button, a.btn');
+      if(!btn) return;
+
+      // Branch: next scene
+      const next = btn.getAttribute('data-next');
+      if(next){
+        const target = document.getElementById(next);
+        if(target){
+          scenes.forEach(s=>s.classList.remove('active'));
+          target.classList.add('active');
+        }
+      }
+
+      // Record ending type for personalization
+      const endType = btn.getAttribute('data-ending');
+      if(endType){
+        localStorage.setItem('locquest:lastEnding', endType);
+        // personalize message
+        const map = {
+          visionary: '당신은 대담한 개척자 유형. 새로운 판을 여는 선택을 선호합니다.',
+          cautious: '신중한 분석가 유형. 위험을 관리하며 사실을 중시합니다.',
+          stoic: '묵직한 관찰자 유형. 감정에 휘둘리지 않고 본질을 봅니다.',
+          seeker: '탐색자 유형. 끝까지 실마리를 추적합니다.'
+        };
+        const msg = document.getElementById('ending-msg');
+        msg.textContent = map[endType] || '당신의 선택을 반영해 경로를 추천합니다.';
+        // set full link (replace with actual full version URL)
+        const full = document.getElementById('go-full');
+        full.setAttribute('href', 'https://www.worldplay.kr');
+      }
+    });
+
+    // Lead form (demo only)
+    const form = document.getElementById('lead-form');
+    form.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const memo = document.getElementById('memo').value.trim();
+      const ending = localStorage.getItem('locquest:lastEnding') || 'unknown';
+      console.log('[DEMO] Lead captured',{ email, memo, ending });
+      const hint = document.getElementById('lead-hint');
+      hint.textContent = '제출 완료! 데모 모드에서는 콘솔에 저장됩니다. (운영에선 이메일 전송/CRM 연동)';
+      hint.style.color = 'var(--ok)';
+      form.reset();
+    });
+  </script>
+</body>
+</html>
