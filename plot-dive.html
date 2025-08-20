@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>플롯다이브 PlotDive | 몰입형 극본살 체험 스토어 & SaaS</title>
+  <meta name="description" content="제작된 극본살(몰입형 롤플레잉) 체험을 스토어에서 바로 예약하고, 팀/교육/행사 운영을 위한 1인 SaaS 기능을 확인하세요." />
+  <meta name="color-scheme" content="light dark" />
+  <style>
+    :root{
+      --bg:#0b1020; --panel:#0e1428; --line:rgba(255,255,255,.10); --card:#0e1530;
+      --text:#f5f7fb; --muted:#b8c2d9;
+      --accent:#ff6b9d; --accent2:#ffd166; --accent3:#22d3ee;
+      --gold:#ffd166;
+      --grad:linear-gradient(135deg, var(--accent), var(--accent2));
+      --radius:18px; --radius-sm:12px; --shadow:0 22px 55px rgba(0,0,0,.45);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:
+      radial-gradient(1000px 600px at 110% -10%, rgba(255,107,157,.12), transparent 60%),
+      radial-gradient(900px 600px at -10% -20%, rgba(255,209,102,.10), transparent 55%),
+      radial-gradient(1200px 800px at 50% 120%, rgba(34,211,238,.08), transparent 60%),
+      var(--bg);
+      color:var(--text);font-family: 'Noto Sans KR', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    }
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block}
+
+    /* Header */
+    header.sticky{position:sticky;top:0;z-index:50;background:color-mix(in oklab, var(--bg) 78%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+    .nav{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 18px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:900}
+    .logo{width:32px;height:32px;border-radius:10px;background:var(--grad);box-shadow:var(--shadow)}
+    .nav a.btn{padding:8px 12px;border:1px solid var(--line);border-radius:999px}
+    .nav a.cta{background:var(--grad); color:#0b0f19; border:none; font-weight:800; box-shadow:0 10px 28px rgba(255,107,157,.22); transition:transform .16s ease, box-shadow .2s ease}
+    .nav a.cta:hover{transform:translateY(-1px); box-shadow:0 14px 34px rgba(255,209,102,.28)}
+
+    /* Sections */
+    .wrap{max-width:1200px;margin:0 auto;padding:28px 18px}
+    .section{padding:28px 0}
+    h1,h2,h3{letter-spacing:.2px}
+
+    /* Hero */
+    .hero{display:grid;grid-template-columns:1.2fr .9fr;gap:22px;align-items:center}
+    .hero h1{margin:0 0 8px;font-size:clamp(26px,3.5vw,48px)}
+    .hero .em{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .hero p{margin:0;color:var(--muted)}
+    .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+    .kpi{background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));border:1px solid var(--line);border-radius:var(--radius);padding:12px;text-align:center}
+    .kpi b{display:block;font-size:18px}
+
+    /* Filter bar + Store Grid */
+    .filter-bar{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 14px}
+    .filter-btn{padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:#121826;color:#e5e7eb;cursor:pointer;transition:transform .18s ease, box-shadow .18s ease, background .2s ease, color .2s ease}
+    .filter-btn:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(0,0,0,.35);background:color-mix(in oklab,#121826 70%, #1b2336)}
+    .filter-btn.active{background:var(--grad); color:#0b0f19; border-color:transparent; box-shadow:0 10px 26px rgba(255,209,102,.18)}
+
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;transition:transform .18s ease, box-shadow .22s ease, border-color .22s ease}
+    .card:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:color-mix(in oklab, var(--line) 70%, #fff)}
+    .thumb{position:relative;height:180px;overflow:hidden;border-bottom:1px solid var(--line)}
+    .thumb img{width:100%;height:100%;object-fit:cover;transition:transform .35s ease, filter .35s ease}
+    .card:hover .thumb img{transform:scale(1.04);filter:saturate(1.12)}
+    .card .body{padding:14px;display:grid;gap:8px}
+    .thumb::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg, transparent 45%, rgba(0,0,0,.45) 85%);pointer-events:none}
+    .thumb::after{content:attr(data-title);position:absolute;left:10px;right:10px;bottom:8px;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);padding:6px 10px;border-radius:10px;border:1px solid var(--line);font-weight:800;font-size:.95rem;color:#fff}
+    @media (max-width:720px){ .thumb{height:160px} }
+    .badge{font-size:12px;padding:6px 10px;border-radius:999px;background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));border:1px solid var(--line);width:max-content;color:#ffe6f1}
+    .meta{display:flex;align-items:center;justify-content:space-between}
+    .price{font-weight:900;color:var(--gold)}
+    .book{display:inline-block;padding:10px 16px;border-radius:14px;background:var(--grad);color:#0b0f19;font-weight:900;box-shadow:0 8px 22px rgba(255,107,157,.25);transition:transform .16s ease, box-shadow .2s ease, filter .2s ease}
+    .book:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(255,209,102,.28);filter:saturate(1.05)}
+
+    /* Feature bullets */
+    .features{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .feature{background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+
+    /* Pricing */
+    .pricing{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .plan{background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));border:1px solid var(--line);border-radius:var(--radius);padding:16px;display:grid;gap:6px}
+    .plan h3{margin:0}
+    .plan .price{font-size:22px}
+    .plan .cta{margin-top:8px;display:inline-block;background:var(--grad);color:#081016;padding:10px 14px;border-radius:12px;font-weight:900}
+    .plan.pop{border-color:#5eead4; box-shadow:0 0 0 2px rgba(94,234,212,.25) inset}
+
+    /* Logos + Testimonials */
+    .logos{display:flex;flex-wrap:wrap;gap:16px;opacity:.85}
+    .logos img{height:30px;filter:grayscale(1);opacity:.85}
+    .quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .quote{background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));border:1px solid var(--line);border-radius:var(--radius);padding:16px;font-size:14px;color:var(--muted)}
+
+    /* Case Studies */
+    .cases{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+    .case{background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;display:grid;grid-template-columns:1fr 1fr}
+    .case .copy{padding:14px}
+
+    /* About */
+    .about{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .about .card{padding:16px}
+
+    /* FAQ */
+    details{background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));border:1px solid var(--line);border-radius:var(--radius);padding:12px}
+    details+details{margin-top:10px}
+    summary{cursor:pointer}
+
+    /* Contact */
+    .contact{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    input,textarea{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:#0f1620;color:var(--text)}
+    textarea{min-height:120px}
+    .send{display:inline-block;margin-top:8px;background:var(--accent);color:#081016;padding:10px 14px;border-radius:12px;font-weight:800}
+
+    /* Footer */
+    footer{border-top:1px solid var(--line);padding:20px;text-align:center;color:var(--muted)}
+
+    /* Responsive */
+    @media (max-width:1100px){ .grid{grid-template-columns:repeat(2,1fr)} .pricing{grid-template-columns:repeat(2,1fr)} .features{grid-template-columns:repeat(2,1fr)} .cases{grid-template-columns:1fr} .about{grid-template-columns:1fr} }
+    @media (max-width:720px){ .grid{grid-template-columns:1fr} .quotes{grid-template-columns:1fr} .features{grid-template-columns:1fr} .pricing{grid-template-columns:1fr} .contact{grid-template-columns:1fr} .hero{grid-template-columns:1fr} }
+  </style>
+  <style>
+    /* ===== Added: Audience filter + Personal tone ===== */
+    .audience-bar{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 0}
+    .aud-btn{padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:#132038;color:#e5e7eb;cursor:pointer;transition:transform .18s ease, box-shadow .18s ease, background .2s ease}
+    .aud-btn:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(0,0,0,.35)}
+    .aud-btn.active{background:linear-gradient(135deg, var(--accent3), var(--accent2)); color:#0b0f19; border-color:transparent; box-shadow:0 10px 26px rgba(34,211,238,.18)}
+
+    /* Personal cards: brighter & lively */
+    .card.personal{background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); border-color: rgba(255,255,255,.16)}
+    .card.personal .badge{color:#0b0f19; background: linear-gradient(135deg, var(--accent3), var(--accent2)); border:none}
+    .card.personal .price{color:var(--accent3)}
+    .card.personal .book{background:linear-gradient(135deg, var(--accent3), var(--accent2)); color:#0b0f19}
+
+    /* Specs row (개인용 난이도/인원/시간) */
+    .specs{display:flex;gap:8px;flex-wrap:wrap;color:#eaf7ff;font-size:.9rem}
+    .specs .chip{background:rgba(255,255,255,.10);border:1px solid var(--line);border-radius:999px;padding:3px 8px}
+  </style>
+  <script>
+    // ===== UTM & SmartStore =====
+    function goToStore(url, id){
+      const utm = `?utm_source=landing&utm_medium=web&utm_campaign=naver_buy&utm_content=product&utm_term=${id}`;
+      window.open(url + utm, '_blank', 'noopener,noreferrer');
+    }
+
+    // ===== Filtering =====
+    let currentTag = 'all';
+    let currentAudience = 'all';
+
+    function setTag(tag){
+      currentTag = tag;
+      document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+      const btn = document.querySelector(`.filter-btn[data-tag="${tag}"]`); if(btn) btn.classList.add('active');
+      applyFilters();
+    }
+    function setAudience(aud){
+      currentAudience = aud;
+      document.querySelectorAll('.aud-btn').forEach(b=>b.classList.remove('active'));
+      const btn = document.querySelector(`.aud-btn[data-aud="${aud}"]`); if(btn) btn.classList.add('active');
+      applyFilters();
+    }
+    function applyFilters(){
+      document.querySelectorAll('.product-card').forEach(card=>{
+        const tags = card.dataset.tag || '';
+        const aud = card.dataset.audience || 'corp';
+        const tagOk = (currentTag==='all' || tags.includes(currentTag));
+        const audOk = (currentAudience==='all' || aud===currentAudience);
+        card.style.display = (tagOk && audOk) ? '' : 'none';
+      });
+    }
+
+    // ===== DOM Ready =====
+    document.addEventListener('DOMContentLoaded', ()=>{
+      setTag('all'); setAudience('all');
+      // Simple smooth scroll for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach(a=>{
+        a.addEventListener('click', (e)=>{
+          const id = a.getAttribute('href'); if(id.length<2) return;
+          const el = document.querySelector(id); if(!el) return;
+          e.preventDefault(); el.scrollIntoView({behavior:'smooth', block:'start'});
+        });
+      });
+    });
+  </script>
+  <style>
+    /* === Personal cards emphasis (price + specs) === */
+    .card.personal .meta{align-items:flex-end; gap:6px}
+    .card.personal .meta .muted{color:#daecff}
+    .card.personal .price{color:var(--accent3); font-size:1.15rem; font-weight:900; text-shadow:0 1px 0 rgba(0,0,0,.2)}
+    .specs{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+    .specs .chip{background:linear-gradient(135deg, rgba(34,211,238,.20), rgba(255,209,102,.18)); border:1px solid rgba(255,255,255,.18); color:#0b0f19; font-weight:700; padding:6px 10px; border-radius:999px; backdrop-filter:blur(4px)}
+  </style>
+  <style id="personal-overrides">
+    /* Force-visible personal UI: price & specs */
+    .card.personal .price{font-size:1.4rem !important;font-weight:900 !important;color:var(--accent3) !important;text-shadow:0 1px 0 rgba(0,0,0,.25)}
+    .card.personal .specs{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .card.personal .specs .chip{background:#ffffff !important;color:#0b0f19 !important;border:0 !important;border-radius:9999px !important;padding:8px 12px !important;font-weight:900 !important;box-shadow:0 6px 16px rgba(0,0,0,.25) !important}
+  </style>
+  <style id="personal-fix">
+    /* --- Personal card visibility harden --- */
+    .card.personal .meta{display:flex !important; align-items:flex-end !important; justify-content:space-between !important}
+    .card.personal .price{font-size:1.35rem !important; font-weight:900 !important; color:var(--accent3) !important; text-shadow:0 1px 0 rgba(0,0,0,.25)}
+    .card.personal .specs{display:flex !important; gap:10px !important; flex-wrap:wrap !important; margin-top:10px !important}
+    .card.personal .specs .chip{background:#ffffff !important; color:#0b0f19 !important; border:0 !important; border-radius:9999px !important; padding:8px 12px !important; font-weight:900 !important; box-shadow:0 6px 16px rgba(0,0,0,.25) !important}
+    .card.personal .book{display:inline-block !important}
+  </style>
+</head>
+<body>
+  <!-- Sticky Nav -->
+  <header class="sticky">
+    <nav class="nav" aria-label="상단">
+      <div class="brand"><span class="logo" aria-hidden="true"></span> <span>극본살 체험 · SaaS</span></div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <a class="btn" href="#store">작품</a>
+        <!-- <a class="btn" href="#features">기능</a> -->
+        <a class="btn" href="#pricing">가격</a>
+        <a class="btn" href="#about">소개</a>
+        <a class="btn cta" href="#contact">문의하기</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="wrap section hero" id="top">
+      <div>
+        <h1>팀·교육·행사를 위한 <span class="em">몰입형 극본살 체험</span></h1>
+        <p>완성된 작품을 즉시 예약하고, 1인 SaaS 운영툴로 일정·문의·결제를 간편하게 관리하세요.</p>
+        <div class="kpis">
+          <div class="kpi"><b>6~50인</b><span class="muted">규모 대응</span></div>
+          <div class="kpi"><b>≤ 2주</b><span class="muted">운영 준비</span></div>
+          <div class="kpi"><b>4.9/5</b><span class="muted">참가 만족도</span></div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:12px"><a class="book" href="#store">콘텐츠 둘러보기</a><a class="btn" href="#contact">도입 상담</a></div>
+      </div>
+      <div>
+        <img src="https://images.unsplash.com/photo-1545239351-1141bd82e8a6?q=80&w=1600&auto=format&fit=crop" alt="현장에서 진행되는 몰입형 롤플레잉" style="border-radius:16px;border:1px solid var(--line);box-shadow:var(--shadow)">
+      </div>
+    </section>
+
+    <!-- Store (keeps your current cards + filter) -->
+    <section class="wrap section" id="store" aria-label="스토어">
+      <div style="display:flex;align-items:end;justify-content:space-between;gap:8px">
+        <div>
+          <h2 style="margin:0 0 6px">작품 목록</h2>
+          <p class="muted" style="margin:0">카테고리를 눌러 필터링하고, 작품의 ‘예약하기’로 네이버스마트스토어 상세로 이동합니다.</p>
+        </div>
+        <div class="filter-bar" role="tablist" aria-label="카테고리">
+          <button class="filter-btn active" data-tag="all" onclick="setTag('all')">전체</button>
+          <button class="filter-btn" data-tag="team" onclick="setTag('team')">팀빌딩</button>
+          <button class="filter-btn" data-tag="remote" onclick="setTag('remote')">원격</button>
+          <button class="filter-btn" data-tag="edu" onclick="setTag('edu')">교육형</button>
+          <button class="filter-btn" data-tag="event" onclick="setTag('event')">행사</button>
+        </div>
+        <div class="filter-bar audience-bar" role="tablist" aria-label="대상">
+          <button class="aud-btn active" data-aud="all" onclick="setAudience('all')">전체 대상</button>
+          <button class="aud-btn" data-aud="corp" onclick="setAudience('corp')">기업·교육</button>
+          <button class="aud-btn" data-aud="personal" onclick="setAudience('personal')">개인·프렌즈</button>
+        </div>
+      </div>
+
+      <div class="grid" id="productGrid" role="list">
+        <!-- Cards -->
+        <article class="card product-card" data-tag="team" data-audience="corp">
+          <a class="thumb" data-title="Project: 내부자" href="javascript:void(0)" onclick="goToStore('https://smartstore.naver.com/yourstore/products/000000001','000000001')" aria-label="Project: 내부자 네이버스토어로 이동">
+            <img loading="lazy" src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1600&auto=format&fit=crop" alt="Project: 내부자 대표 이미지" />
+          </a>
+          <div class="body">
+            <span class="badge">팀빌딩 · 오프라인</span>
+            <h3 style="margin:2px 0 0">Project: 내부자</h3>
+            <div class="meta"><span class="muted">90분 · 기본 20인 포함</span><span class="price">₩550,000</span></div>
+            <p class="muted" style="margin:0">사내 보안 이슈를 추리와 협업으로 해결하는 팀플레이형 콘텐츠.</p>
+            <a class="book" href="javascript:void(0)" onclick="goToStore('https://smartstore.naver.com/yourstore/products/000000001','000000001')">예약하기</a>
+          </div>
+        </article>
+
+        <article class="card product-card" data-tag="remote team" data-audience="corp">
+          <a class="thumb" data-title="NEON TRACE" href="javascript:void(0)" onclick="goToStore('https://smartstore.naver.com/yourstore/products/000000002','000000002')" aria-label="NEON TRACE 네이버스토어로 이동">
+            <img loading="lazy" src="https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?q=80&w=1600&auto=format&fit=crop" alt="NEON TRACE 대표 이미지" />
+          </a>
+          <div class="body">
+            <span class="badge">원격 · 협업 퍼즐</span>
+            <h3 style="margin:2px 0 0">NEON TRACE</h3>
+            <div class="meta"><span class="muted">75분 · 기본 20인 포함</span><span class="price">₩480,000</span></div>
+            <p class="muted" style="margin:0">미래 도시의 단서를 실시간 협업으로 추적하는 원격 퍼즐.</p>
+            <a class="book" href="javascript:void(0)" onclick="goToStore('https://smartstore.naver.com/yourstore/products/000000002','000000002')">예약하기</a>
+          </div>
+        </article>
+
+        <article class="card product-card" data-tag="edu" data-audience="corp">
+          <a class="thumb" data-title="시간의 증언" href="javascript:void(0)" onclick="goToStore('https://smartstore.naver.com/yourstore/products/000000003','000000003')" aria-label="시간의 증언 네이버스토어로 이동">
+            <img loading="lazy" src="https://images.unsplash.com/photo-1515165562835-c3b8c2e43cc7?q=80&w=1600&auto=format&fit=crop" alt="시간의 증언 대표 이미지" />
+          </a>
+          <div class="body">
+            <span class="badge">교육형 · 역사 미스터리</span>
+            <h3 style="margin:2px 0 0">시간의 증언</h3>
+            <div class="meta"><span class="muted">120분 · 기본 15인 포함</span><span class="price">₩650,000</span></div>
+            <p class="muted" style="margin:0">실제 사건을 바탕으로 비판적 사고와 커뮤니케이션을 훈련.</p>
+            <a class="book" href="javascript:void(0)" onclick="goToStore('https://smartstore.naver.com/yourstore/products/000000003','000000003')">예약하기</a>
+          </div>
+        </article>
+
+
+<!-- Personal / Friends Experience -->
+<section id="store" class="section">
+  <h2>개인 / 친구 체험</h2>
+  <div class="grid">
+    
+    <!-- Card 1 -->
+    <article class="card product-card personal" data-audience="personal">
+      <div class="thumb" style="background-image:url('img/neon-night.jpg')"></div>
+      <div class="body">
+        <h3>네온 나이트 미스터리</h3>
+        <p class="desc">화려한 네온 불빛 아래, 친구들과 함께 즐기는 추리 게임.</p>
+        
+        <!-- 가격 -->
+        <div class="price">₩30,000 / 인</div>
+
+        <!-- 스펙 정보 -->
+        <div class="specs">
+          <span class="chip">👥 3~6인</span>
+          <span class="chip">⏱️ 120분</span>
+          <span class="chip">⭐ 난이도 ★★☆</span>
+        </div>
+
+        <!-- 예약 버튼 -->
+        <a href="https://smartstore.naver.com/yourstore/product/123" class="btn book">예약하기</a>
+      </div>
+    </article>
+
+    <!-- Card 2 -->
+    <article class="card product-card personal" data-audience="personal">
+      <div class="thumb" style="background-image:url('img/weekend-mystery.jpg')"></div>
+      <div class="body">
+        <h3>주말 미스터리 클럽</h3>
+        <p class="desc">주말에 가볍게 친구들과 즐길 수 있는 미스터리 시리즈.</p>
+        
+        <div class="price">₩25,000 / 인</div>
+
+        <div class="specs">
+          <span class="chip">👥 2~4인</span>
+          <span class="chip">⏱️ 90분</span>
+          <span class="chip">⭐ 난이도 ★☆☆</span>
+        </div>
+
+        <a href="https://smartstore.naver.com/yourstore/product/456" class="btn book">예약하기</a>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+
+    <!-- Features -->
+    <!-- SaaS 기능 하이라이트 섹션 주석처리 시작
+<section class="wrap section" id="features" aria-label="기능">
+  <h2 style="margin:0 0 10px">SaaS 기능 하이라이트</h2>
+  <div class="features">
+    <div class="feature"><h3>간편 예약 흐름</h3><p class="muted">작품 선택 → 네이버스토어 결제 연동. 추후 자체 결제도 확장 가능.</p></div>
+    <div class="feature"><h3>카테고리 큐레이션</h3><p class="muted">팀빌딩/원격/교육/행사 태그로 빠른 탐색.</p></div>
+    <div class="feature"><h3>리드 수집</h3><p class="muted">문의 폼으로 리드 확보 → 구글시트/폼 연결 준비.</p></div>
+  </div>
+</section>
+SaaS 기능 하이라이트 섹션 주석처리 끝 -->
+
+    <!-- Pricing -->
+    <section class="wrap section" id="pricing" aria-label="가격">
+      <h2 style="margin:0 0 10px">요금 안내</h2>
+      <div class="pricing">
+        <div class="plan"><h3>Basic</h3><p class="muted">소규모 팀/동아리</p><div class="price">₩390,000~</div><ul class="muted" style="margin:6px 0 0; padding-left:18px"><li>원격/오프라인 선택</li><li>기본 인원 포함</li></ul><a class="cta" href="#contact">문의</a></div>
+        <div class="plan pop"><h3>Pro</h3><p class="muted">기업 팀빌딩</p><div class="price">₩520,000~</div><ul class="muted" style="margin:6px 0 0; padding-left:18px"><li>맞춤 아젠다</li><li>운영 가이드 제공</li></ul><a class="cta" href="#contact">문의</a></div>
+        <div class="plan"><h3>Enterprise</h3><p class="muted">대규모/행사</p><div class="price">견적제</div><ul class="muted" style="margin:6px 0 0; padding-left:18px"><li>브랜딩 커스텀</li><li>현장 운영 지원</li></ul><a class="cta" href="#contact">문의</a></div>
+      </div>
+    </section>
+
+    <!-- Logos + Quotes -->
+    <section class="wrap section" id="socialproof" aria-label="고객 사례">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
+        <h2 style="margin:0">함께한 팀</h2>
+        <div class="logos" aria-label="고객 로고">
+          <img alt="logo" src="https://dummyimage.com/160x40/2b2f36/ffffff&text=ACME"/>
+          <img alt="logo" src="https://dummyimage.com/160x40/2b2f36/ffffff&text=FOCUS"/>
+          <img alt="logo" src="https://dummyimage.com/160x40/2b2f36/ffffff&text=NOVA"/>
+          <img alt="logo" src="https://dummyimage.com/160x40/2b2f36/ffffff&text=EDU+LAB"/>
+        </div>
+      </div>
+      <div class="quotes" style="margin-top:10px">
+        <div class="quote">“짧은 준비로 팀이 즉시 몰입했습니다. 다음 분기에도 재신청 예정!” — People Ops</div>
+        <div class="quote">“교육목표와 재미를 동시에 만족시킨 드문 콘텐츠.” — 대학 강의진</div>
+        <div class="quote">“행사 분위기가 살아나면서 자연스레 네트워킹이 이루어졌어요.” — Event Lead</div>
+      </div>
+    </section>
+
+    <!-- Case Studies -->
+    <section class="wrap section" id="cases" aria-label="사례">
+      <h2 style="margin:0 0 10px">케이스 스터디</h2>
+      <div class="cases">
+        <article class="case">
+          <img src="https://images.unsplash.com/photo-1529336953121-4f3c7c055d2c?q=80&w=1600&auto=format&fit=crop" alt="사례 이미지"/>
+          <div class="copy"><h3>300명 사내행사</h3><p class="muted">‘오리엔트 특급의 그림자’를 파티형으로 변형, 1시간 내 몰입/네트워킹 달성.</p></div>
+        </article>
+        <article class="case">
+          <img src="https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=1600&auto=format&fit=crop" alt="사례 이미지"/>
+          <div class="copy"><h3>교양수업 5주 연속 운영</h3><p class="muted">‘시간의 증언’으로 비판적 사고/토론 훈련. 강의만족도 4.9/5.</p></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section class="wrap section" id="about" aria-label="소개">
+      <h2 style="margin:0 0 10px">만든 사람</h2>
+      <div class="about">
+        <div class="card" style="background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));border:1px solid var(--line);border-radius:var(--radius)">
+          <h3 style="margin:0 0 6px">15년차 개발자 출신 PM</h3>
+          <p class="muted" style="margin:0">기획·제작·운영·분석까지 1인 풀사이클로 운영합니다. 팀 목표에 맞춘 커스터마이징도 빠르게 대응합니다.</p>
+        </div>
+        <div class="card" style="background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));border:1px solid var(--line);border-radius:var(--radius)">
+          <h3 style="margin:0 0 6px">프로세스</h3>
+          <ol class="muted" style="margin:0 0 6px; padding-left:18px"><li>작품 선택 및 예약</li><li>요구사항 수집(폼/미팅)</li><li>자료 전달 및 운영 가이드</li><li>현장/원격 진행</li><li>회고 및 리포트 옵션</li></ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="wrap section" id="faq" aria-label="FAQ">
+      <h2 style="margin:0 0 10px">자주 묻는 질문</h2>
+      <details><summary>온라인/오프라인 모두 가능한가요?</summary><p class="muted">네, 원격/오프라인 모두 지원하며 인원·장소에 맞춰 제안드립니다.</p></details>
+      <details><summary>참여 인원 제한이 있나요?</summary><p class="muted">작품별 권장 인원이 다릅니다. 대규모의 경우 여러 세션으로 분할 운영을 권장합니다.</p></details>
+      <details><summary>견적/세금계산서 발행이 가능한가요?</summary><p class="muted">가능합니다. 문의 폼 또는 이메일로 요청해 주세요.</p></details>
+    </section>
+
+    <!-- Contact / Lead Capture -->
+    <section class="wrap section" id="contact" aria-label="문의">
+      <h2 style="margin:0 0 10px">도입 상담/문의</h2>
+      <div class="contact">
+        <form id="lead" action="https://formspree.io/f/YOUR_FORM_ID" method="POST" novalidate>
+          <div style="display:grid;gap:10px">
+            <input id="name" name="name" placeholder="이름" required />
+            <input id="email" name="email" type="email" placeholder="이메일" required />
+            <input id="org" name="org" placeholder="소속/팀 (선택)" />
+            <textarea id="msg" name="msg" placeholder="요청/문의 내용을 적어주세요" required></textarea>
+            <input type="hidden" name="_subject" value="[문의] 극본살 SaaS" />
+            <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" />
+            <button class="send" type="submit">문의 보내기</button>
+            <p id="formStatus" class="muted" aria-live="polite" style="margin:6px 0 0"></p>
+          </div>
+        </form>
+        <div class="card" style="background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));border:1px solid var(--line);border-radius:var(--radius);padding:16px">
+          <h3 style="margin:0 0 6px">연락처</h3>
+          <p class="muted" style="margin:0">email: contact@example.com<br/>instagram: @roleplaystudio<br/>kakao: 채널 문의</p>
+          <p class="muted" style="margin:6px 0 0">※ 이 폼은 Formspree로 전송됩니다. 코드의 YOUR_FORM_ID를 실제 ID로 바꾸면 제출 내역을 이메일로 받아볼 수 있어요.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <small>© <span id="year"></span> 몰입형 롤플레잉 콘텐츠 스토어 · 모든 권리 보유 · <a href="#">이용약관</a> · <a href="#">개인정보처리방침</a></small>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    (function(){
+      const form = document.getElementById('lead');
+      if(!form) return;
+      const status = document.getElementById('formStatus');
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const endpoint = form.getAttribute('action'); // https://formspree.io/f/YOUR_FORM_ID 로 교체
+
+      form.addEventListener('submit', async (e)=>{
+        e.preventDefault();
+        status.textContent = '';
+        submitBtn.disabled = true; submitBtn.textContent = '전송 중...';
+
+        const data = new FormData(form);
+        data.append('page_url', location.href);
+        data.append('utm', location.search.replace(/^\?/, '') || '(none)');
+
+        try{
+          const res = await fetch(endpoint, { method:'POST', body:data, headers:{'Accept':'application/json'} });
+          if(res.ok){
+            form.reset();
+            status.textContent = '문의가 접수되었습니다! 24시간 내 회신드릴게요.';
+            status.style.color = '#a7f3d0';
+          }else{
+            const out = await res.json().catch(()=>({}));
+            status.textContent = (out && out.error) ? out.error : '전송에 실패했습니다. 이메일(contact@example.com)로 직접 보내주세요.';
+            status.style.color = '#fecaca';
+          }
+        }catch(err){
+          status.textContent = '네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+          status.style.color = '#fecaca';
+        }finally{
+          submitBtn.disabled = false; submitBtn.textContent = '문의 보내기';
+        }
+      });
+    })();
+  </script>
+  <script>
+    // Safety patch: ensure personal cards always show price/specs/book even if earlier edits broke styles
+    (function(){
+      const personals = document.querySelectorAll('.card.personal');
+      personals.forEach(card=>{
+        const body = card.querySelector('.body');
+        if(!body) return;
+        // Price presence
+        const price = body.querySelector('.price');
+        if(price){ price.style.display = 'inline'; }
+        // Specs presence (inject default if missing/empty)
+        let specs = body.querySelector('.specs');
+        if(!specs){
+          specs = document.createElement('div'); specs.className = 'specs';
+          specs.innerHTML = '<span class="chip">👥 3~6인</span><span class="chip">⏱️ 120분</span><span class="chip">⭐ 난이도 ★★☆</span>';
+          body.insertBefore(specs, body.querySelector('p') || body.lastChild);
+        } else if(specs.children.length === 0){
+          specs.innerHTML = '<span class="chip">👥 3~6인</span><span class="chip">⏱️ 120분</span><span class="chip">⭐ 난이도 ★★☆</span>';
+        }
+        // Book button presence
+        const book = body.querySelector('.book');
+        if(book){ book.style.display = 'inline-block'; }
+      });
+    })();
+  </script>
+</body>
+</html>
