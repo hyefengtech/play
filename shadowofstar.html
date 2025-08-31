@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>별의 그림자 | 감정추리극 극본살</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg-0:#05060a;        /* 심야 블랙 */
+      --bg-1:#0a0f1a;        /* 딥 네이비 */
+      --bg-2:#131b2a;        /* 카드 배경 */
+      --ink:#d7c7a6;         /* 먹빛/양피지 톤 */
+      --gold:#bfa76a;        /* 금사(금박) 포인트 */
+      --star:#cfe3ff;        /* 별빛 블루 */
+      --rose:#cdb8c4;        /* 흐린 장미빛 포인트 */
+      --text:#e8ecf3;        /* 본문 */
+      --muted:#96a2b8;       /* 보조 */
+      --shadow:0 10px 40px rgba(0,0,0,.45);
+      --radius:14px;
+      --glass: saturate(120%) blur(8px);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 1200px at 10% -10%, #1a2544 0%, transparent 60%),
+        radial-gradient(1000px 800px   at 90% -20%, #0f1a39 0%, transparent 60%),
+        linear-gradient(180deg, var(--bg-1), var(--bg-0) 60%, #000 100%);
+      font-family:"Noto Sans KR", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple SD Gothic Neo", sans-serif;
+      overflow-x:hidden;
+    }
+
+    /* Star canvas full-bleed */
+    #stars{
+      position:fixed; inset:0; z-index:-1;
+      filter: drop-shadow(0 0 2px rgba(207,227,255,.25));
+    }
+
+    header.nav{
+      position:fixed; inset:16px 16px auto 16px; z-index:10;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:10px 16px;
+      background:linear-gradient(180deg, rgba(10,15,26,.7), rgba(10,15,26,.25));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:12px;
+      backdrop-filter: var(--glass);
+      box-shadow: var(--shadow);
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      font-family:"Noto Serif KR", serif;
+      font-weight:600; letter-spacing:.02em;
+    }
+    .brand .spark{width:18px; height:18px; display:inline-grid; place-items:center; color:var(--gold)}
+    .nav-links{
+      display:flex; gap:8px; flex-wrap:wrap;
+    }
+    .nav-links a{
+      color:var(--muted); text-decoration:none; font-size:.95rem; padding:8px 10px; border-radius:10px;
+    }
+    .nav-links a:hover{ color:var(--text); background:rgba(255,255,255,.06)}
+
+    .hero{
+      min-height:100svh;
+      display:grid; place-items:center;
+      text-align:center; padding:120px 20px 80px;
+      position:relative;
+      isolation:isolate;
+    }
+    .hero-inner{
+      max-width:900px;
+      background: linear-gradient(180deg, rgba(19,27,42,.65), rgba(19,27,42,.35));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:44px 28px;
+      backdrop-filter: var(--glass);
+      position:relative; overflow:hidden;
+    }
+    /* Ink brush stroke accent */
+    .hero-inner::before{
+      content:"";
+      position:absolute; inset:auto -10% -8% -10%;
+      height:120px;
+      background: radial-gradient(70% 100% at 50% 100%, rgba(191,167,106,.28), rgba(191,167,106,0) 70%);
+      filter: blur(6px);
+      pointer-events:none;
+    }
+    .kicker{
+      color:var(--gold); letter-spacing:.12em; text-transform:uppercase; font-weight:600; font-size:.8rem;
+      margin-bottom:10px;
+    }
+    h1.title{
+      margin:0 0 14px;
+      font-family:"Noto Serif KR", serif;
+      font-weight:700; font-size: clamp(2.2rem,3vw + 1rem,3.8rem);
+      line-height:1.12; letter-spacing:.01em;
+      text-shadow: 0 2px 20px rgba(207,227,255,.15);
+    }
+    .subtitle{
+      font-family:"Noto Serif KR", serif;
+      font-weight:400; color:var(--rose);
+      font-size: clamp(1.05rem, .8vw + .9rem, 1.25rem);
+      line-height:1.75; margin: 10px auto 8px; max-width:40ch;
+    }
+
+    .cta-row{display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:26px;}
+    .btn{
+      --bg:linear-gradient(180deg, #22304f, #1a2239);
+      display:inline-flex; align-items:center; gap:10px;
+      padding:12px 18px; border-radius:12px; border:1px solid rgba(255,255,255,.1);
+      color:var(--text); text-decoration:none; font-weight:600;
+      background: var(--bg); box-shadow: inset 0 1px 0 rgba(255,255,255,.08), var(--shadow);
+      transition: transform .2s ease, background .3s ease, border-color .3s ease;
+    }
+    .btn svg{width:18px; height:18px}
+    .btn:hover{transform:translateY(-2px); border-color:rgba(191,167,106,.35)}
+    .btn.primary{
+      --bg:linear-gradient(180deg, #2e3e66, #222d4b);
+    }
+    .note{color:var(--muted); font-size:.9rem; margin-top:8px}
+
+    section{
+      padding:84px 20px;
+    }
+    .container{max-width:1100px; margin:0 auto}
+    .grid{
+      display:grid; gap:18px;
+      grid-template-columns: repeat(12, 1fr);
+    }
+
+    /* Cards */
+    .card{
+      background: linear-gradient(180deg, rgba(19,27,42,.6), rgba(19,27,42,.35));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:22px 20px;
+      height:100%;
+      backdrop-filter: var(--glass);
+    }
+    .card h3{
+      margin:0 0 10px;
+      font-family:"Noto Serif KR", serif; font-weight:700;
+      letter-spacing:.01em;
+    }
+    .muted{color:var(--muted)}
+    .eyebrow{color:var(--gold); font-weight:700; font-size:.85rem; letter-spacing:.08em; text-transform:uppercase}
+
+    /* Info cards */
+    .info{
+      display:grid; gap:16px; grid-template-columns: repeat(4, minmax(0,1fr));
+    }
+    .info .item{display:flex; gap:12px; align-items:flex-start; padding:14px 14px; border:1px dashed rgba(255,255,255,.08); border-radius:12px}
+    .info .icon{width:22px; height:22px; color:var(--star)}
+    .info .label{font-size:.95rem; color:var(--muted)}
+    .info .value{font-weight:700}
+
+    /* Feature grid */
+    .feature{grid-column: span 6;}
+    @media (max-width: 900px){
+      .feature{grid-column:span 12}
+      .info{grid-template-columns: repeat(2, minmax(0,1fr))}
+    }
+
+    /* Section titles */
+    .section-title{
+      margin:0 0 16px; font-family:"Noto Serif KR", serif; font-weight:700; letter-spacing:.02em; font-size:clamp(1.5rem, .8vw + 1.2rem, 2rem)
+    }
+    .section-sub{margin:0 0 20px; color:var(--muted); max-width:62ch; line-height:1.8}
+
+    /* Footer */
+    footer{
+      padding:40px 20px 80px; color:var(--muted); text-align:center;
+      border-top:1px solid rgba(255,255,255,.06);
+      background: linear-gradient(180deg, rgba(10,15,26,.1), rgba(10,15,26,.35));
+    }
+    .tiny{font-size:.85rem}
+
+    /* Reveal */
+    .reveal{opacity:0; transform: translateY(14px); transition: opacity .7s ease, transform .7s ease}
+    .reveal.visible{opacity:1; transform:none}
+
+    /* Reduce motion */
+    @media (prefers-reduced-motion: reduce){
+      .btn{transition:none}
+      .reveal{transition:none}
+    }
+
+    img {width: 100%;}
+  </style>
+</head>
+<body>
+  <canvas id="stars" aria-hidden="true"></canvas>
+
+  <header class="nav" role="navigation" aria-label="주요">
+    <div class="brand">
+      <span class="spark" aria-hidden="true">✦</span>
+      <span>별의 그림자</span>
+    </div>
+    <nav class="nav-links">
+      <a href="#about">시놉시스</a>
+      <a href="#info">정보</a>
+      <a href="#features">특징</a>
+      <a href="#start">시작하기</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-inner">
+        <div class="kicker">감정극 머더미스터리</div>
+        <img src="shadowofstar-thumb.png" alt="별의그림자"> <br><br>
+        <h1 id="hero-title" class="title">오늘 밤, 네 사람은 다시 모였다.</h1>
+        <p class="subtitle">말하지 못한 마음은 그림자 속에서 흔들리고<br>드러난 감정은 서로를 비춘다. <br>끝내 선택은 사랑일까, 배신일까, 혹은 침묵일까.</p>
+        <div class="cta-row">
+          <a class="btn primary" href="#start" aria-label="GM 테스트 시작">
+            <!-- brush -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+              <path d="M3 21c3-1 4-3 4-5 0-1.5 1.2-2.5 2.5-2.5.8 0 1.6.3 2.1.9l6.7-6.7c.6-.6 1.5-.9 2.3-.6.3.1.6.3.8.6.2.3.3.6.3 1 0 .5-.2 1-.6 1.4l-6.7 6.7c.6.6.9 1.3.9 2.1 0 1.3-1 2.5-2.5 2.5-2 0-4 1-6 3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            GM 테스트
+          </a>
+          <a class="btn" href="#notify" aria-label="정식 플레이 소식 받기">
+            <!-- bell -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+              <path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2c0 .5-.2 1-.6 1.4L4 17h5m6 0a3 3 0 1 1-6 0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            발매 알림 신청
+          </a>
+        </div>
+        <div class="note" role="note"></div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="reveal" aria-labelledby="about-title">
+      <div class="container">
+        <h2 id="about-title" class="section-title">시놉시스</h2>
+        <p class="section-sub">
+            역사는 모든 것을 기록하지 않는다.<br>
+            이름은 지워지고 진심은 봉인되었다.<br>
+            그러나 어둠 속에서도 별빛은 남았다.<br><br>
+            
+            도성에 떠도는 소문 ― 죽은 줄 알았던 이가 살아있다는 말<br>
+            밤마다 흘러나오는 시 한 줄<br>
+            술자리의 실언과 찢긴 편지 조각<br>
+            그리고 왕좌의 집착<br><br>
+            
+            오늘 밤, 네 사람은 다시 모였다.<br>
+            말하지 못한 마음은 그림자 속에서 흔들리고<br>
+            드러난 감정은 서로를 비춘다.<br>
+            끝내 선택은 사랑일까, 배신일까, 혹은 침묵일까.<br><br>
+        </p>
+        <div class="grid">
+          <article class="card feature" aria-label="인물의 실루엣">
+            <div class="eyebrow">은유</div>
+            <h3>이름 없는 네 사람</h3>
+            <p class="muted">별의 흔적 · 방랑하는 청년 · 냉혹한 권신 · 왕좌에 앉은 자 — 누가 누구인지는 끝까지 명확히 드러나지 않습니다. 당신의 해석이 이야기를 완성했을 때 감춰져 있던 이름들이 떠오릅니다.</p>
+          </article>
+          <article class="card feature" aria-label="선택의 무게">
+            <div class="eyebrow">선택</div>
+            <h3>사랑 · 배신 · 침묵</h3>
+            <p class="muted">단서는 모두의 것이지만 해석의 주도권은 당신의 선언에 있습니다. 한 번의 선택이 결말을 바꿉니다.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- INFO -->
+    <section id="info" class="reveal" aria-labelledby="info-title">
+      <div class="container">
+        <h2 id="info-title" class="section-title">플레이 정보</h2>
+        <div class="info" role="list">
+          <div class="item" role="listitem">
+            <div class="icon" aria-hidden="true">👥</div>
+            <div>
+              <div class="label">인원</div>
+              <div class="value">플레이어 4 + 사관(GM) 1</div>
+            </div>
+          </div>
+          <div class="item" role="listitem">
+            <div class="icon" aria-hidden="true">⏳</div>
+            <div>
+              <div class="label">시간</div>
+              <div class="value">약 60–80분 (테스트 기준)</div>
+            </div>
+          </div>
+          <div class="item" role="listitem">
+            <div class="icon" aria-hidden="true">🎭</div>
+            <div>
+              <div class="label">장르</div>
+              <div class="value">극본살 · 관계드라마 · 감정 추리</div>
+            </div>
+          </div>
+          <div class="item" role="listitem">
+            <div class="icon" aria-hidden="true">⭐</div>
+            <div>
+              <div class="label">난이도</div>
+              <div class="value">몰입형 (스포 없음) : 중상 </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="features" class="reveal" aria-labelledby="feat-title">
+      <div class="container">
+        <h2 id="feat-title" class="section-title">왜 &lt;별의 그림자&gt;인가</h2>
+        <p class="section-sub">추리의 정답보다 감정의 결을 되살리는 게임 <br> 기록되지 않은 마음을 상상과 상징으로 복원합니다.</p>
+        <div class="grid">
+          <article class="card feature" aria-label="감정극 설계">
+            <h3>감정의 무대</h3>
+            <p class="muted">사건보다 마음. 말하지 못한 감정이 라운드마다 흔들리고 빛납니다.</p>
+          </article>
+          <article class="card feature" aria-label="단서 해석 주도권">
+            <h3>단서의 선언</h3>
+            <p class="muted">“이건 내가 아는 것이다.” — 롤플레잉 선언으로 단서 해석을 주도하세요. <br>해석이 곧 서사입니다.</p>
+          </article>
+          <article class="card feature" aria-label="역사×픽션">
+            <h3>역사 × 픽션</h3>
+            <p class="muted">사실은 보조, 감정이 우선. 상징과 확률, 심리로 사건을 시뮬레이션합니다.</p>
+          </article>
+          <article class="card feature" aria-label="밤의 연출">
+            <h3>밤의 연출</h3>
+            <p class="muted">은은한 조명, 잔 부딪히는 소리, 낮은 북소리 — 밤이 깊을수록 몰입은 더 짙어집니다.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section id="start" class="reveal" aria-labelledby="cta-title">
+      <div class="container">
+        <h2 id="cta-title" class="section-title">지금, 당신의 선택</h2>
+        <p class="section-sub">테스트 빌드로 분위기를 먼저 맛보세요. 정식판 소식은 메일로 전합니다.</p>
+        <div class="cta-row">
+          <a class="btn primary" href="mailto:archive@yourdomain.example?subject=%E3%80%8A%EB%B3%84%EC%9D%98%20%EA%B7%B8%EB%A6%BC%EC%9E%90%E3%80%8B%20GM%20%ED%85%8C%EC%8A%A4%ED%8A%B8%20%EC%9A%94%EC%B2%AD&body=%EC%95%8C%ED%8C%85%20%EB%A7%8C%EB%93%A4%EA%B3%A0%20%EC%8B%B6%EC%96%B4%EC%9A%94.">
+            ✒ GM 테스트 신청
+          </a>
+          <a class="btn" id="notify" href="https://example.com/notify" target="_blank" rel="noopener">
+            🔔 발매 알림 받기
+          </a>
+        </div>
+        <p class="note">※ 본 페이지는 스포일러를 포함하지 않습니다.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p class="tiny">제작: <strong>말해지지 않은 것들</strong> · © <span id="year"></span> All feelings reserved.</p>
+    <p class="tiny">“이 게임은 역사적 맥락을 바탕으로 하지만 기록되지 않은 감정을 탐구합니다.”</p>
+  </footer>
+
+  <script>
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Intersection reveal
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reveals = document.querySelectorAll('.reveal');
+    if (!prefersReduced && 'IntersectionObserver' in window){
+      const io = new IntersectionObserver((entries)=>{
+        entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target);} });
+      }, {threshold:.1});
+      reveals.forEach(el=>io.observe(el));
+    } else {
+      reveals.forEach(el=>el.classList.add('visible'));
+    }
+
+    // Twinkling stars canvas
+    (function(){
+      const cvs = document.getElementById('stars');
+      const ctx = cvs.getContext('2d');
+      let W, H, stars=[];
+      const N = 180; // star count
+
+      function resize(){
+        W = cvs.width = window.innerWidth;
+        H = cvs.height = window.innerHeight;
+        stars = Array.from({length:N}, ()=>({
+          x: Math.random()*W,
+          y: Math.random()*H,
+          r: Math.random()*1.2 + .4,
+          a: Math.random()*1,          // alpha
+          v: (Math.random()*0.8 + 0.2) // twinkle speed
+        }));
+        draw(0);
+      }
+      window.addEventListener('resize', resize, {passive:true});
+      resize();
+
+      let last=0;
+      function draw(t){
+        if(prefersReduced){ // static stars
+          ctx.clearRect(0,0,W,H);
+          for(const s of stars){
+            ctx.beginPath();
+            ctx.fillStyle=`rgba(207,227,255,.6)`;
+            ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+            ctx.fill();
+          }
+          return;
+        }
+        const dt = (t - last)/1000; last = t;
+        ctx.clearRect(0,0,W,H);
+        for(const s of stars){
+          s.a += s.v*dt;
+          const tw = (Math.sin(s.a*2*Math.PI)+1)/2; // 0..1
+          const alpha = 0.25 + tw*0.55;
+          ctx.beginPath();
+          ctx.fillStyle=`rgba(207,227,255,${alpha})`;
+          ctx.shadowColor = 'rgba(207,227,255,.35)';
+          ctx.shadowBlur = 6*alpha;
+          ctx.arc(s.x, s.y, s.r*(0.85 + tw*0.3), 0, Math.PI*2);
+          ctx.fill();
+        }
+        ctx.shadowBlur = 0;
+        requestAnimationFrame(draw);
+      }
+      requestAnimationFrame(draw);
+    })();
+  </script>
+</body>
+</html>
