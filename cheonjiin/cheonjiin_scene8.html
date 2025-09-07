@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      월드플레이 - 하늘 땅 인간 | 인터랙티브 스토리텔링 몰입경험콘텐츠 플랫폼
+    </title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap"
+      rel="stylesheet"
+    />
+    <script src="script.js"></script>
+  </head>
+  <body>
+    <div id="game-title">
+      <h1>하늘의 시험 : 우사의 힌트</h1>
+    </div>
+    <br />
+    <br />
+    <div class="game-scene">
+      <p>
+        <!--하늘의 시험에 도전하는 버튼을 클릭함과 동시에 이 페이지로 넘어가면서 풍백,우사,운사 가 있는 챗봇 채팅방 작동한다. 챗봇 구현이 오래 걸릴 것임으로 일단은 이 페이지에서 채팅방처럼 구현해보는쪽으로?-->
+        우사 : 비를 다스리는 우사입니다. <br />
+        대기를 움직여야 한다고 들었습니다. <br />
+        제가 바로 답을 알려드릴 수는 없으니 도움이 될만한 비유를 드리지요.
+        <br />
+        풍백께서도 한자의 획순을 언급하셨을 겁니다. <br />
+        한자 획순의 원칙 중 하나, 위에서 아래로 써야합니다. <br />
+        마치 비가 내리는 모습처럼 위에서 아
+      </p>
+      <br />
+      <br />
+    </div>
+
+    <div class="action">
+      <button
+        type="button"
+        class="btn btn-primary"
+        name="button"
+        onclick="go();"
+      >
+        다른 시도를 한다
+      </button>
+      <br /><br /><br />
+      <!---
+      <form name="form_id">
+        <input
+          name="textbox_id"
+          type="text"
+          id="answer"
+          placeholder="주문을 입력하세요."
+        />
+        <br />
+        <br />
+      </form>
+      <button
+        type="button"
+        class="btn btn-primary"
+        name="button"
+        onclick="To();"
+      >
+        주문 소환
+      </button>
+      <br /><br /><br />
+      <button
+        type="button"
+        class="btn btn-primary"
+        name="button"
+        onclick="go2();"
+      >
+        대기를 움직인다
+      </button>
+      ---->
+    </div>
+
+    <script>
+      function go() {
+        window.location.href = "cheonjiin_scene5.html";
+      }
+
+      function To() {
+        if (document.form_id.textbox_id.value === "풍백") {
+          window.location.href = "cheonjiin_scene7.html"; //현재페이지의 주소를 해당페이지로 바꿉니다.
+        } else if (document.form_id.textbox_id.value === "우사") {
+          window.location.href = "cheonjiin_scene8.html";
+        } else if (document.form_id.textbox_id.value === "운사") {
+          window.location.href = "cheonjiin_scene9.html";
+        } else if (document.form_id.textbox_id.value === "도구") {
+          window.location.href = "cheonjiin_scene10.html";
+        } else {
+          window.location.href = "noname3.html";
+        }
+      }
+
+      function go2() {
+        window.location.href = "cheonjiin_scene11.html";
+      }
+    </script>
+  </body>
+</html>
