@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      월드플레이 - 기억을 잠식하는 호수 | 인터랙티브 스토리텔링 몰입경험콘텐츠
+      플랫폼
+    </title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap"
+      rel="stylesheet"
+    />
+    <script src="script.js"></script>
+  </head>
+  <body>
+    <div id="game-title">
+      <h1>사당</h1>
+    </div>
+    <br />
+    <br />
+    <div class="game-scene">
+      <p>
+        "굳이 여기에 가보겠다고 해서 근처까지 데리고는 왔지만..... <br />
+        우리 어릴적부터 어른들이 이곳은 가지 말라고 하셨는데 오랜만이라 기억이
+        안 났나봐? <br />
+        이곳에 누가 모셔져 있냐고? <br />
+        음.... 글쎄, 그건 나도 잘 모르겠는걸. <br />
+        예전에 동급생 한명이 여기 함부로 왔다가 사고난 적이 있어서 이쪽으로는
+        관심조차 가진 적이 없었어.<br />
+        빨리 뜨자."<br />
+      </p>
+      <br />
+      <br />
+    </div>
+
+    <div class="action">
+      <button
+        type="button"
+        class="btn btn-primary"
+        name="button"
+        onclick="go();"
+      >
+        다른 곳으로 이동한다
+      </button>
+      <br />
+      <br />
+      <button
+        type="button"
+        class="btn btn-primary"
+        name="button"
+        onclick="go2();"
+      >
+        그만 둘러본다
+      </button>
+    </div>
+
+    <script>
+      function go() {
+        window.location.href = "wlvc_scene5.html";
+      }
+      function go2() {
+        window.location.href = "wlvc_scene7.html";
+      }
+    </script>
+  </body>
+</html>

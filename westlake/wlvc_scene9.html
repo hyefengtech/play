@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      월드플레이 - 기억을 잠식하는 호수 | 인터랙티브 스토리텔링 몰입경험콘텐츠
+      플랫폼
+    </title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap"
+      rel="stylesheet"
+    />
+    <script src="script.js"></script>
+  </head>
+  <body>
+    <div id="game-title">
+      <h1>어디로 갈까?</h1>
+    </div>
+    <br />
+    <br />
+    <div class="game-scene">
+      <p>
+        K가 만나자고 한 장소는....
+        <br />
+        <br />
+      </p>
+      <br />
+      <br />
+    </div>
+
+    <div class="action">
+      <button
+        type="button"
+        class="btn btn-primary"
+        name="button"
+        onclick="go2();"
+      >
+        마을회관
+      </button>
+      <br />
+      <br />
+      <button
+        type="button"
+        class="btn btn-primary"
+        name="button"
+        onclick="go();"
+      >
+        서호
+      </button>
+      <br />
+      <br />
+      <button
+        type="button"
+        class="btn btn-primary"
+        name="button"
+        onclick="go2();"
+      >
+        당산나무
+      </button>
+      <br />
+      <br />
+      <button
+        type="button"
+        class="btn btn-primary"
+        name="button"
+        onclick="go2();"
+      >
+        사당
+      </button>
+      <br />
+      <br />
+      <button
+        type="button"
+        class="btn btn-primary"
+        name="button"
+        onclick="go2();"
+      >
+        진명사
+      </button>
+    </div>
+
+    <script>
+      function go() {
+        window.location.href = "wlvc_scene10.html";
+      }
+      function go2() {
+        window.location.href = "wlvc_error1.html";
+      }
+    </script>
+  </body>
+</html>
