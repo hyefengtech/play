@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>송시열 빙의: 남인 공략 시뮬레이터 (MVP)</title>
+
+  <!-- Tailwind (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Optional: nicer system font rendering -->
+  <style>
+    html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  </style>
+</head>
+
+<body class="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-100">
+  <!-- Subtle background glow -->
+  <div class="pointer-events-none fixed inset-0 opacity-30">
+    <div class="absolute -top-32 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-indigo-500 blur-3xl"></div>
+    <div class="absolute -bottom-40 right-16 h-[28rem] w-[28rem] rounded-full bg-fuchsia-500 blur-3xl"></div>
+  </div>
+
+  <main class="relative mx-auto flex min-h-screen max-w-5xl flex-col px-4 py-10 sm:px-6">
+    <!-- Header -->
+    <header class="mb-8 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="grid h-10 w-10 place-items-center rounded-2xl bg-white/10 ring-1 ring-white/10">
+          <span class="text-lg">🏯</span>
+        </div>
+        <div>
+          <h1 class="text-lg font-semibold tracking-tight sm:text-xl">송시열 빙의: 남인 공략 시뮬레이터</h1>
+          <p class="text-xs text-slate-300 sm:text-sm">버튼만 누르면 엔딩까지 — GitHub Pages용 단일 파일 MVP</p>
+        </div>
+      </div>
+
+      <button id="btnMute"
+        class="hidden items-center gap-2 rounded-xl bg-white/10 px-3 py-2 text-xs text-slate-200 ring-1 ring-white/10 hover:bg-white/15 active:scale-[0.99] sm:flex"
+        title="효과음(가벼운 클릭) 토글">
+        <span id="muteIcon">🔊</span><span class="hidden sm:inline">효과음</span>
+      </button>
+    </header>
+
+    <!-- App card -->
+    <section class="mx-auto w-full">
+      <div class="rounded-3xl bg-white/5 ring-1 ring-white/10 shadow-2xl shadow-black/30 overflow-hidden">
+        <!-- Top bar -->
+        <div class="flex items-center justify-between border-b border-white/10 px-6 py-4">
+          <div class="flex items-center gap-3">
+            <span class="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-xs text-slate-200 ring-1 ring-white/10">
+              MVP · 7문항 · 3엔딩(+히든)
+            </span>
+            <span id="statePill"
+              class="hidden sm:inline-flex items-center rounded-full bg-indigo-500/15 px-3 py-1 text-xs text-indigo-200 ring-1 ring-indigo-400/20">
+              준비됨
+            </span>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button id="btnReset"
+              class="rounded-xl bg-white/10 px-3 py-2 text-xs text-slate-200 ring-1 ring-white/10 hover:bg-white/15 active:scale-[0.99]">
+              다시하기
+            </button>
+            <button id="btnShare"
+              class="rounded-xl bg-indigo-500/20 px-3 py-2 text-xs text-indigo-100 ring-1 ring-indigo-400/25 hover:bg-indigo-500/25 active:scale-[0.99]">
+              결과 공유
+            </button>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="p-6 sm:p-8">
+          <!-- Progress -->
+          <div class="mb-6">
+            <div class="flex items-center justify-between text-xs text-slate-300">
+              <span id="progressLabel">시작 전</span>
+              <span id="progressCount">0 / 7</span>
+            </div>
+            <div class="mt-2 h-2 w-full overflow-hidden rounded-full bg-white/10 ring-1 ring-white/10">
+              <div id="progressBar" class="h-full w-0 rounded-full bg-gradient-to-r from-indigo-400 to-fuchsia-400 transition-all duration-500"></div>
+            </div>
+          </div>
+
+          <!-- Two-column layout -->
+          <div class="grid gap-6 lg:grid-cols-3">
+            <!-- Main panel -->
+            <div class="lg:col-span-2">
+              <div class="rounded-3xl bg-black/20 ring-1 ring-white/10 p-6 sm:p-7">
+                <div class="flex items-start gap-4">
+                  <div class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white/10 ring-1 ring-white/10">
+                    <span id="panelIcon" class="text-xl">🕯️</span>
+                  </div>
+                  <div class="min-w-0">
+                    <h2 id="panelTitle" class="text-base font-semibold tracking-tight sm:text-lg">인트로</h2>
+                    <p id="panelDesc" class="mt-2 text-sm leading-6 text-slate-200/90">
+                      눈을 떠보니… 네 몸은 17세기 조선의 송시열.<br />
+                      문제는 하나. <span class="font-semibold text-slate-100">너는 남인들과 친해져야만 살아남는다.</span><br />
+                      잘못 고르면? → 사약 엔딩.
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Choices -->
+                <div id="choices" class="mt-6 grid gap-3">
+                  <!-- buttons injected -->
+                </div>
+
+                <!-- Footer note -->
+                <div id="hint" class="mt-5 text-xs text-slate-400">
+                  팁: 선택은 누적 점수로 반영돼. 마지막에 가장 높은 인물이 엔딩을 가져감.
+                </div>
+              </div>
+
+              <!-- Toast -->
+              <div id="toast"
+                class="pointer-events-none mt-4 hidden rounded-2xl bg-white/10 px-4 py-3 text-sm text-slate-100 ring-1 ring-white/10">
+                복사됨!
+              </div>
+            </div>
+
+            <!-- Side panel: score -->
+            <aside class="rounded-3xl bg-black/20 ring-1 ring-white/10 p-6 sm:p-7">
+              <div class="flex items-center justify-between">
+                <h3 class="text-sm font-semibold text-slate-100">관계 수치</h3>
+                <span class="rounded-full bg-white/10 px-2.5 py-1 text-xs text-slate-200 ring-1 ring-white/10">실시간</span>
+              </div>
+
+              <div class="mt-5 space-y-4">
+                <div class="rounded-2xl bg-white/5 ring-1 ring-white/10 p-4">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <span>🪶</span><span class="text-sm font-medium">허목</span>
+                    </div>
+                    <span id="scoreHM" class="text-sm font-semibold tabular-nums">0</span>
+                  </div>
+                  <div class="mt-2 h-2 overflow-hidden rounded-full bg-white/10">
+                    <div id="barHM" class="h-full w-0 rounded-full bg-white/60 transition-all duration-300"></div>
+                  </div>
+                  <p class="mt-2 text-xs text-slate-300">원칙·예법·청렴</p>
+                </div>
+
+                <div class="rounded-2xl bg-white/5 ring-1 ring-white/10 p-4">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <span>🔥</span><span class="text-sm font-medium">윤휴</span>
+                    </div>
+                    <span id="scoreYH" class="text-sm font-semibold tabular-nums">0</span>
+                  </div>
+                  <div class="mt-2 h-2 overflow-hidden rounded-full bg-white/10">
+                    <div id="barYH" class="h-full w-0 rounded-full bg-white/60 transition-all duration-300"></div>
+                  </div>
+                  <p class="mt-2 text-xs text-slate-300">개혁·논쟁·이상</p>
+                </div>
+
+                <div class="rounded-2xl bg-white/5 ring-1 ring-white/10 p-4">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <span>🐍</span><span class="text-sm font-medium">허적</span>
+                    </div>
+                    <span id="scoreHJ" class="text-sm font-semibold tabular-nums">0</span>
+                  </div>
+                  <div class="mt-2 h-2 overflow-hidden rounded-full bg-white/10">
+                    <div id="barHJ" class="h-full w-0 rounded-full bg-white/60 transition-all duration-300"></div>
+                  </div>
+                  <p class="mt-2 text-xs text-slate-300">실리·줄타기·권력</p>
+                </div>
+              </div>
+
+              <div class="mt-6 rounded-2xl bg-indigo-500/10 ring-1 ring-indigo-400/20 p-4 text-xs text-indigo-100/90 leading-5">
+                <p class="font-semibold text-indigo-50">히든 조건</p>
+                <p class="mt-1">
+                  세 인물 점수가 <span class="font-semibold">비슷하게 갈리면</span> “중립은 죽음” 루트가 열릴 수 있음.
+                </p>
+              </div>
+
+              <footer class="mt-6 text-xs text-slate-500">
+                © MVP Prototype — 자유롭게 수정해서 써도 됨
+              </footer>
+            </aside>
+          </div>
+        </div>
+      </div>
+
+      <!-- Small guide -->
+      <div class="mx-auto mt-6 max-w-5xl text-xs text-slate-400">
+        GitHub Pages: <span class="text-slate-200">index.html</span> 하나 올리고 Settings → Pages에서 브랜치 선택하면 끝.
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // -----------------------------
+    // Data
+    // -----------------------------
+    const CHAR = {
+      HM: { key: "HM", name: "허목", emoji: "🪶" },
+      YH: { key: "YH", name: "윤휴", emoji: "🔥" },
+      HJ: { key: "HJ", name: "허적", emoji: "🐍" },
+    };
+
+    const intro = {
+      icon: "🕯️",
+      title: "인트로",
+      desc:
+        `눈을 떠보니… 네 몸은 17세기 조선의 송시열.\n` +
+        `\n문제는 하나.\n` +
+        `너는 남인들과 친해져야만 살아남는다.\n` +
+        `\n잘못 고르면? → 사약 엔딩.`,
+      choices: [
+        { label: "시작하기", next: 0 }
+      ]
+    };
+
+    const questions = [
+      {
+        icon: "📜",
+        title: "Q1. 첫 출근(?) 날, 예법 문제로 시비가 붙었다.",
+        desc: "누가 ‘송 선생, 요즘 말이 좀 이상하오…’라며 시비를 건다.",
+        choices: [
+          { label: "“예가 무너지면 나라가 무너진다.” 원칙대로 밀어붙인다.", add: { HM: 1 }, vibe: "원칙" },
+          { label: "“논리적으로 따져보자.” 토론으로 상대를 설득한다.", add: { YH: 1 }, vibe: "토론" },
+          { label: "“분위기 풀고 정보부터.” 웃으며 넘어가며 속내를 캔다.", add: { HJ: 1 }, vibe: "실리" },
+        ],
+      },
+      {
+        icon: "👑",
+        title: "Q2. 왕이 은근히 개혁안을 물어본다.",
+        desc: "“경은 어찌 생각하는가?” …이거 답 잘못하면 목이 날아감.",
+        choices: [
+          { label: "급진은 위험. 점진적으로 바꾸자고 말한다.", add: { HM: 1 }, vibe: "점진" },
+          { label: "왕권 강화 중심의 대개혁을 제안한다.", add: { YH: 1 }, vibe: "개혁" },
+          { label: "파장 계산 후 무난한 안으로 안전빵 친다.", add: { HJ: 1 }, vibe: "계산" },
+        ],
+      },
+      {
+        icon: "⚖️",
+        title: "Q3. 남인 내부 갈등이 터졌다.",
+        desc: "서로 눈빛만으로도 살기가 흐른다. 너는 어떻게 끼어들래?",
+        choices: [
+          { label: "명분과 예법으로 중재한다.", add: { HM: 1 }, vibe: "중재" },
+          { label: "공개 토론 열어서 끝장 보자고 한다.", add: { YH: 1 }, vibe: "결판" },
+          { label: "양쪽에 따로 접근해 물밑 합의로 정리한다.", add: { HJ: 1 }, vibe: "물밑" },
+        ],
+      },
+      {
+        icon: "🕵️",
+        title: "Q4. 너에 대한 흉흉한 소문이 돈다.",
+        desc: "“송시열이… 사람이 바뀐 것 같다”는 말이 퍼졌다.",
+        choices: [
+          { label: "정면돌파. 해명 상소를 올린다.", add: { HM: 1 }, vibe: "정면" },
+          { label: "공개 논쟁으로 여론을 뒤집는다.", add: { YH: 1 }, vibe: "여론" },
+          { label: "소문의 근원을 조용히 제거한다.", add: { HJ: 1 }, vibe: "제거" },
+        ],
+      },
+      {
+        icon: "🍶",
+        title: "Q5. 술자리에서 인생관을 묻는다.",
+        desc: "분위기 풀린 틈에 누가 묻는다. “송 선생은 무엇을 위해 사시오?”",
+        choices: [
+          { label: "“선비는 청렴해야 한다.”", add: { HM: 1 }, vibe: "청렴" },
+          { label: "“세상은 바꿀 수 있다.”", add: { YH: 1 }, vibe: "변화" },
+          { label: "“살아남는 게 중요하지.”", add: { HJ: 1 }, vibe: "생존" },
+        ],
+      },
+      {
+        icon: "⚠️",
+        title: "Q6. 위기: 숙청 명단에 네 이름이 오를 뻔했다.",
+        desc: "누군가 널 밀어 넣으려는 느낌이 든다. 지금 움직여야 한다.",
+        choices: [
+          { label: "상소 + 여론전으로 명분을 세운다.", add: { HM: 1 }, vibe: "명분" },
+          { label: "왕과 직접 담판. 한 방에 끝낸다.", add: { YH: 1 }, vibe: "담판" },
+          { label: "인맥 총동원 + 정치공작으로 라인을 바꾼다.", add: { HJ: 1 }, vibe: "라인" },
+        ],
+      },
+      {
+        icon: "🧭",
+        title: "Q7. 마지막 선택. 너의 정치 스타일은?",
+        desc: "여기서 네 색이 결정된다. 딱 하나만 고르자.",
+        choices: [
+          { label: "명분과 원칙", add: { HM: 1 }, vibe: "원칙" },
+          { label: "개혁과 이상", add: { YH: 1 }, vibe: "이상" },
+          { label: "권모술수와 현실", add: { HJ: 1 }, vibe: "현실" },
+        ],
+      },
+    ];
+
+    const endings = {
+      HM: {
+        icon: "🪶",
+        title: "허목 엔딩 — 「청렴한 벗」",
+        desc:
+          `너는 끝내 허목과 깊은 신뢰를 쌓았다.\n\n` +
+          `원칙과 예법, 그리고 청렴.\n` +
+          `세상은 쉽게 바뀌지 않았지만,\n` +
+          `너희의 이름은 오래도록 존경받았다.\n\n` +
+          `— 조선 최고의 선비 엔딩 —`,
+      },
+      YH: {
+        icon: "🔥",
+        title: "윤휴 엔딩 — 「개혁의 동지」",
+        desc:
+          `너는 윤휴와 함께 조선을 뒤흔들었다.\n\n` +
+          `급진적이고 위험했지만,\n` +
+          `새로운 시대의 문을 열었다.\n\n` +
+          `— 전설의 개혁가 엔딩 —`,
+      },
+      HJ: {
+        icon: "🐍",
+        title: "허적 엔딩 — 「권력의 설계자」",
+        desc:
+          `너는 허적과 손을 잡고 조선 정치의 흐름을 조종했다.\n\n` +
+          `기록에는 남지 않았지만,\n` +
+          `실제 권력은 언제나 너의 손 안에 있었다.\n\n` +
+          `— 흑막 엔딩 —`,
+      },
+      BAD: {
+        icon: "☠️",
+        title: "히든 배드엔딩 — 「중립은 죽음」",
+        desc:
+          `누구의 신뢰도 얻지 못한 너.\n\n` +
+          `정치란, 중립으로는 살아남을 수 없는 세계.\n\n` +
+          `사약을 받았다.`,
+      },
+    };
+
+    // -----------------------------
+    // State
+    // -----------------------------
+    let idx = -1; // -1 = intro, 0..6 questions, 999 = ending
+    let scores = { HM: 0, YH: 0, HJ: 0 };
+    let resultKey = null;
+
+    // -----------------------------
+    // Elements
+    // -----------------------------
+    const el = {
+      statePill: document.getElementById("statePill"),
+      progressLabel: document.getElementById("progressLabel"),
+      progressCount: document.getElementById("progressCount"),
+      progressBar: document.getElementById("progressBar"),
+      panelIcon: document.getElementById("panelIcon"),
+      panelTitle: document.getElementById("panelTitle"),
+      panelDesc: document.getElementById("panelDesc"),
+      choices: document.getElementById("choices"),
+      toast: document.getElementById("toast"),
+      hint: document.getElementById("hint"),
+
+      scoreHM: document.getElementById("scoreHM"),
+      scoreYH: document.getElementById("scoreYH"),
+      scoreHJ: document.getElementById("scoreHJ"),
+      barHM: document.getElementById("barHM"),
+      barYH: document.getElementById("barYH"),
+      barHJ: document.getElementById("barHJ"),
+
+      btnReset: document.getElementById("btnReset"),
+      btnShare: document.getElementById("btnShare"),
+      btnMute: document.getElementById("btnMute"),
+      muteIcon: document.getElementById("muteIcon"),
+    };
+
+    // -----------------------------
+    // Tiny click sound (no assets)
+    // -----------------------------
+    let muted = true; // default mute to be polite
+    el.btnMute.classList.remove("hidden");
+    function clickSound() {
+      if (muted) return;
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = "sine";
+        o.frequency.value = 520;
+        g.gain.value = 0.03;
+        o.connect(g);
+        g.connect(ctx.destination);
+        o.start();
+        setTimeout(() => { o.stop(); ctx.close(); }, 55);
+      } catch (_) {}
+    }
+
+    el.btnMute.addEventListener("click", () => {
+      muted = !muted;
+      el.muteIcon.textContent = muted ? "🔇" : "🔊";
+      toastShow(muted ? "효과음 꺼짐" : "효과음 켜짐");
+    });
+
+    // -----------------------------
+    // Helpers
+    // -----------------------------
+    function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
+
+    function setTextWithNewlines(node, text) {
+      node.innerHTML = text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\n/g, "<br/>");
+    }
+
+    function toastShow(msg) {
+      el.toast.textContent = msg;
+      el.toast.classList.remove("hidden");
+      clearTimeout(toastShow._t);
+      toastShow._t = setTimeout(() => el.toast.classList.add("hidden"), 1400);
+    }
+
+    function updateScoreUI() {
+      el.scoreHM.textContent = scores.HM;
+      el.scoreYH.textContent = scores.YH;
+      el.scoreHJ.textContent = scores.HJ;
+
+      const totalAnswered = clamp(idx, 0, questions.length); // rough
+      const max = questions.length; // 7
+      // bar width by score / max (not by answered) for stable feel
+      el.barHM.style.width = `${(scores.HM / max) * 100}%`;
+      el.barYH.style.width = `${(scores.YH / max) * 100}%`;
+      el.barHJ.style.width = `${(scores.HJ / max) * 100}%`;
+    }
+
+    function updateProgressUI() {
+      const max = questions.length;
+      const answered = clamp(idx, 0, max); // idx indicates current question index, so answered = idx for display-ish
+      const current = idx < 0 ? 0 : (idx > max ? max : idx);
+      const shown = idx < 0 ? 0 : (idx >= max ? max : idx); // already passed
+      const count = idx < 0 ? 0 : Math.min(idx, max);
+
+      const step = idx < 0 ? 0 : Math.min(idx, max);
+      // progress: on question i, we show i/7 as "completed"
+      el.progressCount.textContent = `${step} / ${max}`;
+      el.progressLabel.textContent =
+        idx < 0 ? "시작 전" :
+        idx >= max ? "결과" :
+        `진행 중`;
+
+      el.progressBar.style.width = `${(step / max) * 100}%`;
+    }
+
+    function setStatePill(text, tone = "indigo") {
+      el.statePill.textContent = text;
+      el.statePill.className =
+        `hidden sm:inline-flex items-center rounded-full px-3 py-1 text-xs ring-1 ` +
+        (tone === "indigo"
+          ? "bg-indigo-500/15 text-indigo-200 ring-indigo-400/20"
+          : tone === "rose"
+          ? "bg-rose-500/15 text-rose-200 ring-rose-400/20"
+          : "bg-emerald-500/15 text-emerald-200 ring-emerald-400/20");
+    }
+
+    function choiceButton(label, sublabel, onClick, accent = "indigo") {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className =
+        "group w-full rounded-2xl bg-white/7 px-4 py-4 text-left ring-1 ring-white/10 " +
+        "hover:bg-white/10 hover:ring-white/20 active:scale-[0.995] transition " +
+        "focus:outline-none focus:ring-2 focus:ring-white/30";
+      btn.innerHTML = `
+        <div class="flex items-start justify-between gap-4">
+          <div class="min-w-0">
+            <div class="text-sm font-medium text-slate-100 leading-6">${escapeHtml(label)}</div>
+            ${sublabel ? `<div class="mt-1 text-xs text-slate-300">${escapeHtml(sublabel)}</div>` : ""}
+          </div>
+          <div class="mt-0.5 shrink-0 rounded-xl px-2.5 py-1 text-[11px] ring-1 ${
+            accent === "indigo"
+              ? "bg-indigo-500/15 text-indigo-100 ring-indigo-400/25"
+              : accent === "fuchsia"
+              ? "bg-fuchsia-500/15 text-fuchsia-100 ring-fuchsia-400/25"
+              : accent === "amber"
+              ? "bg-amber-500/15 text-amber-100 ring-amber-400/25"
+              : "bg-white/10 text-slate-200 ring-white/15"
+          }">
+            선택
+          </div>
+        </div>
+      `;
+      btn.addEventListener("click", () => { clickSound(); onClick(); });
+      return btn;
+    }
+
+    function escapeHtml(s) {
+      return String(s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function renderIntro() {
+      idx = -1;
+      resultKey = null;
+      setStatePill("준비됨", "indigo");
+      el.panelIcon.textContent = intro.icon;
+      el.panelTitle.textContent = intro.title;
+      setTextWithNewlines(el.panelDesc, intro.desc);
+
+      el.choices.innerHTML = "";
+      el.choices.appendChild(
+        choiceButton(intro.choices[0].label, "7개의 선택으로 엔딩이 갈린다", () => {
+          nextQuestion(0);
+        }, "fuchsia")
+      );
+
+      el.hint.innerHTML = `팁: 점수는 오른쪽에 표시돼. 끝나면 자동으로 엔딩!`;
+      updateProgressUI();
+      updateScoreUI();
+      el.btnShare.disabled = true;
+      el.btnShare.classList.add("opacity-60", "cursor-not-allowed");
+    }
+
+    function renderQuestion(qIndex) {
+      const q = questions[qIndex];
+      setStatePill(`질문 ${qIndex + 1}/${questions.length}`, "indigo");
+      el.panelIcon.textContent = q.icon;
+      el.panelTitle.textContent = q.title;
+      setTextWithNewlines(el.panelDesc, q.desc);
+
+      el.choices.innerHTML = "";
+      q.choices.forEach((c) => {
+        const accent = c.add?.HM ? "indigo" : c.add?.YH ? "fuchsia" : "amber";
+        const sub = c.add?.HM ? "🪶 허목 +1" : c.add?.YH ? "🔥 윤휴 +1" : "🐍 허적 +1";
+        el.choices.appendChild(
+          choiceButton(c.label, sub, () => {
+            applyScore(c.add || {});
+            const next = qIndex + 1;
+            if (next >= questions.length) {
+              renderEnding();
+            } else {
+              nextQuestion(next);
+            }
+          }, accent)
+        );
+      });
+
+      el.hint.textContent = "선택은 되돌릴 수 없음(…이라 쓰고 그냥 다시하기 누르면 됨).";
+      updateProgressUI();
+      updateScoreUI();
+    }
+
+    function nextQuestion(qIndex) {
+      idx = qIndex;
+      renderQuestion(qIndex);
+    }
+
+    function applyScore(add) {
+      for (const k of Object.keys(add)) {
+        scores[k] += add[k];
+      }
+      updateScoreUI();
+    }
+
+    function computeEnding() {
+      const s = scores;
+      const maxVal = Math.max(s.HM, s.YH, s.HJ);
+      const top = Object.entries(s).filter(([k, v]) => v === maxVal).map(([k]) => k);
+
+      // Hidden BAD: scores are too evenly spread OR tie among 2+ at a low margin
+      // "Evenly spread" heuristic: max-min <= 1 (very flat)
+      const minVal = Math.min(s.HM, s.YH, s.HJ);
+      const flat = (maxVal - minVal) <= 1;
+
+      if (flat) return "BAD";
+      if (top.length === 1) return top[0];
+
+      // tie-breaker: last answered vibe doesn't exist; choose deterministic by priority
+      // (you can change order if you want)
+      const priority = ["HM", "YH", "HJ"];
+      return top.sort((a, b) => priority.indexOf(a) - priority.indexOf(b))[0];
+    }
+
+    function renderEnding() {
+      idx = 999;
+      resultKey = computeEnding();
+      const end = endings[resultKey];
+
+      setStatePill("엔딩", resultKey === "BAD" ? "rose" : "emerald");
+      el.panelIcon.textContent = end.icon;
+      el.panelTitle.textContent = end.title;
+      setTextWithNewlines(el.panelDesc, end.desc);
+
+      el.choices.innerHTML = "";
+
+      const summary = `최종 점수 · 🪶허목 ${scores.HM} / 🔥윤휴 ${scores.YH} / 🐍허적 ${scores.HJ}`;
+      el.choices.appendChild(
+        (function () {
+          const box = document.createElement("div");
+          box.className = "rounded-2xl bg-white/5 ring-1 ring-white/10 p-4 text-sm text-slate-100";
+          box.innerHTML = `
+            <div class="flex items-center justify-between gap-3">
+              <div class="font-medium">결과 요약</div>
+              <div class="text-xs text-slate-300">재시작 가능</div>
+            </div>
+            <div class="mt-2 text-sm text-slate-200/90">${escapeHtml(summary)}</div>
+          `;
+          return box;
+        })()
+      );
+
+      el.choices.appendChild(
+        choiceButton("다시하기", "다른 선택으로 다른 엔딩 보기", () => resetAll(), "indigo")
+      );
+
+      el.choices.appendChild(
+        choiceButton("결과 공유하기", "링크+텍스트 복사", () => shareResult(), "fuchsia")
+      );
+
+      el.hint.textContent = "원하면 엔딩 텍스트/문항을 JSON처럼 분리해서 더 쉽게 확장할 수도 있음.";
+      updateProgressUI();
+      updateScoreUI();
+
+      el.btnShare.disabled = false;
+      el.btnShare.classList.remove("opacity-60", "cursor-not-allowed");
+    }
+
+    function resetAll() {
+      scores = { HM: 0, YH: 0, HJ: 0 };
+      renderIntro();
+      toastShow("초기화 완료");
+    }
+
+    async function shareResult() {
+      const base = location.href.split("#")[0];
+      const key = resultKey || "NONE";
+      const title = (resultKey && endings[resultKey]) ? endings[resultKey].title : "플레이 결과";
+      const text =
+`[송시열 빙의: 남인 공략 시뮬레이터]
+결과: ${title}
+점수: 🪶허목 ${scores.HM} / 🔥윤휴 ${scores.YH} / 🐍허적 ${scores.HJ}
+플레이: ${base}`;
+
+      try {
+        await navigator.clipboard.writeText(text);
+        toastShow("공유 텍스트 복사됨!");
+      } catch (e) {
+        // fallback
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        ta.remove();
+        toastShow("공유 텍스트 복사됨!");
+      }
+    }
+
+    // -----------------------------
+    // Top buttons
+    // -----------------------------
+    el.btnReset.addEventListener("click", () => { clickSound(); resetAll(); });
+    el.btnShare.addEventListener("click", () => { clickSound(); shareResult(); });
+
+    // -----------------------------
+    // Init
+    // -----------------------------
+    renderIntro();
+  </script>
+</body>
+</html>
