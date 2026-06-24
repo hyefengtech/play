@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>구절판 v7</title>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<style>
+body{font-family:sans-serif;background:#eee;padding:20px}
+.top,#board{max-width:1200px;margin:auto;background:#fff}
+.top{padding:15px;margin-bottom:10px}
+#board{padding:20px;border:2px solid #000}
+input,textarea{width:100%;padding:8px;margin:4px 0}
+.controls{display:flex;gap:12px;align-items:center}
+svg{width:100%;display:block}
+.region{cursor:pointer}
+.selected{stroke:red!important;stroke-width:4!important}
+</style>
+</head>
+<body>
+<div class="top">
+<input id="nick" placeholder="닉네임">
+<input id="xid" placeholder="@아이디">
+<textarea id="quote" placeholder="최애 구절"></textarea>
+<div class="controls">
+<button id="saveBtn">PNG 저장</button>
+<label>확대 <input id="zoom" type="range" min="50" max="400" value="100"></label>
+</div>
+</div>
+
+<div id="board">
+<h2 id="nickView">닉네임</h2>
+<div id="xView">@아이디</div>
+<svg id="svg" viewBox="0 0 1000 1000">
+<defs id="defs"></defs>
+<g id="layers"></g>
+</svg>
+<div id="quoteView" style="text-align:center;font-size:24px">최애 구절</div>
+</div>
+
+<input type="file" id="picker" hidden accept="image/*">
+
+<script>
+const cx=500, cy=500, r=180, R=520;
+
+function oct(rad){
+  const p=[];
+  for(let i=0;i<8;i++){
+    const a=(-22.5+i*45)*Math.PI/180;
+    p.push([cx+rad*Math.cos(a), cy+rad*Math.sin(a)]);
+  }
+  return p;
+}
+function pts(a){return a.map(v=>v.join(",")).join(" ");}
+
+const inner=oct(r);
+const defs=document.getElementById("defs");
+const layers=document.getElementById("layers");
+
+const regions=[inner];
+for(let i=0;i<8;i++){
+  const a=inner[i];
+  const b=inner[(i+1)%8];
+  const oa=[cx+R*Math.cos((-22.5+i*45)*Math.PI/180),cy+R*Math.sin((-22.5+i*45)*Math.PI/180)];
+  const ob=[cx+R*Math.cos((-22.5+(i+1)*45)*Math.PI/180),cy+R*Math.sin((-22.5+(i+1)*45)*Math.PI/180)];
+  regions.push([a,b,ob,oa]);
+}
+
+const state={};
+let active=0;
+
+regions.forEach((poly,i)=>{
+  state[i]={x:0,y:0,s:1,src:"",ratio:1,w:1000,h:1000};
+  defs.insertAdjacentHTML("beforeend",
+   `<clipPath id="cp${i}"><polygon points="${pts(poly)}"/></clipPath>`);
+  layers.insertAdjacentHTML("beforeend",
+   `<image id="img${i}" clip-path="url(#cp${i})"></image>
+    <polygon id="poly${i}" class="region" data-id="${i}" points="${pts(poly)}"
+    fill="transparent" stroke="black"/>`);
+});
+
+function render(i){
+  const st=state[i];
+  const img=document.getElementById("img"+i);
+
+  let w,h;
+
+  if(st.ratio >= 1){
+    w = 1000 * st.s;
+    h = w / st.ratio;
+  }else{
+    h = 1000 * st.s;
+    w = h * st.ratio;
+  }
+
+  st.w=w; st.h=h;
+
+  img.setAttribute("href",st.src);
+  img.setAttribute("x",st.x);
+  img.setAttribute("y",st.y);
+  img.setAttribute("width",w);
+  img.setAttribute("height",h);
+  img.setAttribute("preserveAspectRatio","none");
+}
+
+function select(id){
+  active=id;
+  document.querySelectorAll(".region").forEach(x=>x.classList.remove("selected"));
+  document.getElementById("poly"+id).classList.add("selected");
+  zoom.value=Math.round(state[id].s*100);
+}
+select(0);
+
+document.querySelectorAll(".region").forEach(el=>{
+  el.addEventListener("click",()=>{
+    select(+el.dataset.id);
+    picker.click();
+  });
+});
+
+picker.onchange=e=>{
+  const f=e.target.files[0];
+  if(!f) return;
+
+  const fr=new FileReader();
+  fr.onload=v=>{
+    const test=new Image();
+
+    test.onload=()=>{
+      state[active].ratio=test.width/test.height;
+      state[active].src=v.target.result;
+
+      if(state[active].ratio>=1){
+        state[active].x=-250;
+        state[active].y=0;
+      }else{
+        state[active].x=0;
+        state[active].y=-250;
+      }
+
+      render(active);
+    };
+
+    test.src=v.target.result;
+  };
+  fr.readAsDataURL(f);
+};
+
+zoom.oninput=e=>{
+  state[active].s=e.target.value/100;
+  render(active);
+};
+
+let drag=false,sx=0,sy=0;
+
+svg.addEventListener("mousedown",e=>{
+  drag=true;
+  sx=e.clientX;
+  sy=e.clientY;
+});
+
+document.addEventListener("mouseup",()=>drag=false);
+
+document.addEventListener("mousemove",e=>{
+  if(!drag) return;
+
+  state[active].x += (e.clientX-sx);
+  state[active].y += (e.clientY-sy);
+
+  sx=e.clientX;
+  sy=e.clientY;
+
+  render(active);
+});
+
+nick.oninput=()=>nickView.textContent=nick.value||"닉네임";
+xid.oninput=()=>xView.textContent=xid.value||"@아이디";
+quote.oninput=()=>quoteView.textContent=quote.value||"최애 구절";
+
+saveBtn.onclick=async()=>{
+  const c=await html2canvas(document.getElementById("board"),{scale:4});
+  const a=document.createElement("a");
+  a.href=c.toDataURL("image/png");
+  a.download="favorite-board.png";
+  a.click();
+};
+</script>
+</body>
+</html>
