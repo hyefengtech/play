@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>구절판 v7</title>
+<title>최애구절판 생성기</title>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
 body{font-family:sans-serif;background:#eee;padding:20px}
@@ -21,7 +21,7 @@ svg{width:100%;display:block}
 <div class="top">
 <input id="nick" placeholder="닉네임">
 <input id="xid" placeholder="@아이디">
-<textarea id="quote" placeholder="최애 구절"></textarea>
+<textarea id="quote" placeholder="최애 구절판"></textarea>
 <div class="controls">
 <button id="saveBtn">PNG 저장</button>
 <label>확대 <input id="zoom" type="range" min="50" max="400" value="100"></label>
@@ -35,7 +35,7 @@ svg{width:100%;display:block}
 <defs id="defs"></defs>
 <g id="layers"></g>
 </svg>
-<div id="quoteView" style="text-align:center;font-size:24px">최애 구절</div>
+<div id="quoteView" style="text-align:center;font-size:24px">최애 구절판</div>
 </div>
 
 <input type="file" id="picker" hidden accept="image/*">
@@ -175,7 +175,7 @@ document.addEventListener("mousemove",e=>{
 
 nick.oninput=()=>nickView.textContent=nick.value||"닉네임";
 xid.oninput=()=>xView.textContent=xid.value||"@아이디";
-quote.oninput=()=>quoteView.textContent=quote.value||"최애 구절";
+quote.oninput=()=>quoteView.textContent=quote.value||"최애 구절판";
 
 saveBtn.onclick=async()=>{
   const c=await html2canvas(document.getElementById("board"),{scale:4});
