@@ -4,173 +4,878 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Culture Life's playlist</title>
-  <style>
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        margin: 20px;
-        background-color: #f4f4f4;
-      }
-  
-      .diary-form {
-        display: none;
-        max-width: 600px;
-        margin: 20px auto;
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      }
-  
-      .form-group {
-        margin-bottom: 15px;
-      }
-  
-      label {
-        display: block;
-        margin-bottom: 5px;
-      }
-  
-      input,
-      textarea {
-        width: 100%;
-        padding: 8px;
-        box-sizing: border-box;
-        margin-top: 5px;
-      }
-  
-      button {
-        background-color: #4caf50;
-        color: #fff;
-        padding: 10px 15px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        margin-right: 5px;
-      }
-  
-      button.cancel {
-        background-color: #ccc;
-      }
-  
-      #calendar {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        gap: 10px;
-        margin-top: 20px;
-      }
-  
-      .calendar-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 10px;
-      }
-  
-      .calendar-header button {
-        background-color: #4caf50;
-        color: #fff;
-        border: none;
-        padding: 10px;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-  
-      .month-year-text {
-        font-size: 1.2em;
-        font-weight: bold;
-        text-align: center;
-      }
-      .day-container {
-        position: relative;
-        text-align: center;
-        background-color: #fff;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        transition: background-color 0.3s ease;
-        overflow: hidden;
-        height: 120px; /* 날짜 버튼의 높이 조정 */
-      
-        /* 모바일에서는 가로 크기를 100%로 설정하여 한 줄에 하나씩 배치 */
-        width: 100%;
-      }
-      
-      
-      .day {
-        padding: 15px;
-        cursor: pointer;
-        flex-grow: 1;
-      }
-      .day.has-image {
-        /* 이미지가 있는 경우의 스타일 */
-        background-size: cover;
-        background-position: center;
-        background-color: #e0e0e0;
-        border: 1px solid #ccc;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-      }
-      
-      .day-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-    
-      .day-container.has-diary {
-        background-size: cover;
-        background-position: center;
-        background-color: #e0e0e0;
-        border: 1px solid #ccc;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-      
-        /* 조정된 스타일 */
-        width: 100%;
-        height: 100%;
-      }
-      
-  
-      .selected-day {
-        background-color: #4caf50;
-        color: #fff;
-        font-weight: bold;
-      }
-  
+<style>
+/* ===========================
+   Google Font
+=========================== */
+@import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap');
 
-    ㄴ
-      .day:hover {
-        background-color: #f2f2f2;
-      }
+:root{
+    --primary:#6C63FF;
+    --primary-light:#8E88FF;
+    --bg:#F6F7FB;
+    --white:#fff;
+    --text:#222;
+    --gray:#8b8b8b;
+    --border:#ECECEC;
+    --shadow:0 20px 45px rgba(0,0,0,.08);
+    --radius:22px;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:"Pretendard","Noto Sans KR",sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    padding:40px;
+}
+
+h1{
+    text-align:center;
+    font-size:3rem;
+    font-weight:800;
+    margin-bottom:12px;
+    color:#222;
+}
+
+body::before{
+
+content:"오늘의 문화생활을 기록해보세요.";
+
+display:block;
+
+text-align:center;
+
+color:#777;
+
+margin-bottom:40px;
+
+font-size:18px;
+
+}
+
+/* ===========================
+Header
+=========================== */
+
+.calendar-header{
+
+background:white;
+
+padding:20px 30px;
+
+border-radius:20px;
+
+box-shadow:var(--shadow);
+
+margin-bottom:30px;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+}
+
+.month-year-text{
+
+font-size:26px;
+
+font-weight:700;
+
+}
+
+.calendar-header button{
+
+background:linear-gradient(
+135deg,
+var(--primary),
+var(--primary-light)
+);
+
+width:52px;
+
+height:52px;
+
+border-radius:16px;
+
+font-size:20px;
+
+transition:.25s;
+
+}
+
+.calendar-header button:hover{
+
+transform:translateY(-4px);
+
+box-shadow:0 12px 20px rgba(108,99,255,.3);
+
+}
+
+/* ===========================
+Calendar
+=========================== */
+
+#calendar{
+
+display:grid;
+
+grid-template-columns:repeat(7,1fr);
+
+gap:18px;
+
+margin-bottom:50px;
+
+}
+
+.day-of-week{
+
+font-weight:700;
+
+text-align:center;
+
+color:#777;
+
+padding-bottom:10px;
+
+}
+
+.empty-day{
+
+height:130px;
+
+}
+
+.day-container{
+
+height:130px;
+
+border-radius:22px;
+
+overflow:hidden;
+
+background:white;
+
+border:1px solid var(--border);
+
+box-shadow:var(--shadow);
+
+transition:.3s;
+
+cursor:pointer;
+
+position:relative;
+
+}
+
+.day-container:hover{
+
+transform:translateY(-6px);
+
+}
+
+.day{
+
+height:100%;
+
+display:flex;
+
+align-items:flex-start;
+
+justify-content:flex-end;
+
+padding:16px;
+
+font-size:18px;
+
+font-weight:700;
+
+color:#fff;
+
+background:rgba(255,255,255,.15);
+
+backdrop-filter:blur(3px);
+
+}
+
+.day-container:not(.has-image) .day{
+
+color:#222;
+
+}
+
+.selected-day{
+
+outline:4px solid var(--primary);
+
+}
+
+  /* ===========================
+Diary Form
+=========================== */
+
+.diary-form{
+
+display:none;
+
+max-width:760px;
+
+margin:0 auto 40px;
+
+padding:35px;
+
+background:rgba(255,255,255,.92);
+
+backdrop-filter:blur(15px);
+
+border-radius:28px;
+
+box-shadow:0 20px 50px rgba(0,0,0,.08);
+
+border:1px solid rgba(255,255,255,.4);
+
+animation:fade .35s;
+
+}
+
+.diary-form h2{
+
+font-size:30px;
+
+margin-bottom:28px;
+
+}
+
+.form-group{
+
+margin-bottom:22px;
+
+}
+
+label{
+
+display:block;
+
+margin-bottom:10px;
+
+font-weight:700;
+
+color:#555;
+
+}
+
+input,
+textarea{
+
+width:100%;
+
+padding:16px 18px;
+
+font-size:16px;
+
+border-radius:16px;
+
+border:1px solid #E5E5E5;
+
+background:#FAFAFC;
+
+transition:.25s;
+
+font-family:inherit;
+
+}
+
+input:focus,
+textarea:focus{
+
+outline:none;
+
+border-color:var(--primary);
+
+box-shadow:0 0 0 5px rgba(108,99,255,.12);
+
+background:white;
+
+}
+
+textarea{
+
+resize:vertical;
+
+min-height:160px;
+
+}
+
+button{
+
+padding:14px 24px;
+
+border:none;
+
+border-radius:16px;
+
+font-size:16px;
+
+font-weight:700;
+
+cursor:pointer;
+
+transition:.25s;
+
+background:linear-gradient(
+135deg,
+var(--primary),
+#8b85ff
+);
+
+color:white;
+
+margin-right:10px;
+
+}
+
+button:hover{
+
+transform:translateY(-3px);
+
+box-shadow:0 14px 25px rgba(108,99,255,.25);
+
+}
+
+button.cancel{
+
+background:#E5E7EB;
+
+color:#555;
+
+}
+
+/* ===========================
+Entry
+=========================== */
+
+#entries{
+
+max-width:1000px;
+
+margin:auto;
+
+display:grid;
+
+grid-template-columns:repeat(auto-fill,minmax(420px,1fr));
+
+gap:26px;
+
+}
+
+.entry{
+
+background:white;
+
+border-radius:24px;
+
+overflow:hidden;
+
+box-shadow:0 20px 40px rgba(0,0,0,.08);
+
+transition:.3s;
+
+border:1px solid var(--border);
+
+}
+
+.entry:hover{
+
+transform:translateY(-8px);
+
+}
+
+.entry img{
+
+width:100%;
+
+height:250px;
+
+object-fit:cover;
+
+display:block;
+
+}
+
+.entry h3{
+
+padding:24px 24px 10px;
+
+font-size:24px;
+
+}
+
+.entry p{
+
+padding:0 24px 24px;
+
+line-height:1.8;
+
+color:#555;
+
+}
+
+.entry button{
+
+margin:0 0 24px 24px;
+
+}
+
+.entry::before{
+
+content:"🎬";
+
+position:absolute;
+
+display:none;
+
+}
+
+/* ===========================
+Animation
+=========================== */
+
+@keyframes fade{
+
+from{
+
+opacity:0;
+
+transform:translateY(25px);
+
+}
+
+to{
+
+opacity:1;
+
+transform:translateY(0);
+
+}
+
+}
+
+.entry{
+
+animation:fade .35s;
+
+}
+
+  /* ===========================
+Calendar Image Style
+=========================== */
+
+.day-container.has-image{
+
+background-size:cover;
+
+background-position:center;
+
+position:relative;
+
+overflow:hidden;
+
+}
+
+.day-container.has-image::before{
+
+content:"";
+
+position:absolute;
+
+inset:0;
+
+background:linear-gradient(
+180deg,
+rgba(0,0,0,.05),
+rgba(0,0,0,.45)
+);
+
+}
+
+.day-container.has-image .day{
+
+position:relative;
+
+z-index:2;
+
+color:white;
+
+}
+
+.day-container.has-diary::after{
+
+content:"●";
+
+position:absolute;
+
+left:14px;
+
+bottom:12px;
+
+width:10px;
+
+height:10px;
+
+font-size:12px;
+
+color:white;
+
+z-index:3;
+
+}
+
+/* ===========================
+Card Hover
+=========================== */
+
+.day-container{
+
+transition:
+transform .25s,
+box-shadow .25s,
+border .25s;
+
+}
+
+.day-container:hover{
+
+transform:translateY(-8px) scale(1.02);
+
+box-shadow:
+0 18px 40px rgba(0,0,0,.18);
+
+border-color:transparent;
+
+}
+
+/* ===========================
+Scrollbar
+=========================== */
+
+::-webkit-scrollbar{
+
+width:10px;
+
+}
+
+::-webkit-scrollbar-track{
+
+background:#eee;
+
+border-radius:30px;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+background:#bbb;
+
+border-radius:30px;
+
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+background:var(--primary);
+
+}
+
+/* ===========================
+Entry Buttons
+=========================== */
+
+.entry button{
+
+margin-top:6px;
+
+}
+
+.entry button:last-child{
+
+background:#ff5f6d;
+
+}
+
+/* ===========================
+Image Animation
+=========================== */
+
+.entry img{
+
+transition:.45s;
+
+}
+
+.entry:hover img{
+
+transform:scale(1.05);
+
+}
+
+/* ===========================
+Selected Card
+=========================== */
+
+.selected-day{
+
+transform:scale(1.05);
+
+box-shadow:
+0 18px 45px rgba(108,99,255,.35);
+
+}
+
+/* ===========================
+Responsive
+=========================== */
+
+@media (max-width:1024px){
+
+body{
+
+padding:24px;
+
+}
+
+#entries{
+
+grid-template-columns:1fr;
+
+}
+
+.day-container{
+
+height:110px;
+
+}
+
+}
+
+@media (max-width:768px){
+
+h1{
+
+font-size:2rem;
+
+}
+
+.calendar-header{
+
+padding:16px;
+
+}
+
+.month-year-text{
+
+font-size:22px;
+
+}
+
+#calendar{
+
+gap:10px;
+
+}
+
+.day-container{
+
+height:88px;
+
+border-radius:16px;
+
+}
+
+.day{
+
+padding:10px;
+
+font-size:15px;
+
+}
+
+.diary-form{
+
+padding:24px;
+
+}
+
+.entry img{
+
+height:200px;
+
+}
+
+}
+
+@media (max-width:480px){
+
+body{
+
+padding:16px;
+
+}
+
+#calendar{
+
+grid-template-columns:repeat(7,1fr);
+
+gap:6px;
+
+}
+
+.day-container{
+
+height:70px;
+
+}
+
+.day{
+
+font-size:13px;
+
+padding:8px;
+
+}
+
+.entry h3{
+
+font-size:20px;
+
+}
+
+.entry p{
+
+font-size:15px;
+
+}
+
+button{
+
+width:100%;
+
+margin:8px 0;
+
+}
+
+}
 
 
-      .entry {
-        margin-bottom: 20px;
-        padding: 15px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        background-color: #fff;
-      }
+.hero-card{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:40px;
+
+margin-bottom:40px;
+
+background:linear-gradient(135deg,#6C63FF,#8C82FF);
+
+border-radius:28px;
+
+color:white;
+
+box-shadow:0 25px 55px rgba(108,99,255,.25);
+
+}
+
+.hero-left h1{
+
+color:white;
+
+margin:0;
+
+}
+
+.hero-left p{
+
+margin-top:12px;
+
+font-size:18px;
+
+opacity:.9;
+
+}
+
+.hero-right{
+
+width:220px;
+
+}
+
+.hero-info{
+
+background:rgba(255,255,255,.15);
+
+backdrop-filter:blur(12px);
+
+padding:22px;
+
+border-radius:20px;
+
+text-align:center;
+
+}
+
+.hero-info span{
+
+font-size:40px;
+
+display:block;
+
+margin-bottom:10px;
+
+}
+
+</style>
   
-      .entry img {
-        max-width: 100%;
-        height: auto;
-        margin-bottom: 10px;
-      }
-  
-      @media (max-width: 100%) {
-        #calendar {
-          grid-template-columns: repeat(1, 1fr);
-        }
-  
-        .day {
-          margin-bottom: 10px;
-        }
-      }
-  </style>
 </head>
 <body>
-    <h1 style="text-align: center;">마이 컬쳐라이프<br>플레이리스트</h1>
+<div class="hero-card">
 
+    <div class="hero-left">
+
+        <h1>🎵 My Culture Playlist</h1>
+
+        <p>
+            오늘의 문화생활을 기록해보세요.
+        </p>
+
+    </div>
+
+    <div class="hero-right">
+
+        <div class="hero-info">
+
+            <span>🎬</span>
+
+            <h3>이번 달 목표</h3>
+
+            <p>문화생활 5개 기록하기</p>
+
+        </div>
+
+    </div>
+
+</div>
     <div id="diary-form" class="diary-form">
-      <h2>기억하고 싶은 경험을 담으세요</h2>
+      <h2>✨ 새로운 문화 기록</h2>
       <div class="form-group">
         <label for="event">이벤트 [종류]이름 </label>
         <input type="text" id="event" placeholder="예: 영화, 전시회, 뮤지컬, 책, 연극 등">
@@ -186,15 +891,34 @@
       <button onclick="saveEntry()">저장</button>
       <button class="cancel" onclick="cancelEntry()">취소</button>
     </div>
-  
+
+
+  <div class="calendar-wrapper">
+
     <div class="calendar-header">
-      <button onclick="changeMonth(-1)">&#60;</button>
-      <h2 id="month-year" class="month-year-text"></h2>
-      <button onclick="changeMonth(1)">&#62;</button>
-    </div> 
+        <button onclick="changeMonth(-1)">&#60;</button>
+
+        <h2 id="month-year" class="month-year-text"></h2>
+
+        <button onclick="changeMonth(1)">&#62;</button>
+    </div>
+
+    <div id="calendar"></div>
+
+</div>
+
   
     <div id="calendar"></div>
+
+  <div class="entries-wrapper">
+
+    <h2 class="section-title">
+        ✨ 나의 문화 기록
+    </h2>
+
     <div id="entries"></div>
+
+</div>
 
   <script>
     let selectedDay = null;
